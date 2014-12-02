@@ -1,0 +1,11 @@
+﻿已經開始建置於 2014/10/25 下午 09:20:50。
+     1>節點 2 (Build 目標) 上的專案 "R:\大三程式\adaboost\opencvtest\faces_dec\faces_dec\faces_dec.vcxproj"。
+     1>ClCompile:
+         R:\VS2013\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source.cpp
+         Source.cpp
+     1>Source.cpp(4): fatal error C1083: 無法開啟包含檔案: 'core.hpp': No such file or directory
+     1>專案 "R:\大三程式\adaboost\opencvtest\faces_dec\faces_dec\faces_dec.vcxproj" (Build 目標) 建置完成 -- 失敗。
+
+建置失敗。
+
+經過時間 00:00:00.12
