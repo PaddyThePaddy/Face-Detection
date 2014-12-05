@@ -225,15 +225,42 @@ int compare(const void * a, const void * b)
 	if (ta->fValue == tb->fValue) return 0;
 	if (ta->fValue >  tb->fValue) return 1;
 }
+void mthread(int start, int end){   //以多執行緒執行的區段
+	/*
+	int i, j, count, res;
+	if (end > sCount)
+		end = sCount;
+	if (start < 0 || end<0 || start >= end || start>sCount)
+		printf("error: %d %d\n", start, end);
+	for (i = start; i < end; i++){
+		count = 0;
+		//printf("%d\t",i);
+		if (h[i] == NULL){
+			continue;
+		}
+		for (j = 0; j<eCount; j++){   //判斷每個樣本
+			res = abs((*(h + i))->judge(ex + j) - (int)((ex + j)->isFace));
+			if (res == 0)
+				count++;
+			else
+				*(E + i) += *(w + j);
+		}
+		correct[i] = (double)count / eCount;
+		check[i]++;
+	}
+	return;*/
+}
 using namespace std;
 int tn;
 int main(){
-	int sCount,eCount,tCount;
-	int x1, x2, y1, y2,m,l,i,t,j;
-	int Tp, Tn, Sp, Sn;
+	int t0, t1;
+	int sCount,eCount,tCount,sTemp,ssTemp,eflagTemp,kflag,pTemp;
+	int x1, x2, y1, y2,m,l,i,t,j,k;
+	int *check,eflag;
 	int **fs;
 	thread ** mt;
-	double *w, *E, *correct,*ET,*correctT;
+	char str[200];
+	double *w, *E, *correct, *ET, *correctT, Tp, Tn, Sp, Sn, e,eMin,eeMin,cor;
 	IntImg *ex;
 	Soldier *soldier[180000],**strong;
 	Fv *fv;
@@ -300,9 +327,11 @@ int main(){
 			fs[i][j]=fv[j].eNum;
 
 	}
+	//排序完畢 結果在fs
 
+	t1 = t0 = time(NULL);
 
-
+	check = (int*)malloc(sizeof(int)*sCount);
 
 	for (t = 0;t<tCount;t++){
 		
@@ -312,9 +341,76 @@ int main(){
 			else
 				Tn += w[i];
 		}
+		for (k = 0; k < sCount; k++){
 
+			for (Sp = 0, Sn = 0, i = 0; i < eCount; i++){
+			
+					if (ex[fs[k][i]].isFace == true) // compute  S+ and S-
+						Sp += w[fs[k][i]];
+					else
+						Sn += w[fs[k][i]];
+				
+					if (Sp + (Tn - Sn) < Sn + (Tp - Sp)){// compute e
+						e = Sp + (Tn - Sn);
+						eflag = 0;
+					}
+					else{
+						e = Sn + (Tp - Sp);
+						eflag = 1;
+					}
+				
+					if (i == 0){
+						eeMin = e;
+						ssTemp = fs[k][i];
+						eflagTemp = eflag;
+					}
+					if (eeMin > e){
+						eeMin = e;
+						ssTemp = fs[k][i];
+						eflagTemp = eflag;
+					}
+			}
 
+			if (k == 0){
+				eMin = eeMin;
+				sTemp = ssTemp;
+				kflag = 0;
+				pTemp = eflagTemp;
+			}
 
+			
+			if (eMin > e){
+				eMin = eeMin;
+				sTemp = ssTemp;
+				kflag = k;
+				pTemp = eflagTemp; //e = min(Sp+(Tn-Sn),Sn+(Tp-Sp)) 左邊比較小時  p = 0
+								   //p=0: 小於threshold的要判斷為非人臉; p=1: 大於threshold的要判斷為非人臉 
+			}
+
+			
+
+		}
+		soldier[kflag]->setP(pTemp);// 已找出當圈最佳小兵  
+		soldier[kflag]->setTh(sTemp);
+		soldier[kflag]->setE(eMin);
+		soldier[kflag]->getData(str);
+		
+		//cout << "Soldier " << t << " " << str << endl;
+		//cout << "Time : " << t1 - t0<<" sec"<<endl;
+		strong[t] = soldier[kflag];
+
+		int ctmp=0;
+		
+		for (i = 0; i < eCount; i++){        //設定樣本權重
+			if ((strong[t]->judge(ex + i) - (int)(ex[i].isFace)) == 0){
+				w[i] = w[i] * eMin / (1 - eMin);
+				ctmp++;
+			}
+			/*else
+			w[i] = w[i] * (1 - min) / min;*/
+			}
+		cor = (double)ctmp / eCount;
+		printf("%-4d: %s E: %E \ntime: %d\n", t, str, eMin, cor, time(NULL) - t1);
 	}
 
 

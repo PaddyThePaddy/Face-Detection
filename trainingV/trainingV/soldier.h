@@ -4,6 +4,7 @@ class Soldier{
 		int type;
 		int th;
 		int p;
+		double e;
 		int getAreaSum(IntImg *intImg,int x1,int y1,int x2,int y2){
 			int sum=0;
 			sum+=intImg->data[y2-1][x2-1];
@@ -26,7 +27,15 @@ class Soldier{
 			this->p=p;
 			this->th=th;
 		};
-		
+		void setP(int in){
+			p = in;
+		};
+		void setTh(int in){
+			th = in;
+		};
+		void setE(double in){
+			e = in;
+		};
 		void setth(int t){
 			th= t;
 		};
@@ -65,6 +74,6 @@ class Soldier{
 		};
 		
 		void getData(char *str){
-			sprintf_s(str,200,"%02d %02d %02d %02d %d %2d %8d",x1,y1,x2,y2,type,p,th);
+			sprintf_s(str,200,"%02d %02d %02d %02d %d %2d %8d %.8lf",x1,y1,x2,y2,type,p,th,e);
 		}
 };
