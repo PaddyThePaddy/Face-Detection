@@ -228,8 +228,8 @@ double Tp, Tn;
 
 int compare(const void * a, const void * b)
 {
-	Fv* ta = *(Fv**)a;
-	Fv* tb = *(Fv**)b;
+	Fv* ta = (Fv*)a;
+	Fv* tb = (Fv*)b;
 	if (ta->fValue <  tb->fValue) return -1;
 	if (ta->fValue == tb->fValue) return 0;
 	if (ta->fValue >  tb->fValue) return 1;
@@ -324,8 +324,10 @@ int main(){
 	mt = (thread**)malloc(sizeof(thread*) * tn);
 	correct = (double*)malloc(sizeof(double)*sCount);
 	fv = (Fv*)malloc(sizeof(Fv)*eCount);
-	fs = (int **)malloc(sizeof(int)*eCount*sCount);
-
+	fs = (int **)malloc(sizeof(int*)*sCount);
+	for (i = 0; i < sCount; i++){
+		*(fs + i) = (int *)malloc(sizeof(int)*eCount);
+	}
 	eThread = (double*)malloc(sizeof(double) * sCount);
 	sThread = (int*)malloc(sizeof(int) * sCount);
 	pThread = (int*)malloc(sizeof(int) * sCount);
@@ -360,7 +362,7 @@ int main(){
 			fv[j].eNum = j;
 		}
 
-		qsort(fv,eCount,sizeof(int),compare);
+		qsort(fv,eCount,sizeof(Fv),compare);
 
 		for (j = 0; j < eCount; j++)
 			fs[i][j]=fv[j].eNum;
