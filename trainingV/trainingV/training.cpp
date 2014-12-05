@@ -312,26 +312,6 @@ int main(){
 	scanf_s("%d", &tCount);
 	printf("input thread count: ");
 	scanf_s("%d", &tn);
-
-	w = (double*)malloc(sizeof(double)*eCount);  //初始化樣本權重
-	for (i = 0; i<eCount; i++)
-		w[i] = ex[i].isFace ? (double)1 / (2 * m) : (double)1 / (2 * l);
-
-	strong = (Soldier**)malloc(sizeof(Soldier*)*tCount);  //選拔完成的分類器儲存區
-	ET = (double*)malloc(sizeof(double)*tCount);
-	correctT = (double*)malloc(sizeof(double)*tCount);
-	E = (double*)malloc(sizeof(double)*sCount);
-	mt = (thread**)malloc(sizeof(thread*) * tn);
-	correct = (double*)malloc(sizeof(double)*sCount);
-	fv = (Fv*)malloc(sizeof(Fv)*eCount);
-	fs = (int **)malloc(sizeof(int*)*sCount);
-	for (i = 0; i < sCount; i++){
-		*(fs + i) = (int *)malloc(sizeof(int)*eCount);
-	}
-	eThread = (double*)malloc(sizeof(double) * sCount);
-	sThread = (int*)malloc(sizeof(int) * sCount);
-	pThread = (int*)malloc(sizeof(int) * sCount);
-	
 	//開始窮舉產生分類器
 	/*規則:
 	x1<x2 y1<y2
@@ -354,6 +334,26 @@ int main(){
 			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 4, 0, 0);
 				}
 	//分類器產生結束
+	w = (double*)malloc(sizeof(double)*eCount);  //初始化樣本權重
+	for (i = 0; i<eCount; i++)
+		w[i] = ex[i].isFace ? (double)1 / (2 * m) : (double)1 / (2 * l);
+
+	strong = (Soldier**)malloc(sizeof(Soldier*)*tCount);  //選拔完成的分類器儲存區
+	ET = (double*)malloc(sizeof(double)*tCount);
+	correctT = (double*)malloc(sizeof(double)*tCount);
+	E = (double*)malloc(sizeof(double)*sCount);
+	mt = (thread**)malloc(sizeof(thread*) * tn);
+	correct = (double*)malloc(sizeof(double)*sCount);
+	fv = (Fv*)malloc(sizeof(Fv)*eCount);
+	fs = (int **)malloc(sizeof(int*)*sCount);
+	for (i = 0; i < sCount; i++){
+		*(fs + i) = (int *)malloc(sizeof(int)*eCount);
+	}
+	eThread = (double*)malloc(sizeof(double) * sCount);
+	sThread = (int*)malloc(sizeof(int) * sCount);
+	pThread = (int*)malloc(sizeof(int) * sCount);
+	
+	
 	//將sample以feature value去排序
 	for (i = 0; i < sCount; i++){
 		

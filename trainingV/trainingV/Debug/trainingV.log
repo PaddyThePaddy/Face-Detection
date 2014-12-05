@@ -1,4 +1,4 @@
-﻿已經開始建置於 2014/12/6 上午 12:33:15。
+﻿已經開始建置於 2014/12/6 上午 12:42:21。
      1>節點 2 (Build 目標) 上的專案 "R:\大三程式\adaboost_git\Face-Detection\trainingV\trainingV\trainingV.vcxproj"。
      1>ClCompile:
          R:\VS2013\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt training.cpp
@@ -16,4 +16,4 @@
 
 建置成功。
 
-經過時間 00:00:00.56
+經過時間 00:00:00.59
