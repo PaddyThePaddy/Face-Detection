@@ -217,6 +217,15 @@ class Fv{
 		int fValue;
 		int eNum;
 };
+
+int sCount, eCount;
+Soldier *soldier[180000];
+IntImg *ex;
+int **fs, *sThread, *pThread;
+double *w, *eThread;
+int eflag, ssTemp, eflagTemp;
+double Tp, Tn;
+
 int compare(const void * a, const void * b)
 {
 	Fv* ta = *(Fv**)a;
@@ -226,45 +235,70 @@ int compare(const void * a, const void * b)
 	if (ta->fValue >  tb->fValue) return 1;
 }
 void mthread(int start, int end){   //以多執行緒執行的區段
-	/*
-	int i, j, count, res;
+	
+	int i, j, k;
+	double Sp, Sn, e, eeMin;
+
 	if (end > sCount)
 		end = sCount;
 	if (start < 0 || end<0 || start >= end || start>sCount)
 		printf("error: %d %d\n", start, end);
-	for (i = start; i < end; i++){
-		count = 0;
-		//printf("%d\t",i);
-		if (h[i] == NULL){
-			continue;
-		}
-		for (j = 0; j<eCount; j++){   //判斷每個樣本
-			res = abs((*(h + i))->judge(ex + j) - (int)((ex + j)->isFace));
-			if (res == 0)
-				count++;
+	for (k = start; k < end; k++){
+		for (Sp = 0, Sn = 0, i = 0; i < eCount; i++){
+
+			if (ex[fs[k][i]].isFace == true) // compute  S+ and S-
+				Sp += w[fs[k][i]];
 			else
-				*(E + i) += *(w + j);
+				Sn += w[fs[k][i]];
+
+			if (Sp + (Tn - Sn) < Sn + (Tp - Sp)){// compute e
+				e = Sp + (Tn - Sn);
+				eflag = 0;
+			}
+			else{
+				e = Sn + (Tp - Sp);
+				eflag = 1;
+			}
+
+			if (i == 0){
+				eeMin = e;
+				ssTemp = fs[k][i];
+				eflagTemp = eflag;
+			}
+			if (eeMin > e){
+				eeMin = e;
+				ssTemp = fs[k][i];
+				eflagTemp = eflag;
+			}
 		}
-		correct[i] = (double)count / eCount;
-		check[i]++;
+
+		*(eThread + k) = eeMin;
+		*(sThread + k) = ssTemp;
+		*(pThread + k) = eflagTemp;	//e = min(Sp+(Tn-Sn),Sn+(Tp-Sp)) 左邊比較小時  p = 0
+									//p=0: 小於threshold的要判斷為非人臉; p=1: 大於threshold的要判斷為非人臉 
+
 	}
-	return;*/
+	return;
 }
 using namespace std;
-int tn;
+int c, tn;
+
 int main(){
 	int t0, t1;
-	int sCount,eCount,tCount,sTemp,ssTemp,eflagTemp,kflag,pTemp;
+	int tCount;
+	double wSum;
 	int x1, x2, y1, y2,m,l,i,t,j,k;
-	int *check,eflag;
-	int **fs;
+	int *check;
 	thread ** mt;
 	char str[200];
-	double *w, *E, *correct, *ET, *correctT, Tp, Tn, Sp, Sn, e,eMin,eeMin,cor;
-	IntImg *ex;
-	Soldier *soldier[180000],**strong;
+	double *E, *correct, *ET, *correctT, cor;
+	Soldier **strong;
 	Fv *fv;
-	FILE *example;
+	FILE *example, *sFile;
+
+	fopen_s(&sFile, "soldiers.txt", "r");
+	fopen_s(&example, "IntegralImage", "rb");
+
 	fread(&eCount, sizeof(int), 1, example);//從檔案讀取樣本
 	fread(&m, sizeof(int), 1, example);
 	fread(&l, sizeof(int), 1, example);
@@ -291,6 +325,11 @@ int main(){
 	correct = (double*)malloc(sizeof(double)*sCount);
 	fv = (Fv*)malloc(sizeof(Fv)*eCount);
 	fs = (int **)malloc(sizeof(int)*eCount*sCount);
+
+	eThread = (double*)malloc(sizeof(double) * sCount);
+	sThread = (int*)malloc(sizeof(int) * sCount);
+	pThread = (int*)malloc(sizeof(int) * sCount);
+	
 	//開始窮舉產生分類器
 	/*規則:
 	x1<x2 y1<y2
@@ -334,15 +373,41 @@ int main(){
 	check = (int*)malloc(sizeof(int)*sCount);
 
 	for (t = 0;t<tCount;t++){
-		
+		wSum = 0;
+
+		for (i = 0; i < eCount; i++)      //設定權重
+			wSum += w[i];
+		for (i = 0; i < eCount; i++)
+			w[i] = w[i] / wSum;
+
+		for (i = 0, wSum = 0; i < eCount; i++)
+		wSum += w[i];
+
+		printf("Weight sum: %lf\n", wSum);
+
+		for (i = 0; i < sCount; i++)
+		check[i] = E[i] = 0;
+
 		for (Tp = 0, Tn = 0, i = 0; i < eCount; i++){
 			if (ex[i].isFace == true)       // compute  T+ and T-
 				Tp += w[i];
 			else
 				Tn += w[i];
 		}
-		for (k = 0; k < sCount; k++){
 
+		c = sCount / tn + 1;                         //讓每個弱分類器評判每個樣本  將工作切割成數段以多執行緒完成
+		for (i = 0, j = 0; i < tn; i++){
+			mt[i] = new thread(mthread, j, j + c);
+			j += c;
+		}
+		for (i = 0; i < tn; i++){
+			mt[i]->join();
+			delete mt[i];
+		}
+		
+		/*
+		for (k = 0; k < sCount; k++){
+			
 			for (Sp = 0, Sn = 0, i = 0; i < eCount; i++){
 			
 					if (ex[fs[k][i]].isFace == true) // compute  S+ and S-
@@ -370,7 +435,7 @@ int main(){
 						eflagTemp = eflag;
 					}
 			}
-
+	
 			if (k == 0){
 				eMin = eeMin;
 				sTemp = ssTemp;
@@ -386,20 +451,28 @@ int main(){
 				pTemp = eflagTemp; //e = min(Sp+(Tn-Sn),Sn+(Tp-Sp)) 左邊比較小時  p = 0
 								   //p=0: 小於threshold的要判斷為非人臉; p=1: 大於threshold的要判斷為非人臉 
 			}
-
+	
 			
 
 		}
-		soldier[kflag]->setP(pTemp);// 已找出當圈最佳小兵  
-		soldier[kflag]->setTh(sTemp);
-		soldier[kflag]->setE(eMin);
-		soldier[kflag]->getData(str);
+		*/
+		double eMin;
+		int iMin, ctmp = 0;
+
+		for (i = 1, eMin = *eThread, iMin = 0; i < sCount; i++){
+			if (eMin > *(eThread + i)){
+				eMin = *(eThread + i);
+				iMin = i;
+			}
+		}
+		soldier[iMin]->setP(*(pThread + iMin));// 已找出當圈最佳小兵  
+		soldier[iMin]->setTh(*(sThread + iMin));
+		soldier[iMin]->setE(*(eThread + iMin));
+		soldier[iMin]->getData(str);
 		
 		//cout << "Soldier " << t << " " << str << endl;
 		//cout << "Time : " << t1 - t0<<" sec"<<endl;
-		strong[t] = soldier[kflag];
-
-		int ctmp=0;
+		strong[t] = soldier[iMin];
 		
 		for (i = 0; i < eCount; i++){        //設定樣本權重
 			if ((strong[t]->judge(ex + i) - (int)(ex[i].isFace)) == 0){
