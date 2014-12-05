@@ -1,3 +1,4 @@
+/*
 #include <cstdlib>
 #include <iostream>
 #include <ctime>
@@ -103,7 +104,7 @@ int main(int argc, char *argv[])
 		/*for (i = 0, wSum = 0; i < eCount; i++)
 			wSum += w[i];
 
-		printf("Weight sum: %lf\n", wSum);*/
+			printf("Weight sum: %lf\n", wSum);*//*
 
 		for (i = 0; i < sCount; i++)
 			check[i] = E[i] = 0;
@@ -150,7 +151,7 @@ int main(int argc, char *argv[])
 		h[i]->getData(str);
 		fprintf(output, "%d %s %lf %lf\n",i, str, E[i], correct[i]);
 		}
-		exit(0);*/
+		exit(0);*//*
 		strong[t] = h[minI];   //將最小值放到儲存區
 		h[minI] = NULL;
 		ET[t] = E[minI];
@@ -161,7 +162,7 @@ int main(int argc, char *argv[])
 			if ((strong[t]->judge(ex + i) - (int)(ex[i].isFace)) == 0)
 				w[i] = w[i] * min / (1 - min);
 			/*else
-				w[i] = w[i] * (1 - min) / min;*/
+			w[i] = w[i] * (1 - min) / min;*//*
 		}
 		strong[t]->getData(str);
 		printf("%-4d: %s E: %E  Correct rate: %lf\ntime: %d\n", t, str, ET[t], correctT[t], time(NULL) - t1);
@@ -202,4 +203,123 @@ int main(int argc, char *argv[])
 
 	system("pause");
 	return EXIT_SUCCESS;
+}
+*/
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
+#include <thread>
+#include <conio.h>
+#include "IntImg.h"
+#include "soldier.h"
+class Fv{
+	public:
+		int fValue;
+		int eNum;
+};
+int compare(const void * a, const void * b)
+{
+	Fv* ta = *(Fv**)a;
+	Fv* tb = *(Fv**)b;
+	if (ta->fValue <  tb->fValue) return -1;
+	if (ta->fValue == tb->fValue) return 0;
+	if (ta->fValue >  tb->fValue) return 1;
+}
+using namespace std;
+int tn;
+int main(){
+	int sCount,eCount,tCount;
+	int x1, x2, y1, y2,m,l,i,t,j;
+	int Tp, Tn, Sp, Sn;
+	int **fs;
+	thread ** mt;
+	double *w, *E, *correct,*ET,*correctT;
+	IntImg *ex;
+	Soldier *soldier[180000],**strong;
+	Fv *fv;
+	FILE *example;
+	fread(&eCount, sizeof(int), 1, example);//從檔案讀取樣本
+	fread(&m, sizeof(int), 1, example);
+	fread(&l, sizeof(int), 1, example);
+	ex = (IntImg*)malloc(sizeof(IntImg)*eCount);
+	fread(ex, sizeof(IntImg), eCount, example);
+	fclose(example);
+
+	printf("%d examples: %d face, %d nonface\n", eCount, m, l);
+
+	printf("intput round count: ");
+	scanf_s("%d", &tCount);
+	printf("input thread count: ");
+	scanf_s("%d", &tn);
+
+	w = (double*)malloc(sizeof(double)*eCount);  //初始化樣本權重
+	for (i = 0; i<eCount; i++)
+		w[i] = ex[i].isFace ? (double)1 / (2 * m) : (double)1 / (2 * l);
+
+	strong = (Soldier**)malloc(sizeof(Soldier*)*tCount);  //選拔完成的分類器儲存區
+	ET = (double*)malloc(sizeof(double)*tCount);
+	correctT = (double*)malloc(sizeof(double)*tCount);
+	E = (double*)malloc(sizeof(double)*sCount);
+	mt = (thread**)malloc(sizeof(thread*) * tn);
+	correct = (double*)malloc(sizeof(double)*sCount);
+	fv = (Fv*)malloc(sizeof(Fv)*eCount);
+	fs = (int **)malloc(sizeof(int)*eCount*sCount);
+	//開始窮舉產生分類器
+	/*規則:
+	x1<x2 y1<y2
+	為了計算方便,實際範圍不包含x2那個col以及y2那個row
+	*/
+	sCount = 0;
+	for (x1 = 0; x1 < 24; x1++)
+		for (y1 = 0; y1 < 24; y1++)
+			for (x2 = x1 + 1; x2 <= 24; x2++)
+				for (y2 = y1 + 1; y2 <= 24; y2++){
+		if ((x2 - x1) % 2 == 0)
+			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 0, 0, 0);
+		if ((y2 - y1) % 2 == 0)
+			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 1, 0, 0);
+		if ((x2 - x1) % 3 == 0)
+			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 2, 0, 0);
+		if ((y2 - y1) % 3 == 0)
+			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 3, 0, 0);
+		if ((x2 - x1) % 2 == 0 && (y2 - y1) % 2 == 0)
+			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 4, 0, 0);
+				}
+	//分類器產生結束
+	//將sample以feature value去排序
+	for (i = 0; i < sCount; i++){
+		
+		for (j = 0; j < eCount; j++){
+			fv[j].fValue=soldier[i]->comput(&ex[j]);
+			fv[j].eNum = j;
+		}
+
+		qsort(fv,eCount,sizeof(int),compare);
+
+		for (j = 0; j < eCount; j++)
+			fs[i][j]=fv[j].eNum;
+
+	}
+
+
+
+
+	for (t = 0;t<tCount;t++){
+		
+		for (Tp = 0, Tn = 0, i = 0; i < eCount; i++){
+			if (ex[i].isFace == true)       // compute  T+ and T-
+				Tp += w[i];
+			else
+				Tn += w[i];
+		}
+
+
+
+	}
+
+
+
+
+
+	return 0;
 }

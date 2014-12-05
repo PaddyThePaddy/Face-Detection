@@ -4,7 +4,6 @@ class Soldier{
 		int type;
 		int th;
 		int p;
-		
 		int getAreaSum(IntImg *intImg,int x1,int y1,int x2,int y2){
 			int sum=0;
 			sum+=intImg->data[y2-1][x2-1];
@@ -28,6 +27,14 @@ class Soldier{
 			this->th=th;
 		};
 		
+		void setth(int t){
+			th= t;
+		};
+
+		int getth(){
+			return th;
+		};
+
 		int judge(IntImg *intImg){
 			int sum=comput(intImg);
 			
