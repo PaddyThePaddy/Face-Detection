@@ -233,15 +233,17 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 	int i, j, k,x1,y1,x2,y2,type;
 	double Sp, Sn, e, eeMin;
 	int *fss;
+	FILE *example_2;
+	fopen_s(&example_2, "SortedIntegralImage", "rb");
 	fss = (int*)malloc(sizeof(int)*eCount);
 	if (end > sCount)
 		end = sCount;
 	if (start < 0 || end<0 || start >= end || start>sCount)
 		printf("error: %d %d\n", start, end);
 	for (k = start; k < end; k++){
-		_fseeki64(example,seekDegree,SEEK_SET);
-		_fseeki64(example,seekDegree_2*k+sizeof(int)*5, SEEK_CUR);
-		fread(fss,sizeof(int),eCount,example);
+		_fseeki64(example_2, seekDegree, SEEK_SET);
+		_fseeki64(example_2, seekDegree_2*k + sizeof(int) * 5, SEEK_CUR);
+		fread(fss, sizeof(int), eCount, example_2);
 		//printf("K: %d , fss: %d %d %d\n",k,*fss,*(fss+1),*(fss+2));
 		for (Sp = 0, Sn = 0, i = 0; i < eCount; i++){
 
@@ -278,6 +280,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 
 	}
 	free(fss);
+	fclose(example_2);
 	return;
 }
 using namespace std;
@@ -297,7 +300,8 @@ int main(){
 
 	
 	fopen_s(&example, "SortedIntegralImage", "rb");
-
+	if (!example)cout << "example error"<<endl;
+	
 	fread(&eCount, sizeof(int), 1, example);//從檔案讀取樣本
 	fread(&m, sizeof(int), 1, example);
 	fread(&l, sizeof(int), 1, example);
