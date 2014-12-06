@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
 	fwrite(&sCount,sizeof(int),1,out);
 	system("pause");
 	t=time(NULL);
-	
+	int *check=new int[eCount];
 	for(int i=0;i<sCount;i++){
 		for(int j=0;j<eCount;j++){
 			*(tmp+j*2+1)=j;
@@ -162,6 +162,16 @@ int main(int argc, char *argv[])
 		//	cout<<(tmp+j*2+1)<<endl;
         }
 		printf("sort %d complete\n",i);
+
+		for (int j = 0; j < eCount; j++)
+			check[j] = 0;
+		for (int j = 0; j < eCount; j++)
+			check[*(tmp+j*2+1)]++;
+		for (int j = 0; j < eCount; j++)
+			if (check[j] != 1){
+ 				printf("help");
+ 				system("pause");
+			}
 	}
 	fclose(out);
 	printf("all complete\nuse %d sec\n",time(NULL)-t);
