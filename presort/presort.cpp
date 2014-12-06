@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 	for(int i=0;i<sCount;i++){
 		for(int j=0;j<eCount;j++){
 			*(tmp+j+1)=j;
-			*(tmp+j)=soldier[j]->comput(ex+j);
+			*(tmp+j)=soldier[i]->comput(ex+j);
 		}
 		
 		qsort(tmp,eCount,sizeof(int)*2,compare);
