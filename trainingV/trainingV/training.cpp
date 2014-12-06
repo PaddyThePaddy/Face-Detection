@@ -225,7 +225,7 @@ IntImg *ex;
 int *sThread, *pThread;
 double *w, *eThread;
 double Tp, Tn;
-int seekDegree,seekDegree_2;
+long long int seekDegree,seekDegree_2;
 FILE *example;
 
 void mthread(int start, int end){   //以多執行緒執行的區段
@@ -243,8 +243,9 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 	if (start < 0 || end<0 || start >= end || start>sCount)
 		printf("error: %d %d\n", start, end);
 	for (k = start; k < end; k++){
+		if (soldier[k]->getE() == -1)continue;
 		_fseeki64(example_2, seekDegree, SEEK_SET);
-		_fseeki64(example_2, seekDegree_2*k + sizeof(int) * 5, SEEK_CUR);
+		_fseeki64(example_2, (long long int)seekDegree_2*k + sizeof(int) * 5, SEEK_CUR);
 		fread(fss, sizeof(int), eCount, example_2);
 
 		for (i = 0; i < eCount; i++)
@@ -387,7 +388,7 @@ int main(){
 	for (t = 0;t<tCount;t++){
 		wSum = 0;
 
-		for (i = 0; i < eCount; i++)      //設定權重
+		for (i = 0; i < eCount; i++)      //設定權重 (正規化)
 			wSum += w[i];
 		for (i = 0; i < eCount; i++)
 			w[i] = w[i] / wSum;
@@ -485,14 +486,17 @@ int main(){
 		//cout << "Soldier " << t << " " << str << endl;
 		//cout << "Time : " << t1 - t0<<" sec"<<endl;
 		strong[t] = soldier[iMin];
-		
+		soldier[iMin]->setE(-1);
+		double wtmp=0;
 		for (i = 0; i < eCount; i++){        //設定樣本權重
 			if ((strong[t]->judge(ex + i) - (int)(ex[i].isFace)) == 0){
+				wtmp = w[i];
 				w[i] = w[i] * eMin / (1 - eMin);
 				ctmp++;
+				//cout << wtmp << " >> " << w[i]<<endl;
 			}
-			/*else
-			w[i] = w[i] * (1 - min) / min;*/
+			else
+				w[i] = w[i] * (1 - eMin) / eMin;
 			}
 		cor = (double)ctmp / eCount;
 		printf("%-4d: %s E: %e correct rate :%lf \ntime: %d\n", t, str, eMin, cor, time(NULL) - t1);

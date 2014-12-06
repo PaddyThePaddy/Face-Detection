@@ -39,7 +39,9 @@ class Soldier{
 		void setth(int t){
 			th= t;
 		};
-
+		double getE(){
+			return e;
+		};
 		int getth(){
 			return th;
 		};
@@ -47,7 +49,7 @@ class Soldier{
 		int judge(IntImg *intImg){
 			int sum=comput(intImg);
 			
-			if(p==1)
+			if(p==0)
 				return (int)th>=sum;
 			else
 				return (int)th<=sum;
