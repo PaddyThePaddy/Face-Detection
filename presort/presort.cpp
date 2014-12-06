@@ -143,6 +143,7 @@ int main(int argc, char *argv[])
 						soldier[sCount++] = new Soldier(x1, y1, x2, y2, 4, 0, 0);
 				}
 	printf("create %d soldier\n",sCount);
+	fwrite(&sCount,sizeof(int),1,out);
 	system("pause");
 	t=time(NULL);
 	
