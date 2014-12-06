@@ -74,6 +74,7 @@ class Soldier{
 		};
 		
 		void getData(char *str){
-			sprintf_s(str,200,"%02d %02d %02d %02d %d %2d %8d %.8lf",x1,y1,x2,y2,type,p,th,e);
+			//sprintf_s(str,200,"%02d %02d %02d %02d %d %2d %8d %.8lf",x1,y1,x2,y2,type,p,th,e);
+			sprintf_s(str, 200, "%02d %02d %02d %02d %d", x1, y1, x2, y2, type);
 		}
 };

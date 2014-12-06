@@ -1,13 +1,17 @@
-﻿已經開始建置於 2014/12/6 上午 12:42:21。
+﻿已經開始建置於 2014/12/6 下午 01:16:05。
      1>節點 2 (Build 目標) 上的專案 "R:\大三程式\adaboost_git\Face-Detection\trainingV\trainingV\trainingV.vcxproj"。
      1>ClCompile:
          R:\VS2013\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt training.cpp
          training.cpp
-     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(239): warning C4101: 'j' : 未參考的區域變數
-     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(373): warning C4244: '=' : 將 'time_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
-     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(391): warning C4244: '=' : 將 'double' 轉換為 'int'，由於類型不同，可能導致資料遺失
+     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(233): warning C4101: 'y2' : 未參考的區域變數
+     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(233): warning C4101: 'x2' : 未參考的區域變數
+     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(233): warning C4101: 'type' : 未參考的區域變數
+     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(233): warning C4101: 'y1' : 未參考的區域變數
+     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(233): warning C4101: 'x1' : 未參考的區域變數
+     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(233): warning C4101: 'j' : 未參考的區域變數
+     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(359): warning C4244: '=' : 將 'time_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(377): warning C4244: '=' : 將 'double' 轉換為 'int'，由於類型不同，可能導致資料遺失
      1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(290): warning C4101: 'k' : 未參考的區域變數
-     1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\training.cpp(236): warning C4715: 'compare' : 不是所有控制路徑都傳回值
      1>r:\大三程式\adaboost_git\face-detection\trainingv\trainingv\soldier.h(74): warning C4715: 'Soldier::comput' : 不是所有控制路徑都傳回值
        Link:
          R:\VS2013\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"R:\大三程式\adaboost_git\Face-Detection\trainingV\Debug\trainingV.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"R:\大三程式\adaboost_git\Face-Detection\trainingV\Debug\trainingV.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"R:\大三程式\adaboost_git\Face-Detection\trainingV\Debug\trainingV.lib" /MACHINE:X86 Debug\training.obj
@@ -16,4 +20,4 @@
 
 建置成功。
 
-經過時間 00:00:00.59
+經過時間 00:00:00.79

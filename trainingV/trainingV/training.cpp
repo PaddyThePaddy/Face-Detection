@@ -221,35 +221,34 @@ class Fv{
 int sCount, eCount;
 Soldier *soldier[180000];
 IntImg *ex;
-int **fs, *sThread, *pThread;
+int *sThread, *pThread;
 double *w, *eThread;
 int eflag, ssTemp, eflagTemp;
 double Tp, Tn;
+int seekDegree,seekDegree_2;
+FILE *example;
 
-int compare(const void * a, const void * b)
-{
-	Fv* ta = (Fv*)a;
-	Fv* tb = (Fv*)b;
-	if (ta->fValue <  tb->fValue) return -1;
-	if (ta->fValue == tb->fValue) return 0;
-	if (ta->fValue >  tb->fValue) return 1;
-}
 void mthread(int start, int end){   //以多執行緒執行的區段
 	
-	int i, j, k;
+	int i, j, k,x1,y1,x2,y2,type;
 	double Sp, Sn, e, eeMin;
-
+	int *fss;
+	fss = (int*)malloc(sizeof(int)*eCount);
 	if (end > sCount)
 		end = sCount;
 	if (start < 0 || end<0 || start >= end || start>sCount)
 		printf("error: %d %d\n", start, end);
 	for (k = start; k < end; k++){
+		_fseeki64(example,seekDegree,SEEK_SET);
+		_fseeki64(example,seekDegree_2*k+sizeof(int)*5, SEEK_CUR);
+		fread(fss,sizeof(int),eCount,example);
+		//printf("K: %d , fss: %d %d %d\n",k,*fss,*(fss+1),*(fss+2));
 		for (Sp = 0, Sn = 0, i = 0; i < eCount; i++){
 
-			if (ex[fs[k][i]].isFace == true) // compute  S+ and S-
-				Sp += w[fs[k][i]];
+			if (ex[fss[i]].isFace == true) // compute  S+ and S-
+				Sp += w[fss[i]];
 			else
-				Sn += w[fs[k][i]];
+				Sn += w[fss[i]];
 
 			if (Sp + (Tn - Sn) < Sn + (Tp - Sp)){// compute e
 				e = Sp + (Tn - Sn);
@@ -262,12 +261,12 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 
 			if (i == 0){
 				eeMin = e;
-				ssTemp = fs[k][i];
+				ssTemp = fss[i];
 				eflagTemp = eflag;
 			}
 			if (eeMin > e){
 				eeMin = e;
-				ssTemp = fs[k][i];
+				ssTemp = fss[i];
 				eflagTemp = eflag;
 			}
 		}
@@ -278,6 +277,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 									//p=0: 小於threshold的要判斷為非人臉; p=1: 大於threshold的要判斷為非人臉 
 
 	}
+	free(fss);
 	return;
 }
 using namespace std;
@@ -287,53 +287,56 @@ int main(){
 	int t0, t1;
 	int tCount;
 	double wSum;
-	int x1, x2, y1, y2,m,l,i,t,j,k;
+	int x1, x2, y1, y2,m,l,i,t,j,k,type;
 	int *check;
 	thread ** mt;
 	char str[200];
 	double *E, *correct, *ET, *correctT, cor;
 	Soldier **strong;
-	Fv *fv;
-	FILE *example, *sFile;
+	
 
-	fopen_s(&sFile, "soldiers.txt", "r");
-	fopen_s(&example, "IntegralImage", "rb");
+	
+	fopen_s(&example, "SortedIntegralImage", "rb");
 
 	fread(&eCount, sizeof(int), 1, example);//從檔案讀取樣本
 	fread(&m, sizeof(int), 1, example);
 	fread(&l, sizeof(int), 1, example);
 	ex = (IntImg*)malloc(sizeof(IntImg)*eCount);
 	fread(ex, sizeof(IntImg), eCount, example);
-	fclose(example);
+	fread(&sCount,sizeof(int),1,example);//讀取sCount;
+	seekDegree = sizeof(int) * 4 + sizeof(IntImg)*eCount;
+	seekDegree_2 = sizeof(int) * 5 + sizeof(int)*eCount;
+	cout << sCount<<endl;
 
-	printf("%d examples: %d face, %d nonface\n", eCount, m, l);
+	for (i = 0; i < sCount; i++){
+		fread(&x1, sizeof(int), 1, example);
+		fread(&y1, sizeof(int), 1, example);
+		fread(&x2, sizeof(int), 1, example);
+		fread(&y2, sizeof(int), 1, example);
+		fread(&type, sizeof(int), 1, example);
+		soldier[i] = new Soldier(x1, y1, x2, y2, type, 0, 0);
+		_fseeki64(example, sizeof(int)*eCount, SEEK_CUR);
+		//fread(fs,sizeof(int),eCount,example);
+		
+		if (i == 0){
+		soldier[i]->getData(str);
+		printf("%d : %s \n", i, str);
+	}
+		
+	}
+	
+	system("PAUSE");
+	printf("%d examples: %d face, %d nonface, sCount: %d \n", eCount, m, l,sCount);
+	for (i = 0; i < eCount; i+=1000){
+		soldier[i]->getData(str);
+		printf("%d : %s\n",i,str);
+	}
 
 	printf("intput round count: ");
 	scanf_s("%d", &tCount);
 	printf("input thread count: ");
 	scanf_s("%d", &tn);
-	//開始窮舉產生分類器
-	/*規則:
-	x1<x2 y1<y2
-	為了計算方便,實際範圍不包含x2那個col以及y2那個row
-	*/
-	sCount = 0;
-	for (x1 = 0; x1 < 24; x1++)
-		for (y1 = 0; y1 < 24; y1++)
-			for (x2 = x1 + 1; x2 <= 24; x2++)
-				for (y2 = y1 + 1; y2 <= 24; y2++){
-		if ((x2 - x1) % 2 == 0)
-			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 0, 0, 0);
-		if ((y2 - y1) % 2 == 0)
-			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 1, 0, 0);
-		if ((x2 - x1) % 3 == 0)
-			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 2, 0, 0);
-		if ((y2 - y1) % 3 == 0)
-			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 3, 0, 0);
-		if ((x2 - x1) % 2 == 0 && (y2 - y1) % 2 == 0)
-			soldier[sCount++] = new Soldier(x1, y1, x2, y2, 4, 0, 0);
-				}
-	//分類器產生結束
+	
 	w = (double*)malloc(sizeof(double)*eCount);  //初始化樣本權重
 	for (i = 0; i<eCount; i++)
 		w[i] = ex[i].isFace ? (double)1 / (2 * m) : (double)1 / (2 * l);
@@ -344,31 +347,14 @@ int main(){
 	E = (double*)malloc(sizeof(double)*sCount);
 	mt = (thread**)malloc(sizeof(thread*) * tn);
 	correct = (double*)malloc(sizeof(double)*sCount);
-	fv = (Fv*)malloc(sizeof(Fv)*eCount);
-	fs = (int **)malloc(sizeof(int*)*sCount);
-	for (i = 0; i < sCount; i++){
-		*(fs + i) = (int *)malloc(sizeof(int)*eCount);
-	}
+	
+	
 	eThread = (double*)malloc(sizeof(double) * sCount);
 	sThread = (int*)malloc(sizeof(int) * sCount);
 	pThread = (int*)malloc(sizeof(int) * sCount);
 	
 	
-	//將sample以feature value去排序
-	for (i = 0; i < sCount; i++){
-		
-		for (j = 0; j < eCount; j++){
-			fv[j].fValue=soldier[i]->comput(&ex[j]);
-			fv[j].eNum = j;
-		}
-
-		qsort(fv,eCount,sizeof(Fv),compare);
-
-		for (j = 0; j < eCount; j++)
-			fs[i][j]=fv[j].eNum;
-
-	}
-	//排序完畢 結果在fs
+	
 
 	t1 = t0 = time(NULL);
 
@@ -485,12 +471,12 @@ int main(){
 			w[i] = w[i] * (1 - min) / min;*/
 			}
 		cor = (double)ctmp / eCount;
-		printf("%-4d: %s E: %E \ntime: %d\n", t, str, eMin, cor, time(NULL) - t1);
+		printf("%-4d: %s E: %e correct rate :%lf \ntime: %d\n", t, str, eMin, cor, time(NULL) - t1);
 	}
 
 
 
-
+	fclose(example);
 
 	return 0;
 }

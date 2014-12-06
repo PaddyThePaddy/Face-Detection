@@ -149,16 +149,18 @@ int main(int argc, char *argv[])
 	
 	for(int i=0;i<sCount;i++){
 		for(int j=0;j<eCount;j++){
-			*(tmp+j+1)=j;
-			*(tmp+j)=soldier[i]->comput(ex+j);
+			*(tmp+j*2+1)=j;
+			*(tmp+j*2)=soldier[i]->comput(ex+j);
 		}
 		
 		qsort(tmp,eCount,sizeof(int)*2,compare);
 		
 		soldier[i]->writeData(out);
 		
-		for(int j=0;j<eCount;j++)
-			fwrite(tmp+j+1,sizeof(int),1,out);
+		for(int j=0;j<eCount;j++){
+			fwrite(tmp+j*2+1,sizeof(int),1,out);
+			cout<<(tmp+j*2+1)<<endl;
+        }
 		printf("sort %d complete\n",i);
 	}
 	fclose(out);
