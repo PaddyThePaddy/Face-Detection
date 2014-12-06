@@ -212,6 +212,7 @@ int main(int argc, char *argv[])
 #include <conio.h>
 #include "IntImg.h"
 #include "soldier.h"
+using namespace std;
 class Fv{
 	public:
 		int fValue;
@@ -223,7 +224,6 @@ Soldier *soldier[180000];
 IntImg *ex;
 int *sThread, *pThread;
 double *w, *eThread;
-int eflag, ssTemp, eflagTemp;
 double Tp, Tn;
 int seekDegree,seekDegree_2;
 FILE *example;
@@ -232,6 +232,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 	
 	int i, j, k,x1,y1,x2,y2,type;
 	double Sp, Sn, e, eeMin;
+	int eflag, ssTemp, eflagTemp;
 	int *fss;
 	FILE *example_2;
 	fopen_s(&example_2, "SortedIntegralImage", "rb");
@@ -260,7 +261,9 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 				e = Sn + (Tp - Sp);
 				eflag = 1;
 			}
-
+			if (e < 0){
+				cout << e<<endl;
+			}
 			if (i == 0){
 				eeMin = e;
 				ssTemp = fss[i];
@@ -283,7 +286,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 	fclose(example_2);
 	return;
 }
-using namespace std;
+
 int c, tn;
 
 int main(){
