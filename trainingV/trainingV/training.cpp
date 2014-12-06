@@ -235,6 +235,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 	int eflag, ssTemp, eflagTemp;
 	int *fss;
 	FILE *example_2;
+	int *check= new int[eCount];
 	fopen_s(&example_2, "SortedIntegralImage", "rb");
 	fss = (int*)malloc(sizeof(int)*eCount);
 	if (end > sCount)
@@ -245,8 +246,21 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 		_fseeki64(example_2, seekDegree, SEEK_SET);
 		_fseeki64(example_2, seekDegree_2*k + sizeof(int) * 5, SEEK_CUR);
 		fread(fss, sizeof(int), eCount, example_2);
+
+		for (i = 0; i < eCount; i++)
+			check[i] = 0;
+		for (i = 0; i < eCount; i++)
+			check[fss[i]]++;
+		for (i = 0; i < eCount; i++)
+			if (check[i] != 1)
+ 				printf("help");
+
 		//printf("K: %d , fss: %d %d %d\n",k,*fss,*(fss+1),*(fss+2));
 		for (Sp = 0, Sn = 0, i = 0; i < eCount; i++){
+
+			if (fss[i] >= eCount || fss[i]<0){
+				printf("hello");
+			}
 
 			if (ex[fss[i]].isFace == true) // compute  S+ and S-
 				Sp += w[fss[i]];
@@ -261,8 +275,11 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 				e = Sn + (Tp - Sp);
 				eflag = 1;
 			}
-			if (e < 0){
-				cout << e<<endl;
+			if (Sn > 0.5 || Sp > 0.5){
+				Sn = Sn;
+			}
+			if (e < 0||e>0.5){
+				//cout << e<<endl;
 			}
 			if (i == 0){
 				eeMin = e;
