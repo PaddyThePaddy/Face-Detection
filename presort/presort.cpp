@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 		
 		for(int j=0;j<eCount;j++){
 			fwrite(tmp+j*2+1,sizeof(int),1,out);
-			cout<<(tmp+j*2+1)<<endl;
+		//	cout<<(tmp+j*2+1)<<endl;
         }
 		printf("sort %d complete\n",i);
 	}
