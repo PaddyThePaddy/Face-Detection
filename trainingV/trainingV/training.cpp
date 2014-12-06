@@ -279,7 +279,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 				Sn = Sn;
 			}
 			if (e < 0||e>0.5){
-				//cout << e<<endl;
+				Sn = Sn;
 			}
 			if (i == 0){
 				eeMin = e;
