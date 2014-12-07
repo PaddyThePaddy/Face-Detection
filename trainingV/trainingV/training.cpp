@@ -249,10 +249,11 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 			*(pThread + k) = eflagTemp;
 			continue;
 		}*/
+
 		_fseeki64(example_2, seekDegree, SEEK_SET);
 		_fseeki64(example_2, (long long int)seekDegree_2*k + sizeof(int) * 5, SEEK_CUR);
 		fread(fss, sizeof(int), eCount, example_2);
-
+		
 		for (i = 0; i < eCount; i++)
 			check[i] = 0;
 		for (i = 0; i < eCount; i++)
@@ -281,10 +282,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 				e = Sn + (Tp - Sp);
 				eflag = 1;
 			}
-			if (Sn > 0.5 || Sp > 0.5){
-				Sn = Sn;
-			}
-			if (e < 0||e>0.5){
+			if (e < 0){
 				Sn = Sn;
 			}
 			if (i == 0){
@@ -322,9 +320,9 @@ int main(){
 	char str[200];
 	double *E, *correct, *ET, *correctT, cor;
 	Soldier **strong;
-	
+	FILE *outdata;
 
-	
+	fopen_s(&outdata, "outdata.txt", "w");
 	fopen_s(&example, "SortedIntegralImage", "rb");
 	if (!example)cout << "example error"<<endl;
 	
@@ -364,6 +362,7 @@ int main(){
 
 	printf("intput round count: ");
 	scanf_s("%d", &tCount);
+	fprintf_s(outdata, "%d\n",tCount);
 	printf("input thread count: ");
 	scanf_s("%d", &tn);
 	
@@ -386,11 +385,12 @@ int main(){
 	
 	
 
-	t1 = t0 = time(NULL);
+	
 
 	check = (int*)malloc(sizeof(int)*sCount);
 
 	for (t = 0;t<tCount;t++){
+		t0 = time(NULL);
 		wSum = 0;
 
 		for (i = 0; i < eCount; i++)      //設定權重 (正規化)
@@ -484,7 +484,7 @@ int main(){
 			}
 		}
 		soldier[iMin]->setP(*(pThread + iMin));// 已找出當圈最佳小兵  
-		soldier[iMin]->setTh(*(sThread + iMin));
+		soldier[iMin]->setTh(soldier[iMin]->comput(&ex[*(sThread + iMin)]));
 		soldier[iMin]->setE(*(eThread + iMin));
 		soldier[iMin]->getData(str);
 		
@@ -503,7 +503,7 @@ int main(){
 				//cout << wtmp << " >> " << w[i]<<endl;
 			}
 			else{
-				w[i] = w[i] * (1 - eMin) / eMin;
+			//	w[i] = w[i] * (1 - eMin) / eMin;
 				if (ex[i].isFace)
 					jugT++;
 				else
@@ -511,12 +511,14 @@ int main(){
 			}
 		}
 		cor = (double)ctmp / eCount;
-		printf("%-4d: %s E: %e correct rate :%lf , false isFace: %d , nonface: %d\ntime: %d\n", t, str, eMin, cor,jugT,jugF, time(NULL) - t1);
+		t1 = time(NULL);
+		printf("%-4d: %s correct rate :%lf , false isFace: %d , nonface: %d\ntime: %d\n", t, str, cor,jugT,jugF,t1-t0);
+		fprintf_s(outdata, "%s %lf\n",str,cor);
 	}
 
 
 
 	fclose(example);
-
+	fclose(outdata);
 	return 0;
 }
