@@ -49,7 +49,7 @@ class Soldier{
 		int judge(IntImg *intImg){
 			int sum=comput(intImg);
 			
-			if(p==0)
+			if(p==1)
 				return (int)th>=sum;
 			else
 				return (int)th<=sum;
