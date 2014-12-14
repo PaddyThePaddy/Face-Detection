@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 	Soldier **h;
 	IntImg *ex;
 	int sCount,eCount,m,l,correct,t;
-	double *alpha, th, scale;
+	double *alpha, th, scale, ctrl;
 	
 	fopen_s(&example, "IntegralImage", "rb");
 	fopen_s(&soldier, "output.txt", "r");
@@ -125,16 +125,21 @@ int main(int argc, char *argv[])
 	
 	scanf_s("%d%lf",&t,&scale);
 	
+	ctrl=-th*scale*t/2;
 	
-	correct=m=l=0;
-	for(int i=0;i<eCount;i++){
-		if(judge(ex+i,h,alpha,th,0.0,sCount)-(int)ex[i].isFace==0)
-			correct++;
-		else
-			if(ex[i].isFace)
-				m++;
+	for(int c=0;c<t;c++){
+		correct=m=l=0;
+		for(int i=0;i<eCount;i++){
+			if(judge(ex+i,h,alpha,th,ctrl,sCount)-(int)ex[i].isFace==0)
+				correct++;
 			else
-				l++;
+				if(ex[i].isFace)
+					m++;
+				else
+					l++;
+		}
+		
+		ctrl+=th*scale;
 	}
 	
 	printf("Correct rate: %lf\nerror at face: %d, nonface: %d\n",(double)correct/eCount,m,l);
