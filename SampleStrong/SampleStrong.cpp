@@ -75,14 +75,13 @@ class Soldier{
 		}
 };
 
-int judge(IntImg *ex,Soldier **h,double *alpha,int sCount){
-	double hSum=0,aSum=0;
+int judge(IntImg *ex,Soldier **h,double *alpha,double th,double ctrl,int sCount){
+	double hSum=0;
 	
 	for(int i=0;i<sCount;i++){
 		hSum+=alpha[i]*h[i]->judge(ex);
-		aSum+=alpha[i]/2;
 	}
-	return (int)hSum>=aSum;
+	return (int)hSum>=(th+ctrl);
 }
 
 int main(int argc, char *argv[])
@@ -90,8 +89,8 @@ int main(int argc, char *argv[])
 	FILE *example=fopen("IntegralImage","rb"),*soldier=fopen("output.txt","r");
 	Soldier **h;
 	IntImg *ex;
-	int sCount,eCount,m,l,correct;
-	double *alpha;
+	int sCount,eCount,m,l,correct,t;
+	double *alpha,th,scale,ctrl;
 	
 	if(example==NULL || soldier==NULL){
 		printf("file open error\n");
@@ -117,9 +116,17 @@ int main(int argc, char *argv[])
 		h[i]=new Soldier(x1,y1,x2,y2,t,p,th);
 		alpha[i]=log((1-e)/e);
 	}
+	
+	th=0;
+	for(int i=0;i<sCount;i++)
+		th+=alpha[i]/2;
+	
+	scanf("%d%lf",&t,&scale);
+	
+	
 	correct=m=l=0;
 	for(int i=0;i<eCount;i++){
-		if(judge(ex+i,h,alpha,sCount)-(int)ex[i].isFace==0)
+		if(judge(ex+i,h,alpha,th,0.0,sCount)-(int)ex[i].isFace==0)
 			correct++;
 		else
 			if(ex[i].isFace)
