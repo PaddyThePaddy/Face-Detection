@@ -140,10 +140,10 @@ int main(int argc, char *argv[])
 		}
 		
 		ctrl+=th*scale;
+	
+		printf("Correct rate: %lf\nerror at face: %d, nonface: %d\n",(double)correct/eCount,m,l);
+	
 	}
-	
-	printf("Correct rate: %lf\nerror at face: %d, nonface: %d\n",(double)correct/eCount,m,l);
-	
     system("PAUSE");
     return EXIT_SUCCESS;
 }

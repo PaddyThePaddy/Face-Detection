@@ -86,11 +86,11 @@ int judge(IntImg *ex,Soldier **h,double *alpha,double th,double ctrl,int sCount)
 
 int main(int argc, char *argv[])
 {
-	FILE *example=fopen("IntegralImage","rb"),*soldier=fopen("output.txt","r");
+	FILE *example=fopen("IntegralImage","rb"),*soldier=fopen("output.txt","r"),*out=fopen("roc.csv","w");
 	Soldier **h;
 	IntImg *ex;
 	int sCount,eCount,m,l,correct,t;
-	double *alpha,th,scale;
+	double *alpha,th,scale,ctrl;
 	
 	if(example==NULL || soldier==NULL){
 		printf("file open error\n");
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 		double e,correctR;
 		char str[200];
 		
-		fscanf(soldier,"%d%d%d%d%d%d%d%E%lf",&x1,&y1,&x2,&y2,&t,&p,&th,&e,&correctR);
+		fscanf(soldier,"%d%d%d%d%d%d%d%lf%lf",&x1,&y1,&x2,&y2,&t,&p,&th,&e,&correctR);
 		h[i]=new Soldier(x1,y1,x2,y2,t,p,th);
 		alpha[i]=log((1-e)/e);
 	}
@@ -123,19 +123,27 @@ int main(int argc, char *argv[])
 	
 	scanf("%d%lf",&t,&scale);
 	
+	ctrl=-th*scale*(t/2);
 	
-	correct=m=l=0;
-	for(int i=0;i<eCount;i++){
-		if(judge(ex+i,h,alpha,th,0.0,sCount)-(int)ex[i].isFace==0)
-			correct++;
-		else
-			if(ex[i].isFace)
-				m++;
+	printf("original th:%lf\n\n",th);
+	fprintf(out,"detection rate,false positive rate,th\n");
+	for(int c=0;c<t;c++){
+		correct=m=l=0;
+		for(int i=0;i<eCount;i++){
+			if(judge(ex+i,h,alpha,th,ctrl,sCount)-(int)ex[i].isFace==0)
+				correct++;
 			else
-				l++;
-	}
+				if(ex[i].isFace)
+					m++;
+				else
+					l++;
+		}
+		printf("%d\n",c);
+		
+		ctrl+=th*scale;
 	
-	printf("Correct rate: %lf\nerror at face: %d, nonface: %d\n",(double)correct/eCount,m,l);
+		fprintf(out,"%lf,%lf,%lf\n",(double)correct/eCount,(double)m/eCount,th+ctrl);
+	}
 	
     system("PAUSE");
     return EXIT_SUCCESS;
