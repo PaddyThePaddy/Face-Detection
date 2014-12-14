@@ -71,7 +71,7 @@ class Soldier{
 		};
 		
 		void getData(char *str){
-			sprintf(str,"%02d %02d %02d %02d %d %2d %8d",x1,y1,x2,y2,type,p,th);
+			sprintf_s(str,sizeof(str),"%02d %02d %02d %02d %d %2d %8d",x1,y1,x2,y2,type,p,th);
 		}
 };
 
@@ -86,19 +86,21 @@ int judge(IntImg *ex,Soldier **h,double *alpha,double th,double ctrl,int sCount)
 
 int main(int argc, char *argv[])
 {
-	FILE *example=fopen("IntegralImage","rb"),*soldier=fopen("output.txt","r");
+	FILE *example, *soldier;
 	Soldier **h;
 	IntImg *ex;
 	int sCount,eCount,m,l,correct,t;
-	double *alpha,th,scale;
+	double *alpha, th, scale;
 	
+	fopen_s(&example, "IntegralImage", "rb");
+	fopen_s(&soldier, "output.txt", "r");
 	if(example==NULL || soldier==NULL){
 		printf("file open error\n");
 		system("pause");
 		exit(0);
 	}
 	
-	fscanf(soldier,"%d",&sCount);
+	fscanf_s(soldier,"%d",&sCount);
 	fread(&eCount,sizeof(int),1,example);
 	fread(&m,sizeof(int),1,example);
 	fread(&l,sizeof(int),1,example);
@@ -112,7 +114,7 @@ int main(int argc, char *argv[])
 		double e,correctR;
 		char str[200];
 		
-		fscanf(soldier,"%d%d%d%d%d%d%d%E%lf",&x1,&y1,&x2,&y2,&t,&p,&th,&e,&correctR);
+		fscanf_s(soldier,"%d%d%d%d%d%d%d%E%lf",&x1,&y1,&x2,&y2,&t,&p,&th,&e,&correctR);
 		h[i]=new Soldier(x1,y1,x2,y2,t,p,th);
 		alpha[i]=log((1-e)/e);
 	}
@@ -121,7 +123,7 @@ int main(int argc, char *argv[])
 	for(int i=0;i<sCount;i++)
 		th+=alpha[i]/2;
 	
-	scanf("%d%lf",&t,&scale);
+	scanf_s("%d%lf",&t,&scale);
 	
 	
 	correct=m=l=0;
