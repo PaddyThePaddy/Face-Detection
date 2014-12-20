@@ -15,7 +15,7 @@ public:
 int sCount, eCount;
 Soldier *soldier[180000];
 IntImg *ex;
-int *sThread, *pThread,m,l;
+int *sThread, *pThread;
 double *w, *eThread;
 double Tp, Tn;
 long long int seekDegree, seekDegree_2;
@@ -36,13 +36,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 	if (start < 0 || end<0 || start >= end || start>sCount)
 		printf("error: %d %d\n", start, end);
 	for (k = start; k < end; k++){
-		/*	if (soldier[k]->getE() == -1){
-		*(eThread + k) = eeMin;
-		*(sThread + k) = ssTemp;
-		*(pThread + k) = eflagTemp;
-		continue;
-		}*/
-
+		
 		_fseeki64(example_2, seekDegree, SEEK_SET);
 		_fseeki64(example_2, (long long int)seekDegree_2*k + sizeof(int) * 5, SEEK_CUR);
 		fread(fss, sizeof(int), eCount, example_2);
@@ -55,7 +49,6 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 			if (check[i] != 1)
 				printf("help");
 
-		//printf("K: %d , fss: %d %d %d\n",k,*fss,*(fss+1),*(fss+2));
 		for (Sp = 0, Sn = 0, i = 0; i < eCount; i++){
 
 			if (fss[i] >= eCount || fss[i]<0){
@@ -103,27 +96,27 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 
 int c, tn;
 
-int training(int nfeature){
+int training(int tC, Soldier **strong){
 	int t0, t1;
 	int tCount;
 	double wSum;
-	int x1, x2, y1, y2, i, t, j, k, type;
+	int x1, x2, y1, y2, m, l, i, t, j, k, type;
 	int *check;
 	thread ** mt;
 	char str[200];
 	double *E, *correct, *ET, *correctT, cor;
-	Soldier **strong;
+	//Soldier **strong;
 	FILE *outdata;
 
 	fopen_s(&outdata, "outdata.txt", "w");
 	fopen_s(&example, "SortedIntegralImage", "rb");
 	if (!example)cout << "example error" << endl;
 
-/*	fread(&eCount, sizeof(int), 1, example);//從檔案讀取樣本
+	fread(&eCount, sizeof(int), 1, example);//從檔案讀取樣本
 	fread(&m, sizeof(int), 1, example);
 	fread(&l, sizeof(int), 1, example);
 	ex = (IntImg*)malloc(sizeof(IntImg)*eCount);
-	fread(ex, sizeof(IntImg), eCount, example);*/
+	fread(ex, sizeof(IntImg), eCount, example);
 	fread(&sCount, sizeof(int), 1, example);//讀取sCount;
 	seekDegree = sizeof(int) * 4 + sizeof(IntImg)*eCount;
 	seekDegree_2 = sizeof(int) * 5 + sizeof(int)*eCount;
@@ -155,16 +148,16 @@ int training(int nfeature){
 
 	//printf("intput round count: ");
 	//scanf_s("%d", &tCount);
-	tCount = nfeature;
+	tCount = tC;
 	fprintf_s(outdata, "%d\n", tCount);
-	//printf("input thread count: ");
-	//scanf_s("%d", &tn);
-	tn = 1;
+	printf("input thread count: ");
+	scanf_s("%d", &tn);
+
 	w = (double*)malloc(sizeof(double)*eCount);  //初始化樣本權重
 	for (i = 0; i<eCount; i++)
 		w[i] = ex[i].isFace ? (double)1 / (2 * m) : (double)1 / (2 * l);
 
-	strong = (Soldier**)malloc(sizeof(Soldier*)*tCount);  //選拔完成的分類器儲存區
+	//strong = (Soldier**)malloc(sizeof(Soldier*)*tCount);  //選拔完成的分類器儲存區
 	ET = (double*)malloc(sizeof(double)*tCount);
 	correctT = (double*)malloc(sizeof(double)*tCount);
 	E = (double*)malloc(sizeof(double)*sCount);
@@ -217,57 +210,6 @@ int training(int nfeature){
 			delete mt[i];
 		}
 
-		/*
-		for (k = 0; k < sCount; k++){
-
-		for (Sp = 0, Sn = 0, i = 0; i < eCount; i++){
-
-		if (ex[fs[k][i]].isFace == true) // compute  S+ and S-
-		Sp += w[fs[k][i]];
-		else
-		Sn += w[fs[k][i]];
-
-		if (Sp + (Tn - Sn) < Sn + (Tp - Sp)){// compute e
-		e = Sp + (Tn - Sn);
-		eflag = 0;
-		}
-		else{
-		e = Sn + (Tp - Sp);
-		eflag = 1;
-		}
-
-		if (i == 0){
-		eeMin = e;
-		ssTemp = fs[k][i];
-		eflagTemp = eflag;
-		}
-		if (eeMin > e){
-		eeMin = e;
-		ssTemp = fs[k][i];
-		eflagTemp = eflag;
-		}
-		}
-
-		if (k == 0){
-		eMin = eeMin;
-		sTemp = ssTemp;
-		kflag = 0;
-		pTemp = eflagTemp;
-		}
-
-
-		if (eMin > e){
-		eMin = eeMin;
-		sTemp = ssTemp;
-		kflag = k;
-		pTemp = eflagTemp; //e = min(Sp+(Tn-Sn),Sn+(Tp-Sp)) 左邊比較小時  p = 0
-		//p=0: 小於threshold的要判斷為非人臉; p=1: 大於threshold的要判斷為非人臉
-		}
-
-
-
-		}
-		*/
 		double eMin;
 		int iMin, ctmp = 0;
 
@@ -282,10 +224,9 @@ int training(int nfeature){
 		soldier[iMin]->setE(*(eThread + iMin));
 		soldier[iMin]->getData(str);
 
-		//cout << "Soldier " << t << " " << str << endl;
-		//cout << "Time : " << t1 - t0<<" sec"<<endl;
+	
 		strong[t] = soldier[iMin];
-		//	soldier[iMin]->setE(-1);
+
 		double wtmp = 0;
 		int jugT, jugF;
 		for (i = 0, jugT = 0, jugF = 0; i < eCount; i++){        //設定樣本權重
@@ -294,10 +235,10 @@ int training(int nfeature){
 				w[i] = w[i] * eMin / (1 - eMin);
 				ctmp++;
 
-				//cout << wtmp << " >> " << w[i]<<endl;
+				
 			}
 			else{
-				//	w[i] = w[i] * (1 - eMin) / eMin;
+				
 				if (ex[i].isFace)
 					jugT++;
 				else
