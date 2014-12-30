@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
 		
 		ctrl+=th*scale;
 	
-		fprintf(out,"%lf,%lf,%lf\n",(double)correct/eCount,(double)m/eCount,th+ctrl);
+		fprintf(out,"%lf,%lf,%lf\n",(double)correct/eCount,(double)l/eCount,th+ctrl);//(double)l/eCount  it should be "l" ,not m
 	}
 	
     system("PAUSE");

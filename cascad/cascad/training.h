@@ -20,12 +20,13 @@ double *w, *eThread;
 double Tp, Tn;
 long long int seekDegree, seekDegree_2;
 FILE *example;
-
+int *exCanUse;
 void mthread(int start, int end){   //以多執行緒執行的區段
 
-	int i, j, k, x1, y1, x2, y2, type;
+	int i, j, k;
+	int mkey = 0;
 	double Sp, Sn, e, eeMin;
-	int eflag, ssTemp, eflagTemp;
+	int eflag, ssTemp, eflagTemp,key;
 	int *fss;
 	FILE *example_2;
 	int *check = new int[eCount];
@@ -50,7 +51,10 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 				printf("help");
 
 		for (Sp = 0, Sn = 0, i = 0; i < eCount; i++){
-
+			if (exCanUse[fss[i]] == false){
+				continue;
+			}
+		
 			if (fss[i] >= eCount || fss[i]<0){
 				printf("hello");
 			}
@@ -71,10 +75,14 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 			if (e < 0){
 				Sn = Sn;
 			}
-			if (i == 0){
+			if (mkey == 0){
 				eeMin = e;
 				ssTemp = fss[i];
 				eflagTemp = eflag;
+				mkey = 1;
+			}
+			if (eeMin < 0){
+				eeMin = eeMin;
 			}
 			if (eeMin > e){
 				eeMin = e;
@@ -94,80 +102,100 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 	return;
 }
 
-int c, tn;
+int c, tn,m,l;
+int xx1, xx2, yy1, yy2, type;
+FILE *outdata;
+char str[200];
+thread ** mt;
+int tCount;
+double *E, *correct, *ET, *correctT, cor;
 
+void preset(){
+
+fopen_s(&example, "SortedIntegralImage", "rb");
+if (!example)cout << "example error" << endl;
+
+fread(&eCount, sizeof(int), 1, example);//從檔案讀取樣本
+fread(&m, sizeof(int), 1, example);
+fread(&l, sizeof(int), 1, example);
+ex = (IntImg*)malloc(sizeof(IntImg)*eCount);
+fread(ex, sizeof(IntImg), eCount, example);
+fread(&sCount, sizeof(int), 1, example);//讀取sCount;
+seekDegree = sizeof(int) * 4 + sizeof(IntImg)*eCount;
+seekDegree_2 = sizeof(int) * 5 + sizeof(int)*eCount;
+cout << sCount << endl;
+
+for (int i = 0; i < sCount; i++){
+	fread(&xx1, sizeof(int), 1, example);
+	fread(&yy1, sizeof(int), 1, example);
+	fread(&xx2, sizeof(int), 1, example);
+	fread(&yy2, sizeof(int), 1, example);
+	fread(&type, sizeof(int), 1, example);
+	soldier[i] = new Soldier(xx1, yy1, xx2, yy2, type, 0, 0);
+	_fseeki64(example, sizeof(int)*eCount, SEEK_CUR);
+	//fread(fs,sizeof(int),eCount,example);
+	if (i == 0){
+		soldier[i]->getData(str);
+		printf("%d : %s \n", i, str);
+	}
+}
+	w = (double*)malloc(sizeof(double)*eCount);  //初始化樣本權重
+	for (int i = 0; i<eCount; i++)
+		w[i] = ex[i].isFace ? (double)1 / (2 * m) : (double)1 / (2 * l);
+
+	
+E = (double*)malloc(sizeof(double)*sCount);
+mt = (thread**)malloc(sizeof(thread*) * tn);
+correct = (double*)malloc(sizeof(double)*sCount);
+eThread = (double*)malloc(sizeof(double) * sCount);
+sThread = (int*)malloc(sizeof(int) * sCount);
+pThread = (int*)malloc(sizeof(int) * sCount);
+exCanUse = (int*)malloc(sizeof(int)*eCount);
+for (int i = 0; i < eCount; i++)
+	*(exCanUse + i) = 1;
+//strong = (Soldier**)malloc(sizeof(Soldier*)*tCount);  //選拔完成的分類器儲存區
+
+
+}
 int training(int tC, Soldier **strong){
 	int t0, t1;
-	int tCount;
+	
 	double wSum;
-	int x1, x2, y1, y2, m, l, i, t, j, k, type;
+	int i, t, j, k;
 	int *check;
-	thread ** mt;
-	char str[200];
-	double *E, *correct, *ET, *correctT, cor;
+
+	
+
 	//Soldier **strong;
-	FILE *outdata;
+	
 
+	
 	fopen_s(&outdata, "outdata.txt", "w");
-	fopen_s(&example, "SortedIntegralImage", "rb");
-	if (!example)cout << "example error" << endl;
+		
 
-	fread(&eCount, sizeof(int), 1, example);//從檔案讀取樣本
-	fread(&m, sizeof(int), 1, example);
-	fread(&l, sizeof(int), 1, example);
-	ex = (IntImg*)malloc(sizeof(IntImg)*eCount);
-	fread(ex, sizeof(IntImg), eCount, example);
-	fread(&sCount, sizeof(int), 1, example);//讀取sCount;
-	seekDegree = sizeof(int) * 4 + sizeof(IntImg)*eCount;
-	seekDegree_2 = sizeof(int) * 5 + sizeof(int)*eCount;
-	cout << sCount << endl;
-
-	for (i = 0; i < sCount; i++){
-		fread(&x1, sizeof(int), 1, example);
-		fread(&y1, sizeof(int), 1, example);
-		fread(&x2, sizeof(int), 1, example);
-		fread(&y2, sizeof(int), 1, example);
-		fread(&type, sizeof(int), 1, example);
-		soldier[i] = new Soldier(x1, y1, x2, y2, type, 0, 0);
-		_fseeki64(example, sizeof(int)*eCount, SEEK_CUR);
-		//fread(fs,sizeof(int),eCount,example);
-
-		if (i == 0){
-			soldier[i]->getData(str);
-			printf("%d : %s \n", i, str);
-		}
-
-	}
-
-	system("PAUSE");
-	printf("%d examples: %d face, %d nonface, sCount: %d \n", eCount, m, l, sCount);
-	for (i = 0; i < eCount; i += 1000){
+	//system("PAUSE");
+	//printf("%d examples: %d face, %d nonface, sCount: %d \n", eCount, m, l, sCount);
+	/*for (i = 0; i < eCount; i += 1000){
 		soldier[i]->getData(str);
 		printf("%d : %s\n", i, str);
-	}
+	}*/
 
 	//printf("intput round count: ");
 	//scanf_s("%d", &tCount);
 	tCount = tC;
 	fprintf_s(outdata, "%d\n", tCount);
-	printf("input thread count: ");
-	scanf_s("%d", &tn);
+	
+	tn = 1;
 
-	w = (double*)malloc(sizeof(double)*eCount);  //初始化樣本權重
-	for (i = 0; i<eCount; i++)
-		w[i] = ex[i].isFace ? (double)1 / (2 * m) : (double)1 / (2 * l);
+	
+	
 
 	//strong = (Soldier**)malloc(sizeof(Soldier*)*tCount);  //選拔完成的分類器儲存區
+	
+
 	ET = (double*)malloc(sizeof(double)*tCount);
 	correctT = (double*)malloc(sizeof(double)*tCount);
-	E = (double*)malloc(sizeof(double)*sCount);
-	mt = (thread**)malloc(sizeof(thread*) * tn);
-	correct = (double*)malloc(sizeof(double)*sCount);
-
-
-	eThread = (double*)malloc(sizeof(double) * sCount);
-	sThread = (int*)malloc(sizeof(int) * sCount);
-	pThread = (int*)malloc(sizeof(int) * sCount);
+	
 
 
 
@@ -176,24 +204,30 @@ int training(int tC, Soldier **strong){
 
 	check = (int*)malloc(sizeof(int)*sCount);
 
-	for (t = 0; t<tCount; t++){
+	for (t = 0; t<1; t++){
 		t0 = time(NULL);
 		wSum = 0;
 
-		for (i = 0; i < eCount; i++)      //設定權重 (正規化)
-			wSum += w[i];
+		for (i = 0; i < eCount; i++)   //設定權重 (正規化)
+			if (exCanUse[i])
+				wSum += w[i];
+		
 		for (i = 0; i < eCount; i++)
-			w[i] = w[i] / wSum;
+			if (exCanUse[i])
+				w[i] = w[i] / wSum;
 
 		for (i = 0, wSum = 0; i < eCount; i++)
-			wSum += w[i];
+			if (exCanUse[i])
+				wSum += w[i];
 
-		printf("Weight sum: %lf\n", wSum);
+		//printf("Weight sum: %lf\n", wSum);
 
 		for (i = 0; i < sCount; i++)
 			check[i] = E[i] = 0;
 
 		for (Tp = 0, Tn = 0, i = 0; i < eCount; i++){
+			if (!exCanUse[i]) 
+				continue;
 			if (ex[i].isFace == true)       // compute  T+ and T-
 				Tp += w[i];
 			else
@@ -225,11 +259,13 @@ int training(int tC, Soldier **strong){
 		soldier[iMin]->getData(str);
 
 	
-		strong[t] = soldier[iMin];
+		strong[tC-1] = soldier[iMin];
 
 		double wtmp = 0;
 		int jugT, jugF;
 		for (i = 0, jugT = 0, jugF = 0; i < eCount; i++){        //設定樣本權重
+			if (!exCanUse[i])
+				continue;
 			if ((strong[t]->judge(ex + i) - (int)(ex[i].isFace)) == 0){
 				wtmp = w[i];
 				w[i] = w[i] * eMin / (1 - eMin);
@@ -247,7 +283,7 @@ int training(int tC, Soldier **strong){
 		}
 		cor = (double)ctmp / eCount;
 		t1 = time(NULL);
-		printf("%-4d: %s correct rate :%lf , false isFace: %d , nonface: %d\ntime: %d\n", t, str, cor, jugT, jugF, t1 - t0);
+		//printf("%-4d: %s correct rate :%lf , false isFace: %d , nonface: %d\ntime: %d\n", t, str, cor, jugT, jugF, t1 - t0);
 		fprintf_s(outdata, "%s %lf\n", str, cor);
 	}
 
