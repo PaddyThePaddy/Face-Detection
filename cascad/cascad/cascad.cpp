@@ -16,7 +16,7 @@ int main(){
 	double d; //minimum acceptable detection rate per layer -- value is selected by user
 	double F[17000],D[17000],Ftarget,e,*alpha;
 	int n[17001], fdc, correctCount, countk, countj, counte, correctflage;
-	int i,count,vCount,vm,vl,th;
+	int i,count,vCount,vm,vl,th,ecuCount;
 	IntImg *P, *N,*V;
 	Soldier **h;
 	char str[256];
@@ -26,7 +26,7 @@ int main(){
 	fopen_s(&out, "out.txt", "w");
 	fopen_s(&vSet, "vSetIntegralImage", "rb");
 	if (!vSet)cout << "vSet error" << endl;
-	fread(&vCount, sizeof(int), 1, vSet);//�q�ɮ�Ū�����եμ˥�
+	fread(&vCount, sizeof(int), 1, vSet);//±qÀÉ®×Åª¨ú´ú¸Õ¥Î¼Ë¥»
 	fread(&vm, sizeof(int), 1, vSet);
 	fread(&vl, sizeof(int), 1, vSet);
 	V = (IntImg*)malloc(sizeof(IntImg)*vCount);
@@ -47,6 +47,7 @@ int main(){
 		n[i] = 0; // so, n is start by 1;   the number of features , ni , of each stage;
 		F[i] = F[i - 1];
 		strong = (Soldier**)malloc(sizeof(Soldier*) * 17000);
+		l-=ecuCount;
 		for (count = 0; count<eCount; count++){
 			if (exCanUse[count] == false){
 				continue;
@@ -87,7 +88,7 @@ int main(){
 		cout << "F : " << F[i] << " D : " << D[i] << endl;
 		free(strong);
 		if (F[i]>Ftarget){
-			for ( counte = 0; counte < eCount; counte++){
+			for ( counte = 0 , exuCount = 0 ; counte < eCount; counte++){
 				if (ex[counte].isFace){
 					counte++;
 					continue;
@@ -107,8 +108,10 @@ int main(){
 						break;
 					}
 				}
-				if (correctflage)
-					exCanUse[counte] = 0;	
+				if (correctflage){
+					exCanUse[counte] = 0;
+					ecuCount++;
+				}
 			}
 		}
 	}
