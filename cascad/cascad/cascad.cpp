@@ -90,7 +90,7 @@ int main(){
 			fprintf_s(out, "%s\n", str);
 		}
 		cout << "F : " << F[i] << " D : " << D[i] << endl;
-		free(strong);
+		
 		if (F[i]>Ftarget){
 			for ( counte = 0 , ecuCount = 0 ; counte < eCount; counte++){
 				if (!exCanUse[counte])
@@ -98,27 +98,28 @@ int main(){
 				if (ex[counte].isFace)
 					continue;
 				
-				for (count = 0; count < i; count++){
-					for (countj = 0; countj < n[count + 1]; countj++){
-						e = cascadedStrong[count][countj].getE();
+				
+					for (countj = 0; countj < n[i]; countj++){
+						e = cascadedStrong[i-1][countj].getE();
 						alpha[countj] = log((1 - e) / e);
 					}
-					for (countk = 0, th = 0; countk < n[count + 1]; countk++)
+					for (countk = 0, th = 0; countk < n[i]; countk++)
 						th += alpha[countk] / 2;
 					correctflage = 0;
-					if (judge(ex + counte, &cascadedStrong[count], alpha, th, n[count + 1]) - (int)ex[counte].isFace == 0){
+					if (judge(ex + counte, strong, alpha, th, n[i]) - (int)ex[counte].isFace == 0){
 						correctflage = 1;
 						break;
 					}
 					else
 						correctflage = 0;
-				}
+				
 				if (correctflage){
 					exCanUse[counte] = 0;
 					ecuCount++;
 				}
 			}
 		}
+		free(strong);
 	}
 	system("CLS");
 	cout << "stage num : " << i << endl<<endl;
