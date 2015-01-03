@@ -40,6 +40,7 @@ int main(){
 	preset();
 	cascadedStrong = (Soldier**)malloc(sizeof(Soldier*)*17000);
 	alpha = (double*)malloc(sizeof(double) * 17000);
+	ecuCount = 0;
 	while (F[i] > Ftarget){
 		cout << "-----------------  stage  " << i <<"  -----------------"<<endl;
 		fprintf_s(out, "%d\n", i);
@@ -57,7 +58,7 @@ int main(){
 		while (F[i] > f*F[i - 1]){
 		//while (n[i]<2){
 			n[i]++;
-			
+			cout << "face : " << m << " nonface : " << l << "ecuCount : " << ecuCount<<endl; 
 			training(n[i], strong);
 			strong[n[i]-1]->getData(str);
 			//cout << str << endl;
@@ -76,6 +77,7 @@ int main(){
 				F[i] = (double)fdc / vCount;
 				th -= 0.000001;
 			} while (D[i] >= d*D[i - 1]);
+			cout << "F[i] > f * F[i-1] : " << F[i] << " > " << f << " * " << F[i - 1] << " , " << f*F[i - 1] << endl;
 		}
 
 		cascadedStrong[i - 1] = (Soldier*)malloc(sizeof(Soldier)*n[i]);
@@ -88,11 +90,10 @@ int main(){
 		cout << "F : " << F[i] << " D : " << D[i] << endl;
 		free(strong);
 		if (F[i]>Ftarget){
-			for ( counte = 0 , exuCount = 0 ; counte < eCount; counte++){
-				if (ex[counte].isFace){
-					counte++;
+			for ( counte = 0 , ecuCount = 0 ; counte < eCount; counte++){
+				if (ex[counte].isFace)
 					continue;
-				}
+				
 				for (count = 0; count < i; count++){
 					for (countj = 0; countj < n[count + 1]; countj++){
 						e = cascadedStrong[count][countj].getE();

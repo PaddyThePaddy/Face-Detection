@@ -220,7 +220,7 @@ int training(int tC, Soldier **strong){
 			if (exCanUse[i])
 				wSum += w[i];
 
-		//printf("Weight sum: %lf\n", wSum);
+		printf("Weight sum: %lf\n", wSum);
 
 		for (i = 0; i < sCount; i++)
 			check[i] = E[i] = 0;
@@ -266,7 +266,7 @@ int training(int tC, Soldier **strong){
 		for (i = 0, jugT = 0, jugF = 0; i < eCount; i++){        //設定樣本權重
 			if (!exCanUse[i])
 				continue;
-			if ((strong[t]->judge(ex + i) - (int)(ex[i].isFace)) == 0){
+			if ((strong[tC - 1]->judge(ex + i) - (int)(ex[i].isFace)) == 0){
 				wtmp = w[i];
 				w[i] = w[i] * eMin / (1 - eMin);
 				ctmp++;
