@@ -158,7 +158,7 @@ for (int i = 0; i < eCount; i++)
 
 }
 int training(int tC, Soldier **strong){
-	int t0, t1;
+	int t0, t1,aCount;
 	
 	double wSum;
 	int i, t, j, k;
@@ -263,9 +263,10 @@ int training(int tC, Soldier **strong){
 
 		double wtmp = 0;
 		int jugT, jugF;
-		for (i = 0, jugT = 0, jugF = 0; i < eCount; i++){        //設定樣本權重
+		for (i = 0, jugT = 0, jugF = 0,aCount=0; i < eCount; i++){        //設定樣本權重
 			if (!exCanUse[i])
 				continue;
+			aCount++;
 			if ((strong[tC - 1]->judge(ex + i) - (int)(ex[i].isFace)) == 0){
 				wtmp = w[i];
 				w[i] = w[i] * eMin / (1 - eMin);
@@ -283,7 +284,7 @@ int training(int tC, Soldier **strong){
 		}
 		cor = (double)ctmp / eCount;
 		t1 = time(NULL);
-		//printf("%-4d: %s correct rate :%lf , false isFace: %d , nonface: %d\ntime: %d\n", t, str, cor, jugT, jugF, t1 - t0);
+		printf("%-4d: %s  ,canUsenum :%d , false isFace: %d , nonface: %d\n", t, str,aCount, jugT, jugF);
 		fprintf_s(outdata, "%s %lf\n", str, cor);
 	}
 

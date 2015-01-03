@@ -8,15 +8,16 @@ int judge(IntImg *ex, Soldier **h, double *alpha, double th, int sCount){
 	for (int i = 0; i<sCount; i++){
 		hSum += alpha[i] * h[i]->judge(ex);
 	}
+	
 	return (int)hSum >= (th);
 }
 
 int main(){
 	double f; //maximum acceptable fase positive rate  per layer  -- value is selected by user  
 	double d; //minimum acceptable detection rate per layer -- value is selected by user
-	double F[17000],D[17000],Ftarget,e,*alpha;
+	double F[17000],D[17000],Ftarget,e,*alpha,th;
 	int n[17001], fdc, correctCount, countk, countj, counte, correctflage;
-	int i,count,vCount,vm,vl,th,ecuCount;
+	int i,count,vCount,vm,vl,ecuCount;
 	IntImg *P, *N,*V;
 	Soldier **h;
 	char str[256];
@@ -68,6 +69,7 @@ int main(){
 				th += alpha[count] / 2;
 			do{
 				for (count = 0, fdc = 0, correctCount = 0; count < vCount; count++){
+					
 					if (judge(V + count, strong, alpha, th, n[i]) - (int)V[count].isFace == 0)
 						correctCount++;
 					else if (!V[count].isFace)
@@ -75,8 +77,8 @@ int main(){
 				}
 				D[i] = (double)correctCount / vCount;
 				F[i] = (double)fdc / vCount;
-				th -= 0.000001;
-			} while (D[i] >= d*D[i - 1]);
+				th *=0.99 ;
+			} while (D[i] < d*D[i - 1]);
 			cout << "F[i] > f * F[i-1] : " << F[i] << " > " << f << " * " << F[i - 1] << " , " << f*F[i - 1] << endl;
 		}
 
@@ -91,6 +93,8 @@ int main(){
 		free(strong);
 		if (F[i]>Ftarget){
 			for ( counte = 0 , ecuCount = 0 ; counte < eCount; counte++){
+				if (!exCanUse[counte])
+					continue;
 				if (ex[counte].isFace)
 					continue;
 				
@@ -102,12 +106,12 @@ int main(){
 					for (countk = 0, th = 0; countk < n[count + 1]; countk++)
 						th += alpha[countk] / 2;
 					correctflage = 0;
-					if (judge(ex + counte, &cascadedStrong[count], alpha, th, n[count + 1]) - (int)ex[counte].isFace == 0)
+					if (judge(ex + counte, &cascadedStrong[count], alpha, th, n[count + 1]) - (int)ex[counte].isFace == 0){
 						correctflage = 1;
-					else{
-						correctflage = 0;
 						break;
 					}
+					else
+						correctflage = 0;
 				}
 				if (correctflage){
 					exCanUse[counte] = 0;
