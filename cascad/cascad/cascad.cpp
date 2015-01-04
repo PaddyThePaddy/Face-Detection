@@ -106,10 +106,8 @@ int main(){
 					for (countk = 0, th = 0; countk < n[i]; countk++)
 						th += alpha[countk] / 2;
 					correctflage = 0;
-					if (judge(ex + counte, strong, alpha, th, n[i]) - (int)ex[counte].isFace == 0){
+					if (judge(ex + counte, strong, alpha, th, n[i]) - (int)ex[counte].isFace == 0)
 						correctflage = 1;
-						break;
-					}
 					else
 						correctflage = 0;
 				
