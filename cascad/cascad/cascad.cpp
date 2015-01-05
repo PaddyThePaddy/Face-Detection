@@ -65,9 +65,10 @@ int main(){
 			//cout << str << endl;
 			e = strong[n[i] - 1]->getE();
 			alpha[n[i]-1] = log((1 - e) / e);
-			for (th = 0, count = 0; count < n[i]; count++)
-				th += alpha[count] / 2;
-			do{
+			//for (th = 0, count = 0; count < n[i]; count++)
+			//	th += alpha[count] / 2;
+			th += alpha[n[i] - 1] / 2;
+			while(1){
 				for (count = 0, fdc = 0, correctCount = 0; count < vCount; count++){
 					
 					if (judge(V + count, strong, alpha, th, n[i]) - (int)V[count].isFace == 0)
@@ -77,8 +78,11 @@ int main(){
 				}
 				D[i] = (double)correctCount / vCount;
 				F[i] = (double)fdc / vCount;
-				th *=0.99 ;
-			} while (D[i] < d*D[i - 1]);
+				if (D[i] < d*D[i - 1])
+					th *= 0.99;
+				else
+					break;
+			}
 			cout << "F[i] > f * F[i-1] : " << F[i] << " > " << f << " * " << F[i - 1] << " , " << f*F[i - 1] << endl;
 		}
 
