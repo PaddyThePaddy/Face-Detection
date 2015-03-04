@@ -16,7 +16,7 @@ int main(){
 	double f; //maximum acceptable fase positive rate  per layer  -- value is selected by user  
 	double d; //minimum acceptable detection rate per layer -- value is selected by user
 	double F[17000],D[17000],Ftarget,e,*alpha,th;
-	int n[17001], fdc, correctCount, countk, countj, counte, correctflage;
+	int n[17001], fdc, correctCount, countk, countj, counte, correctflage,thCount;
 	int i,count,vCount,vm,vl,ecuCount;
 	IntImg *P, *N,*V;
 	Soldier **h;
@@ -56,6 +56,7 @@ int main(){
 			}
 			w[count] = ex[count].isFace ? (double)1 / (2 * m) : (double)1 / (2 * l);
 		}
+		th = 0;
 		while (F[i] > f*F[i - 1]){
 		//while (n[i]<2){
 			n[i]++;
@@ -68,18 +69,22 @@ int main(){
 			//for (th = 0, count = 0; count < n[i]; count++)
 			//	th += alpha[count] / 2;
 			th += alpha[n[i] - 1] / 2;
-			while(1){
+			thCount = 0;
+			while (1){
 				for (count = 0, fdc = 0, correctCount = 0; count < vCount; count++){
-					
-					if (judge(V + count, strong, alpha, th, n[i]) - (int)V[count].isFace == 0)
+
+					if (judge(V + count, strong, alpha, th, n[i]) == 1 && V[count].isFace)
 						correctCount++;
-					else if (!V[count].isFace)
+					if (!V[count].isFace && (judge(V + count, strong, alpha, th, n[i]) == 1))
 						fdc++;
 				}
-				D[i] = (double)correctCount / vCount;
-				F[i] = (double)fdc / vCount;
-				if (D[i] < d*D[i - 1])
+				D[i] = (double)correctCount / vm;
+				F[i] = (double)fdc / vl;
+				if (D[i] < d*D[i - 1]){
 					th *= 0.99;
+					thCount++;
+					if (thCount>1000)th = 0;
+			}
 				else
 					break;
 			}
