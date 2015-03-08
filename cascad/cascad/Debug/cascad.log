@@ -1,4 +1,4 @@
-﻿已經開始建置於 2015/3/4 下午 09:22:18。
+﻿已經開始建置於 2015/3/8 下午 06:31:48。
      1>節點 2 (Build 目標) 上的專案 "E:\大三程式\adaboost_git_new\Face-Detection\cascad\cascad\cascad.vcxproj"。
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt cascad.cpp
@@ -21,4 +21,4 @@
 
 建置成功。
 
-經過時間 00:00:01.89
+經過時間 00:00:03.58

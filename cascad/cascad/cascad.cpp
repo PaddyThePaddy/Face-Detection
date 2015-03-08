@@ -41,9 +41,11 @@ int main(){
 	preset();
 	cascadedStrong = (Soldier**)malloc(sizeof(Soldier*)*17000);
 	alpha = (double*)malloc(sizeof(double) * 17000);
-	ecuCount = 0;
+	ecuCount = 0;// example can use, means how many nonfase sample were been delete at the last stage
 	while (F[i] > Ftarget){
 		cout << "-----------------  stage  " << i <<"  -----------------"<<endl;
+		if (i == 2)
+			cout << "here!"<<endl;
 		fprintf_s(out, "%d\n", i);
 		i++;
 		n[i] = 0; // so, n is start by 1;   the number of features , ni , of each stage;
