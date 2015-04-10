@@ -98,8 +98,8 @@ int main(void)
 					dstName[len] = '\0';
 				}
 			}
-			cvReleaseImage(&pNewSrcImg);
-			cvReleaseImage(&pSrcImg);
+//			cvReleaseImage(&pNewSrcImg);
+//			cvReleaseImage(&pSrcImg);
 			/*
 			cvReleaseImage(&pDstImg);
 			cvReleaseMat(&mat);
