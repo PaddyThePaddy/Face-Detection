@@ -1,15 +1,16 @@
-﻿已經開始建置於 2015/4/10 下午 04:18:49。
-     1>節點 2 (Build 目標) 上的專案 "D:\Code\nonfaceGeter\nonfaceGeter\nonfaceGeter.vcxproj"。
+﻿已經開始建置於 2015/4/10 下午 06:02:32。
+     1>節點 2 (Build 目標) 上的專案 "D:\Code\GitHub\Face-Detection\nonfaceGeter\nonfaceGeter\nonfaceGeter.vcxproj"。
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt nonFaceGeter.cpp
          nonFaceGeter.cpp
      1>c:\opencv\build\include\opencv2\flann\dist.h : warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
      1>c:\opencv\build\include\opencv2\legacy\compat.hpp : warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Code\nonfaceGeter\Debug\nonfaceGeter.exe" /INCREMENTAL /NOLOGO C:\openCV\build\x86\vc12\lib\opencv_core2411d.lib C:\openCV\build\x86\vc12\lib\opencv_calib3d2411d.lib C:\openCV\build\x86\vc12\lib\opencv_highgui2411d.lib C:\openCV\build\x86\vc12\lib\opencv_imgproc2411d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Code\nonfaceGeter\Debug\nonfaceGeter.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Code\nonfaceGeter\Debug\nonfaceGeter.lib" /MACHINE:X86 Debug\nonFaceGeter.obj
-         nonfaceGeter.vcxproj -> D:\Code\nonfaceGeter\Debug\nonfaceGeter.exe
-     1>專案 "D:\Code\nonfaceGeter\nonfaceGeter\nonfaceGeter.vcxproj" (Build 目標) 建置完成。
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Code\GitHub\Face-Detection\nonfaceGeter\Debug\nonfaceGeter.exe" /INCREMENTAL /NOLOGO C:\openCV\build\x86\vc12\lib\opencv_core2411d.lib C:\openCV\build\x86\vc12\lib\opencv_calib3d2411d.lib C:\openCV\build\x86\vc12\lib\opencv_highgui2411d.lib C:\openCV\build\x86\vc12\lib\opencv_imgproc2411d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Code\GitHub\Face-Detection\nonfaceGeter\Debug\nonfaceGeter.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Code\GitHub\Face-Detection\nonfaceGeter\Debug\nonfaceGeter.lib" /MACHINE:X86 Debug\nonFaceGeter.obj
+         LINK : 最後的累加連結找不到或未建置 D:\Code\GitHub\Face-Detection\nonfaceGeter\Debug\nonfaceGeter.exe，正在執行完整連結
+         nonfaceGeter.vcxproj -> D:\Code\GitHub\Face-Detection\nonfaceGeter\Debug\nonfaceGeter.exe
+     1>專案 "D:\Code\GitHub\Face-Detection\nonfaceGeter\nonfaceGeter\nonfaceGeter.vcxproj" (Build 目標) 建置完成。
 
 建置成功。
 
-經過時間 00:00:01.84
+經過時間 00:00:02.31

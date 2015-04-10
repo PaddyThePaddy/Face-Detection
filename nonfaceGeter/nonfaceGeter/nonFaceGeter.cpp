@@ -74,6 +74,8 @@ int main(void)
 				sprintf_s(srcName, ".\\image\\%s", entry->d_name);
 				pSrcImg = cvLoadImage(srcName, 1);
 			}
+			else
+				continue;
 			if (!(pSrcImg->width < size2.width || pSrcImg->height < size2.height)){
 				pNewSrcImg = cvCreateImage(size2, pSrcImg->depth, pSrcImg->nChannels);
 				cvResize(pSrcImg, pNewSrcImg, CV_INTER_LINEAR);
