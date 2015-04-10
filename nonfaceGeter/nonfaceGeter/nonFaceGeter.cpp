@@ -16,16 +16,16 @@ int main(void)
 	IplImage *pDstImg = NULL;
 	CvMat *mat;
 	CvRect rect;
-	char srcName[256], dstName[256], stageDirName[100] = ".\\not_face\\stage00", tmpStr[20] = { 0 }, sysStageDir[200] = { 0 }, dstNum[50] = {0};
+	char srcName[256], dstName[256], stageDirName[100] = "F:\\not_face\\stage00", tmpStr[20] = { 0 }, sysStageDir[200] = { 0 }, dstNum[50] = { 0 };
 	FILE *config;
-	int dstCount[20] = {0}, stageNum = 1, endFlag = 0;
+	int dstCount[20] = { 0 }, stageNum = 1, endFlag = 0;
 	DIR *dir = NULL, *tmpDir = NULL;
 	dirent *entry = NULL;
 
-	if (fopen_s(&config, "config.txt", "r+") != 0){
-		fopen_s(&config, "config.txt", "w+");
+	if (fopen_s(&config, "F:\\config.txt", "r+") != 0){
+		fopen_s(&config, "F:\\config.txt", "w+");
 		fclose(config);
-		fopen_s(&config, "config.txt", "r+");
+		fopen_s(&config, "F:\\config.txt", "r+");
 	}
 
 	if (fscanf_s(config, "%d", &stageNum) == EOF){
@@ -38,10 +38,10 @@ int main(void)
 
 	CvSize size = cvSize(WIDTH, HEIGHT), size2 = cvSize(WIDTH * 5, HEIGHT * 5);
 
-	if ((dir = opendir(".\\not_face")) == NULL)
-		system("mkdir not_face");
+	if ((dir = opendir("F:\\not_face")) == NULL)
+		system("mkdir F:\\not_face");
 	closedir(dir);
-	if ((dir = opendir(".\\image")) == NULL)
+	if ((dir = opendir("F:\\image")) == NULL)
 		return 0;
 
 	entry = readdir(dir);
@@ -71,7 +71,7 @@ int main(void)
 				strstr(entry->d_name, ".JPEG") ||
 				strstr(entry->d_name, ".png") ||
 				strstr(entry->d_name, ".PNG")){
-				sprintf_s(srcName, ".\\image\\%s", entry->d_name);
+				sprintf_s(srcName, "F:\\image\\%s", entry->d_name);
 				pSrcImg = cvLoadImage(srcName, 1);
 			}
 			else
