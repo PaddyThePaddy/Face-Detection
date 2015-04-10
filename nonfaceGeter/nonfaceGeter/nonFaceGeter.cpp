@@ -16,7 +16,7 @@ int main(void)
 	IplImage *pDstImg = NULL;
 	CvMat *mat;
 	CvRect rect;
-	char srcName[256], dstName[256], stageDirName[100] = "F:\\not_face\\stage00", tmpStr[20] = { 0 }, sysStageDir[200] = { 0 }, dstNum[50] = { 0 };
+	char srcName[256] = { 0 }, dstName[256] = { 0 }, stageDirName[256] = "F:\\not_face\\stage00", tmpStr[256] = { 0 }, sysStageDir[256] = { 0 }, dstNum[256] = { 0 };
 	char sysMove[256] = { 0 }, sysRename[256] = { 0 };
 	FILE *config, *config_imgBackup;
 	int dstCount[20] = { 0 }, stageNum = 1, endFlag = 0, imgBackupNum = 0;
@@ -81,9 +81,12 @@ int main(void)
 				strstr(entry->d_name, ".PNG")){
 				sprintf_s(srcName, "F:\\image\\%s", entry->d_name);
 				pSrcImg = cvLoadImage(srcName, 1);
+				entry = NULL;
 			}
-			else
+			else{
+				entry = NULL;
 				continue;
+			}
 
 			sprintf_s(sysRename, "rename %s File%d.jpg", srcName, ++imgBackupNum);
 			system(sysRename);
@@ -95,12 +98,13 @@ int main(void)
 				cvResize(pSrcImg, pNewSrcImg, CV_INTER_LINEAR);
 			}
 			else
-				pNewSrcImg = pSrcImg;
+				pNewSrcImg = cvCloneImage(pSrcImg);
 
 			for (int x = 0; x + WIDTH <= pNewSrcImg->width; x += WIDTH){
 				for (int y = 0; y + HEIGHT <= pNewSrcImg->height; y += HEIGHT){
 					mat = cvCreateMat(HEIGHT, WIDTH, CV_8UC3);
 					pDstImg = cvCreateImage(size, IPL_DEPTH_8U, 3);
+					IplImage *tmpDstImg = cvCloneImage(pDstImg);
 
 					rect = cvRect(x, y, WIDTH, HEIGHT);
 					cvGetSubRect(pNewSrcImg, mat, rect);
@@ -110,14 +114,16 @@ int main(void)
 					strcat_s(dstName, dstNum);
 					cvSaveImage(dstName, pDstImg);
 					dstName[len] = '\0';
+
+					pDstImg = cvCloneImage(tmpDstImg);
+					cvReleaseImage(&pDstImg);
+					cvReleaseImage(&tmpDstImg);
+					cvReleaseMat(&mat);
 				}
 			}
-//			cvReleaseImage(&pNewSrcImg);
-//			cvReleaseImage(&pSrcImg);
-			/*
-			cvReleaseImage(&pDstImg);
-			cvReleaseMat(&mat);
-			*/
+			cvReleaseImage(&pNewSrcImg);
+			cvReleaseImage(&pSrcImg);
+
 			cout << "image" << ++index << " complete." << endl;
 			if (dstCount[stageNum - 1] >= 100000){
 				stageNum++;
