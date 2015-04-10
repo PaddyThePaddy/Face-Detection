@@ -17,21 +17,29 @@ int main(void)
 	CvMat *mat;
 	CvRect rect;
 	char srcName[256], dstName[256], stageDirName[100] = "F:\\not_face\\stage00", tmpStr[20] = { 0 }, sysStageDir[200] = { 0 }, dstNum[50] = { 0 };
-	FILE *config;
-	int dstCount[20] = { 0 }, stageNum = 1, endFlag = 0;
+	char sysMove[256] = { 0 }, sysRename[256] = { 0 };
+	FILE *config, *config_imgBackup;
+	int dstCount[20] = { 0 }, stageNum = 1, endFlag = 0, imgBackupNum = 0;
 	DIR *dir = NULL, *tmpDir = NULL;
 	dirent *entry = NULL;
+
+	if (fopen_s(&config_imgBackup, "F:\\config_imgBackup.txt", "r+") != 0){
+		fopen_s(&config_imgBackup, "F:\\config_imgBackup.txt", "w+");
+		fclose(config_imgBackup);
+		fopen_s(&config_imgBackup, "F:\\config_imgBackup.txt", "r+");
+	}
+	if (fscanf_s(config_imgBackup, "%d", &imgBackupNum) == EOF){
+		fprintf_s(config_imgBackup, "0");
+	}
 
 	if (fopen_s(&config, "F:\\config.txt", "r+") != 0){
 		fopen_s(&config, "F:\\config.txt", "w+");
 		fclose(config);
 		fopen_s(&config, "F:\\config.txt", "r+");
 	}
-
 	if (fscanf_s(config, "%d", &stageNum) == EOF){
 		fprintf_s(config, "1\n0\n");
 	}
-
 	for (int i = 0; i < stageNum; i++)
 		fscanf_s(config, "%d", &dstCount[i]);
 
@@ -76,6 +84,12 @@ int main(void)
 			}
 			else
 				continue;
+
+			sprintf_s(sysRename, "rename %s File%d.jpg", srcName, ++imgBackupNum);
+			system(sysRename);
+			sprintf_s(srcName, "F:\\image\\File%d.jpg", imgBackupNum);
+			sprintf_s(sysMove, "move %s %s", srcName, "F:\\image_backup");
+			system(sysMove);
 			if (!(pSrcImg->width < size2.width || pSrcImg->height < size2.height)){
 				pNewSrcImg = cvCreateImage(size2, pSrcImg->depth, pSrcImg->nChannels);
 				cvResize(pSrcImg, pNewSrcImg, CV_INTER_LINEAR);
@@ -117,6 +131,10 @@ int main(void)
 	for (int i = 0; i < stageNum; i++)
 		fprintf_s(config, "%d\n", dstCount[i]);
 	fclose(config);
+
+	rewind(config_imgBackup);
+	fprintf_s(config_imgBackup, "%d\n", imgBackupNum);
+	fclose(config_imgBackup);
 
 	return 0;
 }
