@@ -30,7 +30,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 	int *fss;
 	FILE *example_2;
 	int *check = new int[eCount];
-	fopen_s(&example_2, "SortedIntegralImage", "rb");
+	fopen_s(&example_2, "D:\\Code\\GitHub\\Face-Detection\\presort\\SortedIntegralImage", "rb");
 	fss = (int*)malloc(sizeof(int)*eCount);
 	if (end > sCount)
 		end = sCount;
@@ -112,7 +112,7 @@ double *E, *correct, *ET, *correctT, cor;
 
 void preset(){
 
-fopen_s(&example, "SortedIntegralImage", "rb");
+fopen_s(&example, "D:\\Code\\GitHub\\Face-Detection\\presort\\SortedIntegralImage", "rb");
 if (!example)cout << "example error" << endl;
 
 fread(&eCount, sizeof(int), 1, example);//從檔案讀取樣本
