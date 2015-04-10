@@ -1,4 +1,4 @@
-﻿已經開始建置於 2015/4/10 下午 07:28:21。
+﻿已經開始建置於 2015/4/11 上午 03:21:29。
      1>節點 2 (Build 目標) 上的專案 "F:\adaboost_git\Face-Detection\nonfaceGeter\nonfaceGeter\nonfaceGeter.vcxproj"。
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt nonFaceGeter.cpp
@@ -12,4 +12,4 @@
 
 建置成功。
 
-經過時間 00:00:02.56
+經過時間 00:00:06.23

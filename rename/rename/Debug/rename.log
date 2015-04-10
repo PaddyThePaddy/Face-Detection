@@ -1,13 +1,14 @@
-﻿已經開始建置於 2015/4/11 上午 01:28:19。
-     1>節點 2 (Build 目標) 上的專案 "D:\Code\GitHub\Face-Detection\rename\rename\rename.vcxproj"。
+﻿已經開始建置於 2015/4/11 上午 01:38:18。
+     1>節點 2 (Build 目標) 上的專案 "F:\adaboost_git\Face-Detection\rename\rename\rename.vcxproj"。
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt rename.cpp
          rename.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Code\GitHub\Face-Detection\rename\Debug\rename.exe" /INCREMENTAL /NOLOGO C:\openCV\build\x86\vc12\lib\opencv_core2411d.lib C:\openCV\build\x86\vc12\lib\opencv_calib3d2411d.lib C:\openCV\build\x86\vc12\lib\opencv_highgui2411d.lib C:\openCV\build\x86\vc12\lib\opencv_imgproc2411d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Code\GitHub\Face-Detection\rename\Debug\rename.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Code\GitHub\Face-Detection\rename\Debug\rename.lib" /MACHINE:X86 Debug\rename.obj
-         rename.vcxproj -> D:\Code\GitHub\Face-Detection\rename\Debug\rename.exe
-     1>專案 "D:\Code\GitHub\Face-Detection\rename\rename\rename.vcxproj" (Build 目標) 建置完成。
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\adaboost_git\Face-Detection\rename\Debug\rename.exe" /INCREMENTAL /NOLOGO C:\openCV\build\x86\vc12\lib\opencv_core2411d.lib C:\openCV\build\x86\vc12\lib\opencv_calib3d2411d.lib C:\openCV\build\x86\vc12\lib\opencv_highgui2411d.lib C:\openCV\build\x86\vc12\lib\opencv_imgproc2411d.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\adaboost_git\Face-Detection\rename\Debug\rename.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\adaboost_git\Face-Detection\rename\Debug\rename.lib" /MACHINE:X86 Debug\rename.obj
+         LINK : 最後的累加連結找不到或未建置 F:\adaboost_git\Face-Detection\rename\Debug\rename.exe，正在執行完整連結
+         rename.vcxproj -> F:\adaboost_git\Face-Detection\rename\Debug\rename.exe
+     1>專案 "F:\adaboost_git\Face-Detection\rename\rename\rename.vcxproj" (Build 目標) 建置完成。
 
 建置成功。
 
-經過時間 00:00:00.82
+經過時間 00:00:04.12

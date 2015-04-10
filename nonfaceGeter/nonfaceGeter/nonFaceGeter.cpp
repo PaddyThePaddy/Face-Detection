@@ -88,11 +88,12 @@ int main(void)
 				continue;
 			}
 
-			sprintf_s(sysRename, "rename %s File%d.jpg", srcName, ++imgBackupNum);
+			sprintf_s(sysRename, "rename %s image_%07d.jpg", srcName, imgBackupNum);
 			system(sysRename);
-			sprintf_s(srcName, "F:\\image\\File%d.jpg", imgBackupNum);
+			sprintf_s(srcName, "F:\\image\\image_%07d.jpg", imgBackupNum++);
 			sprintf_s(sysMove, "move %s %s", srcName, "F:\\image_backup");
 			system(sysMove);
+
 			if (!(pSrcImg->width < size2.width || pSrcImg->height < size2.height)){
 				pNewSrcImg = cvCreateImage(size2, pSrcImg->depth, pSrcImg->nChannels);
 				cvResize(pSrcImg, pNewSrcImg, CV_INTER_LINEAR);
@@ -110,7 +111,7 @@ int main(void)
 					cvGetSubRect(pNewSrcImg, mat, rect);
 					cvGetImage(mat, pDstImg);
 
-					sprintf_s(dstNum, "\\not_face_No_%d.bmp", dstCount[stageNum - 1]++);
+					sprintf_s(dstNum, "\\not_face_No_%06d.bmp", dstCount[stageNum - 1]++);
 					strcat_s(dstName, dstNum);
 					cvSaveImage(dstName, pDstImg);
 					dstName[len] = '\0';
@@ -122,9 +123,21 @@ int main(void)
 				}
 			}
 			cvReleaseImage(&pNewSrcImg);
+			pNewSrcImg = cvCreateImage(size, pSrcImg->depth, pSrcImg->nChannels);
+			cvResize(pSrcImg, pNewSrcImg, CV_INTER_LINEAR);
+			sprintf_s(dstNum, "\\not_face_No_%06d.bmp", dstCount[stageNum - 1]++);
+			strcat_s(dstName, dstNum);
+			cvSaveImage(dstName, pNewSrcImg);
+			dstName[len] = '\0';
+
+			cvReleaseImage(&pNewSrcImg);
 			cvReleaseImage(&pSrcImg);
 
 			cout << "image" << ++index << " complete." << endl;
+			if (index >= 5000){
+				endFlag = 1;
+				break;
+			}
 			if (dstCount[stageNum - 1] >= 100000){
 				stageNum++;
 				break;

@@ -5,7 +5,7 @@ using namespace std;
 
 int main(void)
 {
-	char srcName[256] = { 0 }, dstName[256] = { 0 }, stageDirName[256] = "D:\\not_face\\stage00", tmpStr[256] = { 0 };
+	char srcName[256] = { 0 }, dstName[256] = { 0 }, stageDirName[256] = "F:\\not_face\\stage00", tmpStr[256] = { 0 };
 	char sysRename[256] = { 0 };
 	int stageNum = 1;
 	DIR *dir = NULL;
