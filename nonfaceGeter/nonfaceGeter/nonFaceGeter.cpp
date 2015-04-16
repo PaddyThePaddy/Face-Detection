@@ -12,17 +12,14 @@ using namespace std;
 
 int main(void)
 {
-	IplImage *pSrcImg = NULL, *pNewSrcImg = NULL;
-	IplImage *pDstImg = NULL;
-	CvMat *mat;
-	CvRect rect;
+	Mat SrcImg, newSrcImg;
 	char srcName[256] = { 0 }, dstName[256] = { 0 }, stageDirName[256] = "F:\\not_face\\stage00", tmpStr[256] = { 0 }, sysStageDir[256] = { 0 }, dstNum[256] = { 0 };
 	char sysMove[256] = { 0 }, sysRename[256] = { 0 };
 	FILE *config, *config_imgBackup;
 	int dstCount[20] = { 0 }, stageNum = 1, endFlag = 0, imgBackupNum = 0;
 	DIR *dir = NULL, *tmpDir = NULL;
 	dirent *entry = NULL;
-
+	
 	if (fopen_s(&config_imgBackup, "F:\\config_imgBackup.txt", "r+") != 0){
 		fopen_s(&config_imgBackup, "F:\\config_imgBackup.txt", "w+");
 		fclose(config_imgBackup);
@@ -31,7 +28,7 @@ int main(void)
 	if (fscanf_s(config_imgBackup, "%d", &imgBackupNum) == EOF){
 		fprintf_s(config_imgBackup, "0");
 	}
-
+	
 	if (fopen_s(&config, "F:\\config.txt", "r+") != 0){
 		fopen_s(&config, "F:\\config.txt", "w+");
 		fclose(config);
@@ -44,7 +41,7 @@ int main(void)
 		fscanf_s(config, "%d", &dstCount[i]);
 
 
-	CvSize size = cvSize(WIDTH, HEIGHT), size2 = cvSize(WIDTH * 5, HEIGHT * 5);
+	Size size = Size(WIDTH, HEIGHT), size2 = Size(WIDTH * 5, HEIGHT * 5);
 
 	if ((dir = opendir("F:\\not_face")) == NULL)
 		system("mkdir F:\\not_face");
@@ -80,64 +77,49 @@ int main(void)
 				strstr(entry->d_name, ".png") ||
 				strstr(entry->d_name, ".PNG")){
 				sprintf_s(srcName, "F:\\image\\%s", entry->d_name);
-				pSrcImg = cvLoadImage(srcName, 1);
+				SrcImg = imread(srcName);
 				entry = NULL;
 			}
 			else{
 				entry = NULL;
 				continue;
 			}
-
+			
 			sprintf_s(sysRename, "rename %s image_%07d.jpg", srcName, imgBackupNum);
 			system(sysRename);
 			sprintf_s(srcName, "F:\\image\\image_%07d.jpg", imgBackupNum++);
 			sprintf_s(sysMove, "move %s %s", srcName, "F:\\image_backup");
 			system(sysMove);
-
-			if (!(pSrcImg->width < size2.width || pSrcImg->height < size2.height)){
-				pNewSrcImg = cvCreateImage(size2, pSrcImg->depth, pSrcImg->nChannels);
-				cvResize(pSrcImg, pNewSrcImg, CV_INTER_LINEAR);
-			}
+			
+			if (!(SrcImg.cols < size2.width || SrcImg.rows < size2.height))
+				resize(SrcImg, newSrcImg, size2, INTER_AREA);
 			else
-				pNewSrcImg = cvCloneImage(pSrcImg);
+				newSrcImg = SrcImg.clone();
 
-			for (int x = 0; x + WIDTH <= pNewSrcImg->width; x += WIDTH){
-				for (int y = 0; y + HEIGHT <= pNewSrcImg->height; y += HEIGHT){
-					mat = cvCreateMat(HEIGHT, WIDTH, CV_8UC3);
-					pDstImg = cvCreateImage(size, IPL_DEPTH_8U, 3);
-					IplImage *tmpDstImg = cvCloneImage(pDstImg);
-
-					rect = cvRect(x, y, WIDTH, HEIGHT);
-					cvGetSubRect(pNewSrcImg, mat, rect);
-					cvGetImage(mat, pDstImg);
+			for (int x = 0; x + WIDTH <= newSrcImg.cols; x += WIDTH){
+				for (int y = 0; y + HEIGHT <= newSrcImg.rows; y += HEIGHT){
+					Rect rect = Rect(x, y, WIDTH, HEIGHT);
+					Mat DstImg = newSrcImg(rect);
 
 					sprintf_s(dstNum, "\\not_face_No_%06d.bmp", dstCount[stageNum - 1]++);
 					strcat_s(dstName, dstNum);
-					cvSaveImage(dstName, pDstImg);
+					imwrite(dstName, DstImg);
 					dstName[len] = '\0';
 
-					pDstImg = cvCloneImage(tmpDstImg);
-					cvReleaseImage(&pDstImg);
-					cvReleaseImage(&tmpDstImg);
-					cvReleaseMat(&mat);
+					DstImg.release();
 				}
 			}
-			cvReleaseImage(&pNewSrcImg);
-			pNewSrcImg = cvCreateImage(size, pSrcImg->depth, pSrcImg->nChannels);
-			cvResize(pSrcImg, pNewSrcImg, CV_INTER_LINEAR);
+			newSrcImg.release();
+			resize(SrcImg, newSrcImg, size, INTER_AREA);
 			sprintf_s(dstNum, "\\not_face_No_%06d.bmp", dstCount[stageNum - 1]++);
 			strcat_s(dstName, dstNum);
-			cvSaveImage(dstName, pNewSrcImg);
+			imwrite(dstName, newSrcImg);
 			dstName[len] = '\0';
 
-			cvReleaseImage(&pNewSrcImg);
-			cvReleaseImage(&pSrcImg);
+			newSrcImg.release();
+			SrcImg.release();
 
 			cout << "image" << ++index << " complete." << endl;
-			if (index >= 5000){
-				endFlag = 1;
-				break;
-			}
 			if (dstCount[stageNum - 1] >= 100000){
 				stageNum++;
 				break;
@@ -150,10 +132,10 @@ int main(void)
 	for (int i = 0; i < stageNum; i++)
 		fprintf_s(config, "%d\n", dstCount[i]);
 	fclose(config);
-
+	
 	rewind(config_imgBackup);
 	fprintf_s(config_imgBackup, "%d\n", imgBackupNum);
 	fclose(config_imgBackup);
-
+	
 	return 0;
 }

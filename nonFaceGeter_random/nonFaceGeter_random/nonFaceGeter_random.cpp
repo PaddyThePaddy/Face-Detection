@@ -135,10 +135,6 @@ int main(void)
 			SrcImg.release();
 
 			cout << "image" << ++index << " complete." << endl;
-			if (index >= 5000){
-				endFlag = 1;
-				break;
-			}
 			if (dstCount[stageNum - 1] >= 100000){
 				stageNum++;
 				break;
