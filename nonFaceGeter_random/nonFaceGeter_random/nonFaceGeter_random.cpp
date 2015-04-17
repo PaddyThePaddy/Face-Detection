@@ -19,7 +19,7 @@ int main(void)
 	char srcName[256] = { 0 }, dstName[256] = { 0 }, stageDirName[256] = "F:\\not_face\\stage00", tmpStr[256] = { 0 }, sysStageDir[256] = { 0 }, dstNum[256] = { 0 };
 	char sysMove[256] = { 0 }, sysRename[256] = { 0 };
 	FILE *config, *config_imgBackup;
-	int dstCount[20] = { 0 }, stageNum = 1, endFlag = 0, imgBackupNum = 0;
+	int dstCount[1000] = { 0 }, stageNum = 1, endFlag = 0, imgBackupNum = 0;
 	DIR *dir = NULL, *tmpDir = NULL;
 	dirent *entry = NULL;
 
@@ -50,6 +50,9 @@ int main(void)
 
 	if ((dir = opendir("F:\\not_face")) == NULL)
 		system("mkdir F:\\not_face");
+	closedir(dir);
+	if ((dir = opendir("F:\\image_backup")) == NULL)
+		system("mkdir F:\\image_backup");
 	closedir(dir);
 	if ((dir = opendir("F:\\image")) == NULL)
 		return 0;
@@ -95,8 +98,15 @@ int main(void)
 			sprintf_s(sysRename, "rename %s image_%07d.jpg", srcName, imgBackupNum);
 			system(sysRename);
 			sprintf_s(srcName, "F:\\image\\image_%07d.jpg", imgBackupNum++);
-			sprintf_s(sysMove, "move %s %s", srcName, "F:\\image_backup_test");
+			sprintf_s(sysMove, "move %s %s", srcName, "F:\\image_backup");
 			system(sysMove);
+
+			if (SrcImg.rows <= size.height || SrcImg.cols <= size.width){
+				cout << "image" << ++index << " too small." << endl;
+				SrcImg.release();
+				continue;
+			}
+
 			for (int index = 0; index < RAND_CYCLE; index++){
 				int sW, sH, lW, lH;
 

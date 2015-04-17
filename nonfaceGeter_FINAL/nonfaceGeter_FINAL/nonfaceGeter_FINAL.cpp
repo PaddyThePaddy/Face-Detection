@@ -20,7 +20,7 @@ int main(void)
 	char srcName[256] = { 0 }, dstName[256] = { 0 }, stageDirName[256] = "F:\\not_face\\stage00", tmpStr[256] = { 0 }, sysStageDir[256] = { 0 }, dstNum[256] = { 0 };
 	char sysMove[256] = { 0 }, sysRename[256] = { 0 };
 	FILE *config, *config_imgBackup;
-	int dstCount[20] = { 0 }, stageNum = 1, endFlag = 0, imgBackupNum = 0;
+	int dstCount[1000] = { 0 }, stageNum = 1, endFlag = 0, imgBackupNum = 0;
 	DIR *dir = NULL, *tmpDir = NULL;
 	dirent *entry = NULL;
 
@@ -116,7 +116,8 @@ int main(void)
 			newSrcImg.release();
 
 			// if src too small, don't cut and random
-			if (SrcImg.rows <= size.height && SrcImg.cols <= size.width){
+			if (SrcImg.rows <= size.height || SrcImg.cols <= size.width){
+				cout << "image" << ++index << " complete (too small)." << endl;
 				SrcImg.release();
 				continue;
 			}

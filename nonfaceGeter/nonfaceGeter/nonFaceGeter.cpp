@@ -16,7 +16,7 @@ int main(void)
 	char srcName[256] = { 0 }, dstName[256] = { 0 }, stageDirName[256] = "F:\\not_face\\stage00", tmpStr[256] = { 0 }, sysStageDir[256] = { 0 }, dstNum[256] = { 0 };
 	char sysMove[256] = { 0 }, sysRename[256] = { 0 };
 	FILE *config, *config_imgBackup;
-	int dstCount[20] = { 0 }, stageNum = 1, endFlag = 0, imgBackupNum = 0;
+	int dstCount[1000] = { 0 }, stageNum = 1, endFlag = 0, imgBackupNum = 0;
 	DIR *dir = NULL, *tmpDir = NULL;
 	dirent *entry = NULL;
 	
@@ -91,6 +91,7 @@ int main(void)
 			sprintf_s(sysMove, "move %s %s", srcName, "F:\\image_backup");
 			system(sysMove);
 			
+
 			if (!(SrcImg.cols < size2.width || SrcImg.rows < size2.height))
 				resize(SrcImg, newSrcImg, size2, INTER_AREA);
 			else
