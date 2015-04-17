@@ -102,6 +102,7 @@ int main(void)
 
 			// if src is strange, don't do anything
 			if (SrcImg.rows == 0 || SrcImg.cols == 0){
+				cout << "image" << ++index << " error." << endl;
 				SrcImg.release();
 				continue;
 			}
