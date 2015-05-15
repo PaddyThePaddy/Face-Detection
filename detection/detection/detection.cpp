@@ -61,6 +61,7 @@ int main(void)
 	unsigned char *p;
 
 	SrcImg = imread("test.jpg");
+	imshow("SrcImg", SrcImg);
 	cvtColor(SrcImg, SrcImg_gray, CV_RGB2GRAY);
 
 	IntImg img = IntImg(SrcImg_gray.rows, SrcImg_gray.cols);
@@ -179,7 +180,7 @@ int main(void)
 		subWindow_y2 = tmpy2;
 
 		PFrate = (double)P / FrameSum;
-		printf("Scale: %lf, FrameSum: %d, P: %d, N: %d, PNrate: %lf\n", scale, FrameSum, P, FrameSum - P, PFrate);
+		printf("Scale: %lf, FrameSum: %d, P: %d, N: %d, PFrate: %lf\n", scale, FrameSum, P, FrameSum - P, PFrate);
 		/*
 		imshow("Test", SrcImg);
 		waitKey(1);
