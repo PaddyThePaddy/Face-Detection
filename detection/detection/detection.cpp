@@ -111,12 +111,12 @@ int main(void)
 				for (int i = 0; i < stageNum; i++){
 					double sum = 0;
 					for (int j = 0; j < s_num[i]; j++){
-						double alpha = log((1 - s[i][j].getE() / s[i][j].getE()));
+						double alpha = log((1 - s[i][j].getE()) / s[i][j].getE());
 
 						s[i][j].setPosition(subWindow_x1, subWindow_y1, scale);
 						sum += alpha * s[i][j].judge(&img);
-
-						printf("%d, %d, %d, %d\n", s[i][j].getX1(), s[i][j].getY1(), s[i][j].getX2(), s[i][j].getY2());
+						//printf("%lf\n", alpha);
+						//printf("%d, %d, %d, %d\n", s[i][j].getX1(), s[i][j].getY1(), s[i][j].getX2(), s[i][j].getY2());
 
 					}
 					if (sum >= th_stage[i])
@@ -130,15 +130,17 @@ int main(void)
 					Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
 					rectangle(SrcImg, rect, Scalar(255, 0, 0));
 					isFace = FALSE;
+					imshow("Test", SrcImg);
+					waitKey(1);
 				}
-				//if (scale > 5){
+				/*if (scale > 5){
 					Mat tmp = SrcImg.clone();
 					Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
 					
 					rectangle(tmp, rect, Scalar(255, 0, 0));
 					imshow("Test", tmp);
 					waitKey(1);
-				//}
+				}*/
 
 				subWindow_x1 += move;
 				subWindow_x2 += move;
