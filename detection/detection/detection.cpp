@@ -105,6 +105,15 @@ int main(void)
 		//printf("%lf, %lf\n", scale, move);
 		//printf("P:\n%d, %d, %d, %d\n", subWindow_x1, subWindow_y1, subWindow_x2, subWindow_y2);
 
+		/*
+		Mat tmp = SrcImg.clone();
+		Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
+
+		rectangle(tmp, rect, Scalar(255, 0, 0));
+		imshow("Test", tmp);
+		waitKey(1);
+		*/
+
 		int tmpy2 = subWindow_y2, tmpx2 = subWindow_x2;
 		for (; subWindow_y2 < SrcImg_gray.rows;){
 			for (; subWindow_x2 < SrcImg_gray.cols;){
@@ -113,6 +122,7 @@ int main(void)
 					for (int j = 0; j < s_num[i]; j++){
 						double alpha = log((1 - s[i][j].getE()) / s[i][j].getE());
 
+						alpha /= scale;
 						s[i][j].setPosition(subWindow_x1, subWindow_y1, scale);
 						sum += alpha * s[i][j].judge(&img);
 						//printf("%lf\n", alpha);
@@ -130,17 +140,17 @@ int main(void)
 					Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
 					rectangle(SrcImg, rect, Scalar(255, 0, 0));
 					isFace = FALSE;
-					imshow("Test", SrcImg);
-					waitKey(1);
+					//imshow("Test", SrcImg);
+					//waitKey(1);
 				}
-				/*if (scale > 5){
+				//if (scale > 5){
 					Mat tmp = SrcImg.clone();
 					Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
 					
 					rectangle(tmp, rect, Scalar(255, 0, 0));
 					imshow("Test", tmp);
 					waitKey(1);
-				}*/
+				//}
 
 				subWindow_x1 += move;
 				subWindow_x2 += move;
@@ -154,6 +164,11 @@ int main(void)
 		subWindow_x2 = tmpx2;
 		subWindow_y1 = 0;
 		subWindow_y2 = tmpy2;
+
+		/*
+		imshow("Test", SrcImg);
+		waitKey(1);
+		*/
 	}
 	imshow("Test", SrcImg);
 	waitKey(0);

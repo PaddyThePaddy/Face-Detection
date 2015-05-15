@@ -40,7 +40,7 @@ class Soldier{
 			x2 = ori_x2 * scale + swx1;
 			y1 = ori_y1 + swy1;
 			y2 = ori_y2 * scale + swy1;
-			th = ori_th * scale;
+			th = ori_th * scale * scale;
 		};
 		int getX1(){
 			return x1;
