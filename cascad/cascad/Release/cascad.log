@@ -1,0 +1,29 @@
+﻿已經開始建置於 2015/4/20 上午 12:01:48。
+     1>節點 2 (Rebuild 目標) 上的專案 "F:\adaboost_git\Face-Detection\cascad\cascad\cascad.vcxproj"。
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt cascad.cpp
+         cascad.cpp
+     1>cascad.cpp : warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(34): warning C4101: 'key' : 未參考的區域變數
+     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(31): warning C4101: 'j' : 未參考的區域變數
+     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(243): warning C4244: '=' : 將 'time_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(261): warning C4244: '=' : 將 'double' 轉換為 'int'，由於類型不同，可能導致資料遺失
+     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(328): warning C4244: '=' : 將 'time_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(199): warning C4101: 'k' : 未參考的區域變數
+     1>cascad.cpp(25): warning C4018: '<' : signed/unsigned 不相符
+     1>cascad.cpp(43): warning C4101: 'h' : 未參考的區域變數
+     1>cascad.cpp(42): warning C4101: 'P' : 未參考的區域變數
+     1>cascad.cpp(37): warning C4101: 'countk' : 未參考的區域變數
+     1>cascad.cpp(42): warning C4101: 'N' : 未參考的區域變數
+     1>cascad.cpp(40): warning C4101: 'cascade_alpha' : 未參考的區域變數
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\adaboost_git\Face-Detection\cascad\Release\cascad.exe" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\adaboost_git\Face-Detection\cascad\Release\cascad.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\adaboost_git\Face-Detection\cascad\Release\cascad.lib" /MACHINE:X86 /SAFESEH Release\cascad.obj
+         正在產生程式碼
+     1>f:\adaboost_git\face-detection\cascad\cascad\soldier.h(77): warning C4715: 'Soldier::comput' : 不是所有控制路徑都傳回值
+         已完成程式碼產生
+         cascad.vcxproj -> F:\adaboost_git\Face-Detection\cascad\Release\cascad.exe
+     1>專案 "F:\adaboost_git\Face-Detection\cascad\cascad\cascad.vcxproj" (Rebuild 目標) 建置完成。
+
+建置成功。
+
+經過時間 00:00:01.06

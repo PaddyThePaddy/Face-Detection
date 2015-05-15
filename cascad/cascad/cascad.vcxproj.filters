@@ -20,13 +20,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\trainingV\trainingV\soldier.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\trainingV\trainingV\IntImg.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="training.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="soldier.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

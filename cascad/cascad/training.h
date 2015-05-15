@@ -6,12 +6,14 @@
 #include "IntImg.h"
 #include "soldier.h"
 using namespace std;
+
 class Fv{
 public:
 	int fValue;
 	int eNum;
 };
-
+char curFileName[40];
+int c, tn, m, l;
 int sCount, eCount;
 Soldier *soldier[180000];
 IntImg *ex;
@@ -21,55 +23,89 @@ double Tp, Tn;
 long long int seekDegree, seekDegree_2;
 FILE *example;
 int *exCanUse;
-void mthread(int start, int end){   //以多執行緒執行的區段
+int compare(const void * a, const void * b)
+{
+	return (((Fv*)a)->fValue - ((Fv*)b)->fValue);
+}
+int compares(const void *  a , const void * b)
+{
+	return  (double*)a - (double*)b;
 
+}
+void mthread(int start, int end){   //以多執行緒執行的區段
+	
 	int i, j, k;
 	int mkey = 0;
 	double Sp, Sn, e, eeMin;
+	double Tpp, Tnn, Cpp, Cnn;
 	int eflag, ssTemp, eflagTemp,key;
-	int *fss;
+	Fv *fss;
 	FILE *example_2;
 	int *check = new int[eCount];
-	fopen_s(&example_2, "SortedIntegralImage", "rb");
-	fss = (int*)malloc(sizeof(int)*eCount);
+	
+	fopen_s(&example_2, curFileName, "rb");
+	//fss = (int*)malloc(sizeof(int)*eCount);
+	fss = (Fv*)malloc(sizeof(Fv)*(m+l));
+	Cpp = 0;
+	Cnn = 0;
 	if (end > sCount)
 		end = sCount;
 	if (start < 0 || end<0 || start >= end || start>sCount)
 		printf("error: %d %d\n", start, end);
+	
 	for (k = start; k < end; k++){
-		
-		_fseeki64(example_2, seekDegree, SEEK_SET);
+
+		/*_fseeki64(example_2, seekDegree, SEEK_SET);
 		_fseeki64(example_2, (long long int)seekDegree_2*k + sizeof(int) * 5, SEEK_CUR);
-		fread(fss, sizeof(int), eCount, example_2);
+		fread(fss, sizeof(int), eCount, example_2);*/
+		
+		for (i = 0,j=0; i < (m+l); j++){
+			if (exCanUse[j] == true){
+				(fss + i)->fValue = soldier[k]->comput(ex + j);
+				(fss + i)->eNum = j;
+				i++;
+			}
 
-		for (i = 0; i < eCount; i++)
+	}
+		qsort(fss, m+l, sizeof(Fv) , compare);
+		for (i = 0; i < m + l; i++){
 			check[i] = 0;
-		for (i = 0; i < eCount; i++)
-			check[fss[i]]++;
-		for (i = 0; i < eCount; i++)
-			if (check[i] != 1)
-				printf("help");
+			
+		}
+		for (Tpp = 0, Tnn = 0, i = 0; i < m+l; i++){
+			if (!exCanUse[fss[i].eNum])
+				continue;
+			if (ex[fss[i].eNum].isFace == true)       // compute  T+ and T-
+				Tpp += w[fss[i].eNum];
+			else
+				Tnn += w[fss[i].eNum];
+		}
+	
+		
+		
+		for (Sp = 0, Sn = 0, i = 0; i < m + l; i++){
 
-		for (Sp = 0, Sn = 0, i = 0; i < eCount; i++){
-			if (exCanUse[fss[i]] == false){
+			
+
+			if (exCanUse[fss[i].eNum] == false){
 				continue;
 			}
 		
-			if (fss[i] >= eCount || fss[i]<0){
+			if (fss[i].eNum >= eCount || fss[i].eNum<0){
 				printf("hello");
 			}
 
-			if (ex[fss[i]].isFace == true) // compute  S+ and S-
-				Sp += w[fss[i]];
+			if (ex[fss[i].eNum].isFace == true) // compute  S+ and S-
+				Sp += w[fss[i].eNum];
 			else
-				Sn += w[fss[i]];
+				Sn += w[fss[i].eNum];
 
-			if (Sp + (Tn - Sn) < Sn + (Tp - Sp)){// compute e
-				e = Sp + (Tn - Sn);
+			if (Sp + (Tnn - Sn) < Sn + (Tpp - Sp)){// compute e
+				e = Sp + (Tnn - Sn);
 				eflag = 0;
 			}
 			else{
-				e = Sn + (Tp - Sp);
+				e = Sn + (Tpp - Sp);
 				eflag = 1;
 			}
 			if (e < 0){
@@ -77,20 +113,24 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 			}
 			if (mkey == 0){
 				eeMin = e;
-				ssTemp = fss[i];
+				ssTemp = fss[i].eNum;
 				eflagTemp = eflag;
 				mkey = 1;
 			}
-			if (eeMin < 0){
+			if (e==0){
 				eeMin = eeMin;
 			}
+
 			if (eeMin > e){
 				eeMin = e;
-				ssTemp = fss[i];
+				ssTemp = fss[i].eNum;
 				eflagTemp = eflag;
 			}
 		}
+		if (Sp != Tpp || Sn != Tnn){
+			cout << "here" << endl;
 
+		}
 		*(eThread + k) = eeMin;
 		*(sThread + k) = ssTemp;
 		*(pThread + k) = eflagTemp;	//e = min(Sp+(Tn-Sn),Sn+(Tp-Sp)) 左邊比較小時  p = 0
@@ -102,7 +142,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 	return;
 }
 
-int c, tn,m,l;
+
 int xx1, xx2, yy1, yy2, type;
 FILE *outdata;
 char str[200];
@@ -110,9 +150,10 @@ thread ** mt;
 int tCount;
 double *E, *correct, *ET, *correctT, cor;
 
-void preset(){
+void preset(char  *FileName){
 
-fopen_s(&example, "SortedIntegralImage", "rb");
+//fopen_s(&example, "SortedIntegralImage", "rb");
+	fopen_s(&example, FileName, "rb");
 if (!example)cout << "example error" << endl;
 
 fread(&eCount, sizeof(int), 1, example);//從檔案讀取樣本
@@ -132,7 +173,7 @@ for (int i = 0; i < sCount; i++){
 	fread(&yy2, sizeof(int), 1, example);
 	fread(&type, sizeof(int), 1, example);
 	soldier[i] = new Soldier(xx1, yy1, xx2, yy2, type, 0, 0);
-	_fseeki64(example, sizeof(int)*eCount, SEEK_CUR);
+	//_fseeki64(example, sizeof(int)*eCount, SEEK_CUR);
 	//fread(fs,sizeof(int),eCount,example);
 	if (i == 0){
 		soldier[i]->getData(str);
@@ -140,8 +181,10 @@ for (int i = 0; i < sCount; i++){
 	}
 }
 	w = (double*)malloc(sizeof(double)*eCount);  //初始化樣本權重
-	for (int i = 0; i<eCount; i++)
+	for (int i = 0; i < eCount; i++){
 		w[i] = ex[i].isFace ? (double)1 / (2 * m) : (double)1 / (2 * l);
+		//cout << ex[i].isFace << endl;
+	}
 
 	
 E = (double*)malloc(sizeof(double)*sCount);
@@ -156,6 +199,21 @@ for (int i = 0; i < eCount; i++)
 //strong = (Soldier**)malloc(sizeof(Soldier*)*tCount);  //選拔完成的分類器儲存區
 
 
+}
+void freeall(){
+	fclose(example);
+	free(ex);
+	for (int i = 0; i < sCount; i++){
+		delete(soldier[i]);
+	}
+	free(w);
+	free(E);
+	
+	free(correct);
+	free(eThread);
+	free(sThread);
+	free(pThread);
+	free(exCanUse);
 }
 int training(int tC, Soldier **strong){
 	int t0, t1,aCount;
@@ -185,7 +243,7 @@ int training(int tC, Soldier **strong){
 	tCount = tC;
 	fprintf_s(outdata, "%d\n", tCount);
 	
-	tn = 1;
+	tn = 4;
 
 	
 	
@@ -233,7 +291,7 @@ int training(int tC, Soldier **strong){
 			else
 				Tn += w[i];
 		}
-
+		cout << "Tp : " << Tp << " , Tn : " << Tn << endl;
 		c = sCount / tn + 1;                         //讓每個弱分類器評判每個樣本  將工作切割成數段以多執行緒完成
 		for (i = 0, j = 0; i < tn; i++){
 			mt[i] = new thread(mthread, j, j + c);
@@ -258,8 +316,15 @@ int training(int tC, Soldier **strong){
 		soldier[iMin]->setE(*(eThread + iMin));
 		soldier[iMin]->getData(str);
 
-	
-		strong[tC-1] = soldier[iMin];
+		
+		strong[tC - 1]->x1 = soldier[iMin]->x1;
+		strong[tC - 1]->x2 = soldier[iMin]->x2;
+		strong[tC - 1]->y1 = soldier[iMin]->y1;
+		strong[tC - 1]->y2 = soldier[iMin]->y2;
+		strong[tC - 1]->th = soldier[iMin]->th;
+		strong[tC - 1]->e = soldier[iMin]->e;
+		strong[tC - 1]->p = soldier[iMin]->p;
+		strong[tC - 1]->type = soldier[iMin]->type;
 
 		double wtmp = 0;
 		int jugT, jugF;

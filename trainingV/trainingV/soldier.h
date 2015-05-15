@@ -1,6 +1,6 @@
 class Soldier{
 	private:
-		int x1,x2,y1,y2;
+		int x1, x2, y1, y2;
 		int type;
 		int th;
 		int p;
@@ -27,6 +27,40 @@ class Soldier{
 			this->p=p;
 			this->th=th;
 		};
+		void setAll(int xx1,int xx2,int yy1,int yy2, int ttype, int tth, int pp ,double ee){
+			x1 = xx1;
+			x2 = xx2;
+			y1 = yy1;
+			y2 = yy2;
+			type = ttype;
+			th = tth;
+			p = pp;
+			e = ee;
+		};
+		int getX1(){
+			return x1;
+		};
+		int getX2(){
+			return x2;
+		};
+		int getY1(){
+			return y1;
+		};
+		int getY2(){
+			return y2;
+		};
+		int getType(){
+			return type;
+		};
+		int getP(){
+			return p;
+		};
+		double getE(){
+			return e;
+		};
+		int getth(){
+			return th;
+		};
 		void setP(int in){
 			p = in;
 		};
@@ -39,12 +73,7 @@ class Soldier{
 		void setth(int t){
 			th= t;
 		};
-		double getE(){
-			return e;
-		};
-		int getth(){
-			return th;
-		};
+		
 
 		int judge(IntImg *intImg){
 			int sum=comput(intImg);

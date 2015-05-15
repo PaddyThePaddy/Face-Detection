@@ -68,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\trainingV\trainingV\IntImg.h" />
-    <ClInclude Include="..\..\trainingV\trainingV\soldier.h" />
+    <ClInclude Include="soldier.h" />
     <ClInclude Include="training.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

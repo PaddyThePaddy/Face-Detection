@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "training.h"
+#include <String>
 using namespace std;
 int judge(IntImg *ex, Soldier **h, double *alpha, double th, int sCount){
 	double hSum = 0;
@@ -11,11 +12,28 @@ int judge(IntImg *ex, Soldier **h, double *alpha, double th, int sCount){
 	
 	return (int)hSum >= (th);
 }
+int fileNo=0;
 
+
+void getNextFileName(){
+	string filename="IntegralImage_";
+	char s[10];
+	int i;
+	_itoa_s(fileNo,s,10);
+	filename += s;
+	fileNo++;
+	for ( i = 0; i < filename.length(); i++)
+		curFileName[i] = filename[i];
+	/*---------debug use---------
+	string filename_debug = "IntegralImage_test";
+	for (i = 0; i < filename_debug.length(); i++)
+		curFileName[i] = filename_debug[i];
+	//-------------------------------*/
+}
 int main(){
 	double f; //maximum acceptable fase positive rate  per layer  -- value is selected by user  
 	double d; //minimum acceptable detection rate per layer -- value is selected by user
-	double F[17000],D[17000],Ftarget,e,*alpha,th;
+	double F[17000], D[17000], Ftarget, e, *alpha, th, thvalue;
 	int n[17001], fdc, correctCount, countk, countj, counte, correctflage,thCount;
 	int i,count,vCount,vm,vl,ecuCount;
 	int conf_non_auto_num,conf_sCount[100],non_auto_key,conf_counter; //config file: non auto num , how many solider at current layer and the minima acceptable detection rate at current layer
@@ -27,7 +45,7 @@ int main(){
 	Soldier **strong =nullptr;
 	Soldier **cascadedStrong = nullptr;
 	FILE *vSet,*out,*conf; // conf : configration file
-	fopen_s(&out, "out.txt", "w");
+	
 	fopen_s(&vSet, "vSetIntegralImage", "rb");
 	fopen_s(&conf,"config.txt","r");
 	fscanf_s(conf,"%d",&conf_non_auto_num);
@@ -50,17 +68,22 @@ int main(){
 	i = 0;
 	cout << "input f , d , Ftarget : " << endl;
 	cin >> f >> d >> Ftarget;
-	preset();
+	getNextFileName();
+	preset(curFileName);
+	
 	cascadedStrong = (Soldier**)malloc(sizeof(Soldier*)*17000);
 	alpha = (double*)malloc(sizeof(double) * 17000);
 	ecuCount = 0;// example can use, means how many nonfase sample were been delete at the last stage
-	while (F[i] > Ftarget){
+	//while (F[i] > Ftarget){
+	while (i<38){
 		cout << "-----------------  stage  " << i <<"  -----------------"<<endl;
-		
-		fprintf_s(out, "%d\n", i);
+		if (i == 18)
+			cout << "here";
+//		fprintf_s(out, "%d\n", i);
 		i++;
 		n[i] = 0; // so, n is start by 1;   the number of features , ni , of each stage;
-		F[i] = F[i - 1];
+		//F[i] = F[i - 1];
+		F[i] = 1;
 		strong = (Soldier**)malloc(sizeof(Soldier*) * 17000);
 		l-=ecuCount;
 		for (count = 0; count<eCount; count++){
@@ -71,14 +94,15 @@ int main(){
 		}
 		th = 0;
 		
-		while (F[i] > f*F[i - 1]){
+		//while (F[i] > f*F[i - 1]){
+		while (F[i]>f||non_auto_key==1){
 		//while (n[i]<2){
 			non_auto_key = 0;
 			if (conf_non_auto_num != 0){
 				conf_non_auto_num--;
 				non_auto_key = 1;
 			}
-
+			
 			if (non_auto_key)
 				n[i] = conf_sCount[i-1];
 			else
@@ -87,10 +111,15 @@ int main(){
 			cout << "face : " << m << " nonface : " << l << "ecuCount : " << ecuCount<<endl; 
 
 			if (non_auto_key){
-				for (conf_counter = 1; conf_counter<=conf_sCount[i - 1]; conf_counter++)
+				for (conf_counter = 1; conf_counter <= conf_sCount[i - 1]; conf_counter++){
+					strong[conf_counter - 1] = (Soldier*)malloc(sizeof(Soldier));
 					training(conf_counter, strong);
-			}else
+				}
+			}
+			else{
+				strong[n[i] - 1] = (Soldier*)malloc(sizeof(Soldier));
 				training(n[i], strong);
+			}
 
 			if (non_auto_key){
 				for (conf_counter = 0; conf_counter < conf_sCount[i - 1]; conf_counter++){
@@ -108,7 +137,7 @@ int main(){
 					th += alpha[count] / 2;
 				//th += alpha[n[i] - 1] / 2;
 			}
-
+			thvalue = th / 100000;
 			thCount = 0;
 			while (1){
 				for (count = 0, fdc = 0, correctCount = 0; count < vCount; count++){
@@ -122,18 +151,22 @@ int main(){
 				F[i] = (double)fdc / vl;
 				if (non_auto_key){
 					if (D[i] < conf_dRate[i - 1]){
-						th *= 0.99;
+						if (th <= 0)break;
+						th -= thvalue;
 						thCount++;
-						if (th<0.001)th = 0;
+						if (thCount >= 99999)break;
+						
 					}
 					else
 						break;
 				}
 				else{
-					if (D[i] < d*D[i - 1]){
-						th *= 0.99;
+					//if (D[i] < d*D[i - 1]){
+					if (D[i]<0.9975){
+						if (th <= 0)break;
+						th -= thvalue;
 						thCount++;
-						if (thCount>1000)th = 0;
+						if (thCount >= 99999)break;
 					}
 					else
 						break;
@@ -145,14 +178,25 @@ int main(){
 				break;
 
 		}
+		freeall();
+		getNextFileName();
+		preset(curFileName);
 		cascade_th[i - 1] = th;
 		cascadedStrong[i - 1] = (Soldier*)malloc(sizeof(Soldier)*n[i]);
-		for (count = 0; count < n[i]; count++){//storage strong into cascaded strong
+		for (count = 0; count < n[i]; count++)//storage strong into cascaded strong
 			cascadedStrong[i - 1][count] = *strong[count];
-			cascadedStrong[i - 1][count].getData(str);
-			cout << str << endl;
-			fprintf_s(out, "%s\n", str);
+		fopen_s(&out, "out.txt", "w");
+		for (int ccount = 1; ccount <=i; ccount++){
+			fprintf_s(out, "---------- %d ----------\n%d\n", ccount,n[ccount]);
+			for (count = 0; count < n[ccount]; count++){
+				cascadedStrong[ccount - 1][count].getData(str);
+				cout << str << endl;
+				fprintf_s(out, "%s\n", str);
+			}
+			fprintf_s(out, "F : %lf , D : %lf , th : %lf\n", F[ccount], D[ccount], cascade_th[ccount - 1]);
 		}
+		
+		fclose(out);
 		cout << "F : " << F[i] << " D : " << D[i] <<" th : "<<cascade_th[i-1]<< endl;
 		
 		if (F[i]>Ftarget){
@@ -193,6 +237,6 @@ int main(){
 		}
 		
 	}
-	fclose(out);
+	
 	system("pause");
 }

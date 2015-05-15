@@ -1,10 +1,6 @@
 class Soldier{
 	private:
-		int x1,x2,y1,y2;
-		int type;
-		int th;
-		int p;
-		double e;
+		
 		int getAreaSum(IntImg *intImg,int x1,int y1,int x2,int y2){
 			int sum=0;
 			sum+=intImg->data[y2-1][x2-1];
@@ -17,7 +13,11 @@ class Soldier{
 			return sum;
 		};
 	public:
-		
+		int x1, x2, y1, y2;
+		int type;
+		int th;
+		int p;
+		double e;
 		Soldier(int x1,int y1,int x2,int y2,int type,int p,int th){	
 			this->x1=x1;
 			this->x2=x2;
@@ -27,6 +27,7 @@ class Soldier{
 			this->p=p;
 			this->th=th;
 		};
+		
 		void setP(int in){
 			p = in;
 		};
@@ -78,5 +79,5 @@ class Soldier{
 		void getData(char *str){
 			sprintf_s(str,200,"%02d %02d %02d %02d %d %2d %8d %E",x1,y1,x2,y2,type,p,th,e);
 			//sprintf_s(str, 200, "%02d %02d %02d %02d %d %2d", x1, y1, x2, y2, type,p);
-		}
+		};
 };
