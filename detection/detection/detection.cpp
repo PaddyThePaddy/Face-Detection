@@ -15,12 +15,13 @@ using namespace std;
 
 int main(void)
 {
-	FILE *soldier_cascade;
+	FILE *soldier_cascade, *output;
 	int stageNum;
 	vector<vector<Soldier>> s;
 	vector<int> s_num;
 	vector<double> th_stage;
 
+	fopen_s(&output, "detection_output.txt", "w");
 	fopen_s(&soldier_cascade, "soldier_cascade.txt", "r");
 	if (soldier_cascade == NULL){
 		cout << "ERROR: can't find soldier_cascade.txt" << endl;
@@ -116,11 +117,14 @@ int main(void)
 		*/
 		int tmpy2 = subWindow_y2, tmpx2 = subWindow_x2;
 		int FrameSum = 0, P = 0;
-		double PFrate;
+		vector<int> FrameStage, Ps;
+		FrameStage.resize(stageNum);
+		Ps.resize(stageNum);
 		while (subWindow_y2 < SrcImg_gray.rows){
 			while (subWindow_x2 < SrcImg_gray.cols){
 				for (int i = 0; i < stageNum; i++){
 					double sum = 0;
+					
 					for (int j = 0; j < s_num[i]; j++){
 						double alpha = log((1 - s[i][j].getE()) / s[i][j].getE());
 
@@ -134,8 +138,11 @@ int main(void)
 						}*/
 
 					}
-					if (sum >= th_stage[i])
+					FrameStage[i]++;
+					if (sum >= th_stage[i]){
 						isFace = TRUE;
+						Ps[i]++;
+					}
 					else{
 						isFace = FALSE;
 						break;
@@ -179,14 +186,21 @@ int main(void)
 		subWindow_y1 = 0;
 		subWindow_y2 = tmpy2;
 
-		PFrate = (double)P / FrameSum;
-		printf("Scale: %lf, FrameSum: %d, P: %d, N: %d, PFrate: %lf\n", scale, FrameSum, P, FrameSum - P, PFrate);
+		printf("Scale: %lf, FrameSum: %d, P: %d, N: %d, PFrate: %lf\n", scale, FrameSum, P, FrameSum - P, (double)P / FrameSum);
+		fprintf_s(output, "Scale: %lf, FrameSum: %d, P: %d, N: %d, PFrate: %lf\n", scale, FrameSum, P, FrameSum - P, (double)P / FrameSum);
+		for (int i = 0; i < stageNum; i++){
+			printf("Stage %d => Total: %d, Pass: %d, noPass: %d, PassRate: %lf\n", i + 1, FrameStage[i], Ps[i], FrameStage[i] - Ps[i], (double)Ps[i] / FrameStage[i]);
+			fprintf_s(output, "Stage %d => Total: %d, Pass: %d, noPass: %d, PassRate: %lf\n", i + 1, FrameStage[i], Ps[i], FrameStage[i] - Ps[i], (double)Ps[i] / FrameStage[i]);
+		}
+		printf("\n");
+		fprintf_s(output, "\n");
 		/*
 		imshow("Test", SrcImg);
 		waitKey(1);
 		*/
 	}
 	imshow("Test", SrcImg);
+	fclose(output);
 	waitKey(0);
 
 	return 0;
