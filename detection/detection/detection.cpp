@@ -5,7 +5,6 @@
 #include <vector>
 #include "IntImg_d.h"
 #include "Soldier_d.h"
-#include <windows.h>
 
 using namespace cv;
 using namespace std;
@@ -113,10 +112,11 @@ int main(void)
 		imshow("Test", tmp);
 		waitKey(1);
 		*/
-
 		int tmpy2 = subWindow_y2, tmpx2 = subWindow_x2;
-		for (; subWindow_y2 < SrcImg_gray.rows;){
-			for (; subWindow_x2 < SrcImg_gray.cols;){
+		int FrameSum = 0, P = 0, N = 0;
+		double PFrate;
+		while (subWindow_y2 < SrcImg_gray.rows){
+			while (subWindow_x2 < SrcImg_gray.cols){
 				for (int i = 0; i < stageNum; i++){
 					double sum = 0;
 					for (int j = 0; j < s_num[i]; j++){
@@ -125,8 +125,12 @@ int main(void)
 						alpha /= scale;
 						s[i][j].setPosition(subWindow_x1, subWindow_y1, scale);
 						sum += alpha * s[i][j].judge(&img);
-						//printf("%lf\n", alpha);
-						//printf("%d, %d, %d, %d\n", s[i][j].getX1(), s[i][j].getY1(), s[i][j].getX2(), s[i][j].getY2());
+
+						/*if (c == 1){
+							printf("%d/%d: %lf\n", j, s_num[i], alpha);
+							printf("%d, %d, %d, %d\n", s[i][j].getX1(), s[i][j].getY1(), s[i][j].getX2(), s[i][j].getY2());
+							system("PAUSE");
+						}*/
 
 					}
 					if (sum >= th_stage[i])
@@ -135,22 +139,33 @@ int main(void)
 						isFace = FALSE;
 						break;
 					}
+					
+					/*if (c == 1){
+						printf("%lf vs %lf\n", sum, th_stage[i]);
+						system("PAUSE");
+					}*/
+					
 				}
 				if (isFace){
 					Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
 					rectangle(SrcImg, rect, Scalar(255, 0, 0));
 					isFace = FALSE;
+					P++;
 					//imshow("Test", SrcImg);
 					//waitKey(1);
 				}
-				//if (scale > 5){
+				else
+					N++;
+				FrameSum++;
+
+				/*if (c >= 2){
 					Mat tmp = SrcImg.clone();
 					Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
-					
+
 					rectangle(tmp, rect, Scalar(255, 0, 0));
 					imshow("Test", tmp);
 					waitKey(1);
-				//}
+				}*/
 
 				subWindow_x1 += move;
 				subWindow_x2 += move;
@@ -165,6 +180,8 @@ int main(void)
 		subWindow_y1 = 0;
 		subWindow_y2 = tmpy2;
 
+		PFrate = (double)P / FrameSum;
+		printf("Scale: %lf, FrameSum: %d, P: %d, N: %d, PNrate: %lf\n", scale, FrameSum, P, N, PFrate);
 		/*
 		imshow("Test", SrcImg);
 		waitKey(1);

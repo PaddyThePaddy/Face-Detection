@@ -40,7 +40,46 @@ class Soldier{
 			x2 = ori_x2 * scale + swx1;
 			y1 = ori_y1 + swy1;
 			y2 = ori_y2 * scale + swy1;
-			th = ori_th * scale * scale;
+			
+			int tmpx1 = x1, tmpx2 = x2, tmpy1 = y1, tmpy2 = y2;
+			double rate = 1;
+			switch (type){
+			case 0:
+				if ((x2 - x1) % 2 != 0){
+					x2--;
+					rate *= (double)(x2 - x1) / (tmpx2 - tmpx1);
+				}
+				break;
+			case 1:
+				if ((y2 - y1) % 2 != 0){
+					y2--;
+					rate *= (double)(y2 - y1) / (tmpy2 - tmpy1);
+				}
+				break;
+			case 2:
+				if ((x2 - x1) % 3 != 0){
+					x2 -= (x2 % 3);
+					rate *= (double)(x2 - x1) / (tmpx2 - tmpx1);
+				}
+				break;
+			case 3:
+				if ((y2 - y1) % 3 != 0){
+					y2 -= (y2 % 3);
+					rate *= (double)(y2 - y1) / (tmpy2 - tmpy1);
+				}
+				break;
+			case 4:
+				if ((x2 - x1) % 2 != 0){
+					x2--;
+					rate *= (double)(x2 - x1) / (tmpx2 - tmpx1);
+				}
+				if ((y2 - y1) % 2 != 0){
+					y2--;
+					rate *= (double)(y2 - y1) / (tmpy2 - tmpy1);
+				}
+				break;
+			}
+			th = ori_th * scale * scale * rate;
 		};
 		int getX1(){
 			return x1;
