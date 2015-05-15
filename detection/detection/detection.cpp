@@ -6,6 +6,7 @@
 #include "IntImg_d.h"
 #include "Soldier_d.h"
 
+
 using namespace cv;
 using namespace std;
 
@@ -113,7 +114,7 @@ int main(void)
 		waitKey(1);
 		*/
 		int tmpy2 = subWindow_y2, tmpx2 = subWindow_x2;
-		int FrameSum = 0, P = 0, N = 0;
+		int FrameSum = 0, P = 0;
 		double PFrate;
 		while (subWindow_y2 < SrcImg_gray.rows){
 			while (subWindow_x2 < SrcImg_gray.cols){
@@ -122,7 +123,6 @@ int main(void)
 					for (int j = 0; j < s_num[i]; j++){
 						double alpha = log((1 - s[i][j].getE()) / s[i][j].getE());
 
-						alpha /= scale;
 						s[i][j].setPosition(subWindow_x1, subWindow_y1, scale);
 						sum += alpha * s[i][j].judge(&img);
 
@@ -154,8 +154,6 @@ int main(void)
 					//imshow("Test", SrcImg);
 					//waitKey(1);
 				}
-				else
-					N++;
 				FrameSum++;
 
 				/*if (c >= 2){
@@ -181,7 +179,7 @@ int main(void)
 		subWindow_y2 = tmpy2;
 
 		PFrate = (double)P / FrameSum;
-		printf("Scale: %lf, FrameSum: %d, P: %d, N: %d, PNrate: %lf\n", scale, FrameSum, P, N, PFrate);
+		printf("Scale: %lf, FrameSum: %d, P: %d, N: %d, PNrate: %lf\n", scale, FrameSum, P, FrameSum - P, PFrate);
 		/*
 		imshow("Test", SrcImg);
 		waitKey(1);

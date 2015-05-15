@@ -58,13 +58,13 @@ class Soldier{
 				break;
 			case 2:
 				if ((x2 - x1) % 3 != 0){
-					x2 -= (x2 % 3);
+					x2 -= (x2 - x1) % 3;
 					rate *= (double)(x2 - x1) / (tmpx2 - tmpx1);
 				}
 				break;
 			case 3:
 				if ((y2 - y1) % 3 != 0){
-					y2 -= (y2 % 3);
+					y2 -= (y2 - y1) % 3;
 					rate *= (double)(y2 - y1) / (tmpy2 - tmpy1);
 				}
 				break;
