@@ -32,13 +32,14 @@ int main(void)
 	s_num.resize(stageNum);
 	th_stage.resize(stageNum);
 	for (int i = 0; i < stageNum; i++){
-		int x1, y1, x2, y2, type, p, th;
+		int x1, y1, x2, y2, type, p;
 		double e;
+		long double th;
 
 		fscanf_s(soldier_cascade, "%d", &s_num[i]);
 		s[i].resize(s_num[i]);
 		for (int j = 0; j < s_num[i]; j++){
-			fscanf_s(soldier_cascade, "%02d %02d %02d %02d %d %2d %8d %lf", &x1, &y1, &x2, &y2, &type, &p, &th, &e);
+			fscanf_s(soldier_cascade, "%02d %02d %02d %02d %d %2d %8lf %lf", &x1, &y1, &x2, &y2, &type, &p, &th, &e);
 			s[i][j] = Soldier(x1, y1, x2, y2, type, p, th, e);
 		}
 		fscanf_s(soldier_cascade, "%lf", &th_stage[i]);
@@ -47,13 +48,13 @@ int main(void)
 	/*
 	cout << stageNum << endl;
 	for (int i = 0; i < stageNum; i++){
-		cout << s_num[i] << endl;
-		for (int j = 0; j < s_num[i]; j++){
-			char str[200];
-			s[i][j].getData(str);
-			cout << str << endl;
-		}
-		cout << th_stage[i] << endl;
+	cout << s_num[i] << endl;
+	for (int j = 0; j < s_num[i]; j++){
+	char str[200];
+	s[i][j].getData(str);
+	cout << str << endl;
+	}
+	cout << th_stage[i] << endl;
 	}
 	system("PAUSE");
 	*/
@@ -65,37 +66,49 @@ int main(void)
 	imshow("SrcImg", SrcImg);
 	cvtColor(SrcImg, SrcImg_gray, CV_RGB2GRAY);
 
-	IntImg img = IntImg(SrcImg_gray.rows, SrcImg_gray.cols);
+	IntImg img = IntImg(SrcImg_gray.rows, SrcImg_gray.cols), img_square = IntImg(SrcImg_gray.rows, SrcImg_gray.cols);
+	double sigma;
 
 	for (int i = 0; i < SrcImg_gray.rows; i++){
 		p = SrcImg_gray.ptr<unsigned char>(i);
 		for (int j = 0; j < SrcImg_gray.cols; j++){
-			if (i == 0 && j == 0)
+			if (i == 0 && j == 0){
 				img.data[i][j] = p[j];
-			else if (i == 0)
+				img_square.data[i][j] = p[j] * p[j];
+			}
+			else if (i == 0){
 				img.data[i][j] = p[j] + img.data[i][j - 1];
-			else if (j == 0)
+				img_square.data[i][j] = p[j] * p[j] + img_square.data[i][j - 1];
+			}
+			else if (j == 0){
 				img.data[i][j] = p[j] + img.data[i - 1][j];
-			else
+				img_square.data[i][j] = p[j] * p[j] + img_square.data[i - 1][j];
+			}
+			else{
 				img.data[i][j] = p[j] + img.data[i][j - 1] + img.data[i - 1][j] - img.data[i - 1][j - 1];
-			/*
-			if (i < 3 && j < 3)
-				printf("%3lld, ", p[j]);
+				img_square.data[i][j] = p[j] * p[j] + img_square.data[i][j - 1] + img_square.data[i - 1][j] - img_square.data[i - 1][j - 1];
+			}		
+			/*if (i < 3 && j < 3)
+				printf("%3d, ", p[j]);
 			if (i < 3 && j == 3)
-				printf("\n");
-			*/
+				printf("\n");*/
 		}
 	}
-	/*
-	for (int i = 0; i < 3; i++){
+	/*for (int i = 0; i < 3; i++){
 		for (int j = 0; j < 3; j++){
-			printf("%3lld, ", img.data[i][j]);
+			printf("%3lld, ", img_square.data[i][j]);
 		}
 		printf("\n");
 	}
-	printf("%lld\n", img.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1]);
-	system("PAUSE");
-	*/
+	printf("%lld\n", img_square.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1]);*/
+	
+	
+	sigma = sqrt((long double)img_square.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1] / (SrcImg_gray.rows * SrcImg_gray.cols) - ((long double)img.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1] / (SrcImg_gray.rows * SrcImg_gray.cols)) * ((long double)img.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1] / (SrcImg_gray.rows * SrcImg_gray.cols)));
+	if (sigma < 1e-15 && sigma > -1e-15){
+		cout << "This image's sigma == 0." << endl;
+		return 0;
+	}
+	
 
 	double scale = 1, move = SHIFT;
 	int subWindow_x1 = 0, subWindow_y1 = 0, subWindow_x2 = 23, subWindow_y2 = 23;
@@ -103,18 +116,11 @@ int main(void)
 	for (int c = 0; c < 10; c++, scale *= FACTOR, move *= FACTOR){
 		subWindow_x2 *= FACTOR;
 		subWindow_y2 *= FACTOR;
+		
+		for (int i = 0; i < stageNum; i++)
+			for (int j = 0; j < s_num[i]; j++)
+				s[i][j].setScale(scale);
 
-		//printf("%lf, %lf\n", scale, move);
-		//printf("P:\n%d, %d, %d, %d\n", subWindow_x1, subWindow_y1, subWindow_x2, subWindow_y2);
-
-		/*
-		Mat tmp = SrcImg.clone();
-		Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
-
-		rectangle(tmp, rect, Scalar(255, 0, 0));
-		imshow("Test", tmp);
-		waitKey(1);
-		*/
 		int tmpy2 = subWindow_y2, tmpx2 = subWindow_x2;
 		int FrameSum = 0, P = 0;
 		vector<int> FrameStage, Ps;
@@ -122,46 +128,54 @@ int main(void)
 		Ps.resize(stageNum);
 		while (subWindow_y2 < SrcImg_gray.rows){
 			while (subWindow_x2 < SrcImg_gray.cols){
-				for (int i = 0; i < stageNum; i++){
-					double sum = 0;
-					
-					for (int j = 0; j < s_num[i]; j++){
-						double alpha = log((1 - s[i][j].getE()) / s[i][j].getE());
+				int area = (subWindow_x2 - subWindow_x1 + 1) * (subWindow_y2 - subWindow_y1 + 1);
 
-						s[i][j].setPosition(subWindow_x1, subWindow_y1, scale);
-						sum += alpha * s[i][j].judge(&img);
+				sigma = sqrt((long double)img_square.data[subWindow_y2 - 1][subWindow_x2 - 1] / area - ((long double)img.data[subWindow_y2 - 1][subWindow_x2 - 1] / area) * ((long double)img.data[subWindow_y2 - 1][subWindow_x2 - 1] / area));
+				if (sigma < 1e-15 && sigma > -1e-15){
+					printf("(%d, %d) to (%d, %d)'s sigma == 0.\n", subWindow_x1, subWindow_y1, subWindow_x2, subWindow_y2);
+				}
+				else{
+					for (int i = 0; i < stageNum; i++){
+						double sum = 0;
+
+						for (int j = 0; j < s_num[i]; j++){
+							double alpha = log((1 - s[i][j].getE()) / s[i][j].getE());
+
+							s[i][j].setPosition(subWindow_x1, subWindow_y1, sigma);
+							sum += alpha * s[i][j].judge(&img);
+
+							/*if (c == 1){
+								printf("%d/%d: %lf\n", j, s_num[i], alpha);
+								printf("%d, %d, %d, %d\n", s[i][j].getX1(), s[i][j].getY1(), s[i][j].getX2(), s[i][j].getY2());
+								system("PAUSE");
+								}*/
+
+						}
+						FrameStage[i]++;
+						if (sum >= th_stage[i]){
+							isFace = TRUE;
+							Ps[i]++;
+						}
+						else{
+							isFace = FALSE;
+							break;
+						}
 
 						/*if (c == 1){
-							printf("%d/%d: %lf\n", j, s_num[i], alpha);
-							printf("%d, %d, %d, %d\n", s[i][j].getX1(), s[i][j].getY1(), s[i][j].getX2(), s[i][j].getY2());
+							printf("%lf vs %lf\n", sum, th_stage[i]);
 							system("PAUSE");
-						}*/
+							}*/
 
 					}
-					FrameStage[i]++;
-					if (sum >= th_stage[i]){
-						isFace = TRUE;
-						Ps[i]++;
-					}
-					else{
+					if (isFace){
+						Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
+						rectangle(SrcImg, rect, Scalar(255, 0, 0));
 						isFace = FALSE;
-						break;
+						P++;
+						//imshow("Test", SrcImg);
+						//waitKey(1);
 					}
-					
-					/*if (c == 1){
-						printf("%lf vs %lf\n", sum, th_stage[i]);
-						system("PAUSE");
-					}*/
-					
-				}
-				if (isFace){
-					Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
-					rectangle(SrcImg, rect, Scalar(255, 0, 0));
-					isFace = FALSE;
-					P++;
-					//imshow("Test", SrcImg);
-					//waitKey(1);
-				}
+				}		
 				FrameSum++;
 
 				/*if (c >= 2){
@@ -202,6 +216,6 @@ int main(void)
 	imshow("Test", SrcImg);
 	fclose(output);
 	waitKey(0);
-
+	
 	return 0;
 }
