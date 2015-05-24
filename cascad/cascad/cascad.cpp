@@ -77,8 +77,8 @@ int main(){
 	//while (F[i] > Ftarget){
 	while (i<38){
 		cout << "-----------------  stage  " << i <<"  -----------------"<<endl;
-		if (i == 18)
-			cout << "here";
+		if (i == 2)
+			return 0;
 //		fprintf_s(out, "%d\n", i);
 		i++;
 		n[i] = 0; // so, n is start by 1;   the number of features , ni , of each stage;
@@ -108,7 +108,7 @@ int main(){
 			else
 				n[i]++;
 			
-			cout << "face : " << m << " nonface : " << l << "ecuCount : " << ecuCount<<endl; 
+			cout << n[i] << ". face : " << m << " nonface : " << l << "ecuCount : " << ecuCount << endl;
 
 			if (non_auto_key){
 				for (conf_counter = 1; conf_counter <= conf_sCount[i - 1]; conf_counter++){

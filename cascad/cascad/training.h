@@ -5,11 +5,12 @@
 #include <conio.h>
 #include "IntImg.h"
 #include "soldier.h"
+#include <cmath>
 using namespace std;
 
 class Fv{
 public:
-	int fValue;
+	double fValue;
 	int eNum;
 };
 char curFileName[40];
@@ -23,9 +24,16 @@ double Tp, Tn;
 long long int seekDegree, seekDegree_2;
 FILE *example;
 int *exCanUse;
+double Lz, Lm, Lx, Lxtmp, *zigma;// Light Nomoralize 
 int compare(const void * a, const void * b)
 {
-	return (((Fv*)a)->fValue - ((Fv*)b)->fValue);
+	double t;
+	t = (((Fv*)a)->fValue - ((Fv*)b)->fValue);
+	if (t < 0)
+		return -1;
+	else if (t == 0)
+		return 0;
+	else return 1;
 }
 int compares(const void *  a , const void * b)
 {
@@ -61,15 +69,19 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 		
 		for (i = 0,j=0; i < (m+l); j++){
 			if (exCanUse[j] == true){
-				(fss + i)->fValue = soldier[k]->comput(ex + j);
+				if (zigma[j] == 0)
+					cout << "1";
+				(fss + i)->fValue = soldier[k]->comput(ex + j)/zigma[j];
+				//cout << "f " << soldier[k]->comput(ex + j) <<" z "<<zigma[j]<< " fVaule : " << (fss + i)->fValue << endl;
 				(fss + i)->eNum = j;
 				i++;
 			}
 
 	}
-		qsort(fss, m+l, sizeof(Fv) , compare);
+		qsort(fss, m + l, sizeof(Fv), compare);
 		for (i = 0; i < m + l; i++){
 			check[i] = 0;
+			//cout << "fVaule : " << (fss + i)->fValue << endl;
 			
 		}
 		for (Tpp = 0, Tnn = 0, i = 0; i < m+l; i++){
@@ -150,6 +162,7 @@ thread ** mt;
 int tCount;
 double *E, *correct, *ET, *correctT, cor;
 
+
 void preset(char  *FileName){
 
 //fopen_s(&example, "SortedIntegralImage", "rb");
@@ -186,7 +199,7 @@ for (int i = 0; i < sCount; i++){
 		//cout << ex[i].isFace << endl;
 	}
 
-	
+zigma = (double*)malloc(sizeof(double)*eCount);  // Light Nomoralize 
 E = (double*)malloc(sizeof(double)*sCount);
 mt = (thread**)malloc(sizeof(thread*) * tn);
 correct = (double*)malloc(sizeof(double)*sCount);
@@ -194,8 +207,32 @@ eThread = (double*)malloc(sizeof(double) * sCount);
 sThread = (int*)malloc(sizeof(int) * sCount);
 pThread = (int*)malloc(sizeof(int) * sCount);
 exCanUse = (int*)malloc(sizeof(int)*eCount);
-for (int i = 0; i < eCount; i++)
+for (int i = 0; i < eCount; i++){
 	*(exCanUse + i) = 1;
+	Lm = 0, Lx = 0;
+	for (int j = 0; j < 24; j++)
+		for (int k = 0; k < 24; k++){
+			Lm += ex[i].data[j][k];
+			Lx += ex[i].data[j][k] * ex[i].data[j][k];
+		}
+	Lx /= 576;
+	//cout << "M :" << Lm<<endl;
+	Lm /= 576;
+	//cout << "m :" << Lm << endl;
+	Lm *= Lm;
+	Lz = Lm - Lx;
+	if (Lz < 0)
+		Lz *= -1;
+	zigma[i] = sqrt(Lz);
+	if (zigma[i] <= 1e-15){
+		if (ex[i].isFace == true)
+			m--;
+		else
+			l--;
+		*(exCanUse + i) = 0;
+	}
+	//cout << i << "  zig: " << zigma[i]<<" ,x: "<<Lx<<" ,m: "<<Lm<<" ,z: "<<Lz << endl;
+}
 //strong = (Soldier**)malloc(sizeof(Soldier*)*tCount);  //選拔完成的分類器儲存區
 
 
@@ -208,7 +245,7 @@ void freeall(){
 	}
 	free(w);
 	free(E);
-	
+	free(zigma);
 	free(correct);
 	free(eThread);
 	free(sThread);
