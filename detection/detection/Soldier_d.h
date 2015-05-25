@@ -127,8 +127,8 @@ class Soldier{
 		};
 
 		int judge(IntImg *intImg){
-			//long double sum = comput(intImg) / sigma;
-			long long int sum = comput(intImg);
+			long double sum = comput(intImg) / sigma;
+
 			if(p==1)
 				return th>=sum;
 			else

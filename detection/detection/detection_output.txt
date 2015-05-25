@@ -1,90 +1,30 @@
-Scale: 1.000000, FrameSum: 32224, P: 2524, N: 29700, PFrate: 0.078327
-Stage 1 => Total: 32223, Pass: 8263, noPass: 23960, PassRate: 0.256432
-Stage 2 => Total: 8263, Pass: 6715, noPass: 1548, PassRate: 0.812659
-Stage 3 => Total: 6715, Pass: 5484, noPass: 1231, PassRate: 0.816679
-Stage 4 => Total: 5484, Pass: 4257, noPass: 1227, PassRate: 0.776258
-Stage 5 => Total: 4257, Pass: 3180, noPass: 1077, PassRate: 0.747005
-Stage 6 => Total: 3180, Pass: 2946, noPass: 234, PassRate: 0.926415
-Stage 7 => Total: 2946, Pass: 2524, noPass: 422, PassRate: 0.856755
+Scale: 1.000000, FrameSum: 32224, P: 0, N: 32224, PFrate: 0.000000
+Stage 1 => Total: 32223, Pass: 0, noPass: 32223, PassRate: 0.000000
 
-Scale: 1.250000, FrameSum: 29725, P: 2064, N: 27661, PFrate: 0.069437
-Stage 1 => Total: 29724, Pass: 7390, noPass: 22334, PassRate: 0.248621
-Stage 2 => Total: 7390, Pass: 6178, noPass: 1212, PassRate: 0.835995
-Stage 3 => Total: 6178, Pass: 4852, noPass: 1326, PassRate: 0.785367
-Stage 4 => Total: 4852, Pass: 3775, noPass: 1077, PassRate: 0.778030
-Stage 5 => Total: 3775, Pass: 2842, noPass: 933, PassRate: 0.752848
-Stage 6 => Total: 2842, Pass: 2575, noPass: 267, PassRate: 0.906052
-Stage 7 => Total: 2575, Pass: 2064, noPass: 511, PassRate: 0.801553
+Scale: 1.250000, FrameSum: 29725, P: 0, N: 29725, PFrate: 0.000000
+Stage 1 => Total: 29724, Pass: 0, noPass: 29724, PassRate: 0.000000
 
-Scale: 1.562500, FrameSum: 6831, P: 660, N: 6171, PFrate: 0.096618
-Stage 1 => Total: 6831, Pass: 2248, noPass: 4583, PassRate: 0.329088
-Stage 2 => Total: 2248, Pass: 1963, noPass: 285, PassRate: 0.873221
-Stage 3 => Total: 1963, Pass: 1567, noPass: 396, PassRate: 0.798268
-Stage 4 => Total: 1567, Pass: 1207, noPass: 360, PassRate: 0.770262
-Stage 5 => Total: 1207, Pass: 915, noPass: 292, PassRate: 0.758078
-Stage 6 => Total: 915, Pass: 852, noPass: 63, PassRate: 0.931148
-Stage 7 => Total: 852, Pass: 660, noPass: 192, PassRate: 0.774648
+Scale: 1.562500, FrameSum: 6831, P: 0, N: 6831, PFrate: 0.000000
+Stage 1 => Total: 6831, Pass: 0, noPass: 6831, PassRate: 0.000000
 
-Scale: 1.953125, FrameSum: 6016, P: 930, N: 5086, PFrate: 0.154588
-Stage 1 => Total: 6016, Pass: 2666, noPass: 3350, PassRate: 0.443152
-Stage 2 => Total: 2666, Pass: 2339, noPass: 327, PassRate: 0.877344
-Stage 3 => Total: 2339, Pass: 1938, noPass: 401, PassRate: 0.828559
-Stage 4 => Total: 1938, Pass: 1536, noPass: 402, PassRate: 0.792570
-Stage 5 => Total: 1536, Pass: 1145, noPass: 391, PassRate: 0.745443
-Stage 6 => Total: 1145, Pass: 1066, noPass: 79, PassRate: 0.931004
-Stage 7 => Total: 1066, Pass: 930, noPass: 136, PassRate: 0.872420
+Scale: 1.953125, FrameSum: 6016, P: 0, N: 6016, PFrate: 0.000000
+Stage 1 => Total: 6016, Pass: 0, noPass: 6016, PassRate: 0.000000
 
-Scale: 2.441406, FrameSum: 2204, P: 444, N: 1760, PFrate: 0.201452
-Stage 1 => Total: 2204, Pass: 1004, noPass: 1200, PassRate: 0.455535
-Stage 2 => Total: 1004, Pass: 845, noPass: 159, PassRate: 0.841633
-Stage 3 => Total: 845, Pass: 768, noPass: 77, PassRate: 0.908876
-Stage 4 => Total: 768, Pass: 659, noPass: 109, PassRate: 0.858073
-Stage 5 => Total: 659, Pass: 530, noPass: 129, PassRate: 0.804249
-Stage 6 => Total: 530, Pass: 495, noPass: 35, PassRate: 0.933962
-Stage 7 => Total: 495, Pass: 444, noPass: 51, PassRate: 0.896970
+Scale: 2.441406, FrameSum: 2204, P: 0, N: 2204, PFrate: 0.000000
+Stage 1 => Total: 2204, Pass: 0, noPass: 2204, PassRate: 0.000000
 
-Scale: 3.051758, FrameSum: 1000, P: 243, N: 757, PFrate: 0.243000
-Stage 1 => Total: 1000, Pass: 466, noPass: 534, PassRate: 0.466000
-Stage 2 => Total: 466, Pass: 397, noPass: 69, PassRate: 0.851931
-Stage 3 => Total: 397, Pass: 383, noPass: 14, PassRate: 0.964736
-Stage 4 => Total: 383, Pass: 337, noPass: 46, PassRate: 0.879896
-Stage 5 => Total: 337, Pass: 281, noPass: 56, PassRate: 0.833828
-Stage 6 => Total: 281, Pass: 270, noPass: 11, PassRate: 0.960854
-Stage 7 => Total: 270, Pass: 243, noPass: 27, PassRate: 0.900000
+Scale: 3.051758, FrameSum: 1000, P: 0, N: 1000, PFrate: 0.000000
+Stage 1 => Total: 1000, Pass: 0, noPass: 1000, PassRate: 0.000000
 
-Scale: 3.814697, FrameSum: 448, P: 129, N: 319, PFrate: 0.287946
-Stage 1 => Total: 448, Pass: 219, noPass: 229, PassRate: 0.488839
-Stage 2 => Total: 219, Pass: 187, noPass: 32, PassRate: 0.853881
-Stage 3 => Total: 187, Pass: 184, noPass: 3, PassRate: 0.983957
-Stage 4 => Total: 184, Pass: 162, noPass: 22, PassRate: 0.880435
-Stage 5 => Total: 162, Pass: 148, noPass: 14, PassRate: 0.913580
-Stage 6 => Total: 148, Pass: 137, noPass: 11, PassRate: 0.925676
-Stage 7 => Total: 137, Pass: 129, noPass: 8, PassRate: 0.941606
+Scale: 3.814697, FrameSum: 448, P: 0, N: 448, PFrate: 0.000000
+Stage 1 => Total: 448, Pass: 0, noPass: 448, PassRate: 0.000000
 
-Scale: 4.768372, FrameSum: 136, P: 47, N: 89, PFrate: 0.345588
-Stage 1 => Total: 136, Pass: 65, noPass: 71, PassRate: 0.477941
-Stage 2 => Total: 65, Pass: 61, noPass: 4, PassRate: 0.938462
-Stage 3 => Total: 61, Pass: 61, noPass: 0, PassRate: 1.000000
-Stage 4 => Total: 61, Pass: 58, noPass: 3, PassRate: 0.950820
-Stage 5 => Total: 58, Pass: 50, noPass: 8, PassRate: 0.862069
-Stage 6 => Total: 50, Pass: 48, noPass: 2, PassRate: 0.960000
-Stage 7 => Total: 48, Pass: 47, noPass: 1, PassRate: 0.979167
+Scale: 4.768372, FrameSum: 136, P: 0, N: 136, PFrate: 0.000000
+Stage 1 => Total: 136, Pass: 0, noPass: 136, PassRate: 0.000000
 
-Scale: 5.960464, FrameSum: 33, P: 12, N: 21, PFrate: 0.363636
-Stage 1 => Total: 33, Pass: 15, noPass: 18, PassRate: 0.454545
-Stage 2 => Total: 15, Pass: 13, noPass: 2, PassRate: 0.866667
-Stage 3 => Total: 13, Pass: 12, noPass: 1, PassRate: 0.923077
-Stage 4 => Total: 12, Pass: 12, noPass: 0, PassRate: 1.000000
-Stage 5 => Total: 12, Pass: 12, noPass: 0, PassRate: 1.000000
-Stage 6 => Total: 12, Pass: 12, noPass: 0, PassRate: 1.000000
-Stage 7 => Total: 12, Pass: 12, noPass: 0, PassRate: 1.000000
+Scale: 5.960464, FrameSum: 33, P: 0, N: 33, PFrate: 0.000000
+Stage 1 => Total: 33, Pass: 0, noPass: 33, PassRate: 0.000000
 
 Scale: 7.450581, FrameSum: 0, P: 0, N: 0, PFrate: -1.#IND00
 Stage 1 => Total: 0, Pass: 0, noPass: 0, PassRate: -1.#IND00
-Stage 2 => Total: 0, Pass: 0, noPass: 0, PassRate: -1.#IND00
-Stage 3 => Total: 0, Pass: 0, noPass: 0, PassRate: -1.#IND00
-Stage 4 => Total: 0, Pass: 0, noPass: 0, PassRate: -1.#IND00
-Stage 5 => Total: 0, Pass: 0, noPass: 0, PassRate: -1.#IND00
-Stage 6 => Total: 0, Pass: 0, noPass: 0, PassRate: -1.#IND00
-Stage 7 => Total: 0, Pass: 0, noPass: 0, PassRate: -1.#IND00
 
