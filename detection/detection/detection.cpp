@@ -8,7 +8,6 @@
 #include "Soldier_d.h"
 #include <conio.h>
 
-
 using namespace cv;
 using namespace std;
 
@@ -24,7 +23,93 @@ IntImg img, img_square;
 FILE *output;
 vector<Point> pt;
 Mat OutImg_click;
+Mat click_subWindow;
 int scan_flag;
+
+FILE *click_pass, *click_nopass;
+
+Mat drawFeature(Mat click_tmp, Soldier feature){
+	int x1 = feature.tori_x1, x2 = feature.tori_x2, y1 = feature.tori_y1, y2 = feature.tori_y2;
+
+	for (int i = 0; i < click_tmp.rows; i++){
+		for (int j = 0; j < click_tmp.cols; j++){
+			if (i >= y1 && i <= y2 && j >= x1 && j <= x2){
+				if (i == y1 || i == y2 || j == x1 || j == x2){
+					click_tmp.at<Vec3b>(i, j)[0] = 255;
+					click_tmp.at<Vec3b>(i, j)[1] = 0;
+					click_tmp.at<Vec3b>(i, j)[2] = 0;
+				}
+				else{
+					switch (feature.type){
+					case 0:
+						if (j < (x1 + x2) / 2){
+							click_tmp.at<Vec3b>(i, j)[0] = 255;
+							click_tmp.at<Vec3b>(i, j)[1] = 255;
+							click_tmp.at<Vec3b>(i, j)[2] = 255;
+						}
+						else{
+							click_tmp.at<Vec3b>(i, j)[0] = 0;
+							click_tmp.at<Vec3b>(i, j)[1] = 0;
+							click_tmp.at<Vec3b>(i, j)[2] = 0;
+						}
+						break;
+					case 1:
+						if (i < (y1 + y2) / 2){
+							click_tmp.at<Vec3b>(i, j)[0] = 255;
+							click_tmp.at<Vec3b>(i, j)[1] = 255;
+							click_tmp.at<Vec3b>(i, j)[2] = 255;
+						}
+						else{
+							click_tmp.at<Vec3b>(i, j)[0] = 0;
+							click_tmp.at<Vec3b>(i, j)[1] = 0;
+							click_tmp.at<Vec3b>(i, j)[2] = 0;
+						}
+						break;
+					case 2:
+						if ((j < x1 + (x2 - x1) / 3) || (j >= x1 + (double)(x2 - x1) * 2 / 3)){
+							click_tmp.at<Vec3b>(i, j)[0] = 255;
+							click_tmp.at<Vec3b>(i, j)[1] = 255;
+							click_tmp.at<Vec3b>(i, j)[2] = 255;
+						}
+						else{
+							click_tmp.at<Vec3b>(i, j)[0] = 0;
+							click_tmp.at<Vec3b>(i, j)[1] = 0;
+							click_tmp.at<Vec3b>(i, j)[2] = 0;
+						}
+						break;
+					case 3:
+						if ((i < y1 + (y2 - y1) / 3) || (i >= y1 + (double)(y2 - y1) * 2 / 3)){
+							click_tmp.at<Vec3b>(i, j)[0] = 255;
+							click_tmp.at<Vec3b>(i, j)[1] = 255;
+							click_tmp.at<Vec3b>(i, j)[2] = 255;
+						}
+						else{
+							click_tmp.at<Vec3b>(i, j)[0] = 0;
+							click_tmp.at<Vec3b>(i, j)[1] = 0;
+							click_tmp.at<Vec3b>(i, j)[2] = 0;
+						}
+						break;
+					case 4:
+						if (((j < (x1 + x2) / 2) && (i < (y1 + y2) / 2)) || ((j >= (x1 + x2) / 2) && (i >= (y1 + y2) / 2))){
+							click_tmp.at<Vec3b>(i, j)[0] = 255;
+							click_tmp.at<Vec3b>(i, j)[1] = 255;
+							click_tmp.at<Vec3b>(i, j)[2] = 255;
+						}
+						else{
+							click_tmp.at<Vec3b>(i, j)[0] = 0;
+							click_tmp.at<Vec3b>(i, j)[1] = 0;
+							click_tmp.at<Vec3b>(i, j)[2] = 0;
+						}
+						break;
+
+					}
+				}
+			}
+		}
+	}
+
+	return click_tmp;
+}
 
 void click_judge()
 {
@@ -34,6 +119,17 @@ void click_judge()
 	double sigma;
 	bool isFace = FALSE;
 
+
+	click_subWindow = Mat::zeros((subWindow_x2 - subWindow_x1 + 1), (subWindow_x2 - subWindow_x1 + 1), OutImg_click.type());
+	for (int i = 0, io = subWindow_x1; io <= subWindow_x2; i++, io++)
+		for (int j = 0, jo = subWindow_y1; jo <= subWindow_y2; j++, jo++){
+		click_subWindow.at<Vec3b>(i, j)[0] = SrcImg.at<Vec3b>(io, jo)[0];
+		click_subWindow.at<Vec3b>(i, j)[1] = SrcImg.at<Vec3b>(io, jo)[1];
+		click_subWindow.at<Vec3b>(i, j)[2] = SrcImg.at<Vec3b>(io, jo)[2];
+		}
+	imshow("click_subWindow", click_subWindow);
+	int cp = 0, cn = 0;
+
 	if (sigma_square < 0)
 		sigma_square *= -1;
 	sigma = sqrt(sigma_square);
@@ -41,6 +137,13 @@ void click_judge()
 		printf("(%d, %d) to (%d, %d)'s sigma == 0.\n", subWindow_x1, subWindow_y1, subWindow_x2, subWindow_y2);
 	}
 	else{
+		fopen_s(&click_pass, "click_pass.txt", "w");
+		system("rmdir click_pass /s /q");
+		system("mkdir click_pass");
+		fopen_s(&click_nopass, "click_nopass.txt", "w");
+		system("rmdir click_nopass /s /q");
+		system("mkdir click_nopass");
+
 		double scale = (double)(subWindow_x2 - subWindow_x1 + 1) / 24;
 		for (int i = 0; i < stageNum; i++)
 			for (int j = 0; j < s_num[i]; j++)
@@ -53,10 +156,34 @@ void click_judge()
 				double alpha = log((1 - s[i][j].getE()) / s[i][j].getE());
 
 				s[i][j].setPosition(subWindow_x1, subWindow_y1, sigma);
-				sum += alpha * s[i][j].judge(&img);
+				int result = s[i][j].judge(&img);
+				sum += alpha * result;
+
+				int x1 = s[i][j].getX1(), x2 = s[i][j].getX2(), y1 = s[i][j].getY1(), y2 = s[i][j].getY2();
+				char imgName[100] = {0};
+				sprintf_s(imgName, "[%03d](%3d,%3d)to(%3d,%3d)", j, x1, y1, x2, y2);
+				if (result == 1){
+					fprintf_s(click_pass, "%s: alpha=%lf p=%d th=%lf sum=%lf\n", imgName, alpha, s[i][j].p, s[i][j].th, s[i][j].sum);
+					Mat click_tmp = click_subWindow.clone();
+					char save[200] = { 0 };
+					sprintf_s(save, "click_pass\\%s.jpg", imgName);
+					click_tmp = drawFeature(click_tmp, s[i][j]);
+					imwrite(save, click_tmp);
+					cp++;
+				}
+				else{
+					fprintf_s(click_nopass, "%s: alpha=%lf p=%d th=%lf sum=%lf\n", imgName, alpha, s[i][j].p, s[i][j].th, s[i][j].sum);
+					Mat click_tmp = click_subWindow.clone();
+					char save[200] = { 0 };
+					sprintf_s(save, "click_nopass\\%s.jpg", imgName);
+					click_tmp = drawFeature(click_tmp, s[i][j]);
+					imwrite(save, click_tmp);
+					cn++;
+				}
 			}
-			if (sum >= th_stage[i])
+			if (sum >= th_stage[i]){
 				isFace = TRUE;
+			}
 			else{
 				isFace = FALSE;
 				break;
@@ -70,7 +197,11 @@ void click_judge()
 		}
 	}
 
+	fclose(click_pass);
+	fclose(click_nopass);
+	printf("\ncp=%d cn=%d\n", cp, cn);
 	printf("\n(%d, %d) to (%d, %d)\narea = %d * %d = %d\nsigma = %lf\nisFace = %d\n", subWindow_x1, subWindow_y1, subWindow_x2, subWindow_y2, (subWindow_x2 - subWindow_x1 + 1), (subWindow_y2 - subWindow_y1 + 1), (subWindow_x2 - subWindow_x1 + 1) * (subWindow_y2 - subWindow_y1 + 1), sigma, isFace);
+
 	return;
 }
 

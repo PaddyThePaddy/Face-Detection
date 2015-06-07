@@ -19,6 +19,7 @@ class Soldier{
 		int p;
 		double e;
 		double sigma;
+		long double sum;
 		Soldier(){};
 		Soldier(int x1,int y1,int x2,int y2,int type,int p,long double th,double e){	
 			this->x1=x1;
@@ -127,7 +128,7 @@ class Soldier{
 		};
 
 		int judge(IntImg *intImg){
-			long double sum = comput(intImg) / sigma;
+			this->sum = comput(intImg) / sigma;
 
 			if(p==1)
 				return th>=sum;
