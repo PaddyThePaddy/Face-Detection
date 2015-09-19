@@ -207,8 +207,8 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 			if (exCanUse[j] == true){
 				if (zigma[j] == 0)
 					cout << "1";
-				(fss + i)->fValue = soldier[k]->comput(ex + j) *zigma[j];
-				//(fss + i)->fValue = soldier[k]->comput(ex + j);
+				(fss + i)->fValue = soldier[k]->comput(ex + j) /zigma[j];
+			//	(fss + i)->fValue = soldier[k]->comput(ex + j);
 				//cout << "f " << soldier[k]->comput(ex + j) <<" z "<<zigma[j]<< " fVaule : " << (fss + i)->fValue << endl;
 				(fss + i)->eNum = j;
 				i++;
@@ -338,6 +338,7 @@ void chooseTheBestSolider(double *eMin, int *ctmp, Soldier **strong , int *tC){
 	soldier[iMin]->setTh(*(eThread + iMin)); // <<-
 	soldier[iMin]->setE(*(eThread + iMin));
 	soldier[iMin]->getData(str);
+	cout << "eth : " << *(eThread + iMin) << endl;
 	strong[*tC - 1]->x1 = soldier[iMin]->x1;
 	strong[*tC - 1]->x2 = soldier[iMin]->x2;
 	strong[*tC - 1]->y1 = soldier[iMin]->y1;
@@ -397,15 +398,15 @@ int training(int tC, Soldier **strong){
 
 		
 		c = sCount / tn + 1;                         //讓每個弱分類器評判每個樣本  將工作切割成數段以多執行緒完成
-		for (i = 0, j = 0; i < tn; i++){
+		/*for (i = 0, j = 0; i < tn; i++){
 			mt[i] = new thread(mthread, j, j + c);
 			j += c;
 		}
 		for (i = 0; i < tn; i++){
 			mt[i]->join();
 			delete mt[i];
-		}
-
+		}*/
+		mthread(0, sCount);
 		double eMin;
 		int ctmp = 0;
 

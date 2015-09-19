@@ -1,3 +1,4 @@
+using namespace std;
 class Soldier{
 	private:
 		
@@ -15,7 +16,7 @@ class Soldier{
 	public:
 		int x1, x2, y1, y2;
 		int type;
-		int th;
+		double th;
 		int p;
 		double sigma;
 		double e;
@@ -36,13 +37,13 @@ class Soldier{
 			sigma = in;
 		};
 		
-		void setTh(int in){
+		void setTh(double in){
 			th = in;
 		};
 		void setE(double in){
 			e = in;
 		};
-		void setth(int t){
+		void setth(double t){
 			th= t;
 		};
 		double getE(){
@@ -53,8 +54,8 @@ class Soldier{
 		};
 
 		int judge(IntImg *intImg){
-			double sum= (double)comput(intImg)*this->sigma;
-			
+			double sum= (double)comput(intImg)/this->sigma;
+			cout << "sum : "<<sum<<" , sigma : "<<this->sigma<<" , th : "<<th<<" , p : "<< p<<endl;
 			if(p==1)
 				return (int)th>=sum;
 			else
