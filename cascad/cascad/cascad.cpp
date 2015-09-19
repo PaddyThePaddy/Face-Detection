@@ -207,7 +207,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 			if (exCanUse[j] == true){
 				if (zigma[j] == 0)
 					cout << "1";
-				(fss + i)->fValue = soldier[k]->comput(ex + j) / zigma[j];
+				(fss + i)->fValue = soldier[k]->comput(ex + j) *zigma[j];
 				//(fss + i)->fValue = soldier[k]->comput(ex + j);
 				//cout << "f " << soldier[k]->comput(ex + j) <<" z "<<zigma[j]<< " fVaule : " << (fss + i)->fValue << endl;
 				(fss + i)->eNum = j;
@@ -335,7 +335,7 @@ void chooseTheBestSolider(double *eMin, int *ctmp, Soldier **strong , int *tC){
 		}
 	}
 	soldier[iMin]->setP(*(pThread + iMin));// 已找出當圈最佳小兵  
-	soldier[iMin]->setTh(soldier[iMin]->comput(&ex[*(sThread + iMin)]) / zigma[*(sThread + iMin)]); // <<-
+	soldier[iMin]->setTh(*(eThread + iMin)); // <<-
 	soldier[iMin]->setE(*(eThread + iMin));
 	soldier[iMin]->getData(str);
 	strong[*tC - 1]->x1 = soldier[iMin]->x1;

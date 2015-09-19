@@ -53,7 +53,7 @@ class Soldier{
 		};
 
 		int judge(IntImg *intImg){
-			double sum= (double)comput(intImg)/this->sigma;
+			double sum= (double)comput(intImg)*this->sigma;
 			
 			if(p==1)
 				return (int)th>=sum;
