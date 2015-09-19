@@ -27,10 +27,11 @@ long long int seekDegree, seekDegree_2;
 FILE *example;
 int *exCanUse;
 double Lz, Lm, Lx, Lxtmp, *zigma;// Light Nomoralize 
-int judge(IntImg *ex, Soldier **h, double *alpha, double th, int sCount){
+int judge(IntImg *ex, Soldier **h, double *alpha, double th, int sCount,double sigma){
 	double hSum = 0;
 
 	for (int i = 0; i<sCount; i++){
+		h[i]->setSigma(sigma);
 		hSum += alpha[i] * h[i]->judge(ex);
 	}
 	
@@ -129,11 +130,11 @@ void preset(char  *FileName){
 		Lm /= 576;
 		//cout << "m :" << Lm << endl;
 		Lm *= Lm;
-		Lz = Lm - Lx;
+		Lz = Lx-Lm;
 		if (Lz < 0)
 			Lz *= -1;
 		zigma[i] = sqrt(Lz);
-		if (zigma[i] <= 1e-15){
+		if (zigma[i] < 1e-15&&zigma[i]> -1e-15){
 			if (ex[i].isFace == true)
 				m--;
 			else
@@ -207,6 +208,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 				if (zigma[j] == 0)
 					cout << "1";
 				(fss + i)->fValue = soldier[k]->comput(ex + j) / zigma[j];
+				//(fss + i)->fValue = soldier[k]->comput(ex + j);
 				//cout << "f " << soldier[k]->comput(ex + j) <<" z "<<zigma[j]<< " fVaule : " << (fss + i)->fValue << endl;
 				(fss + i)->eNum = j;
 				i++;
@@ -216,7 +218,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 		qsort(fss, m + l, sizeof(Fv), compare);
 		for (i = 0; i < m + l; i++){
 			check[i] = 0;
-			//cout << "fVaule : " << (fss + i)->fValue << endl;
+			//cout << "i "<< i <<" , fVaule : " << (fss + i)->fValue << endl;
 
 		}
 		for (Tpp = 0, Tnn = 0, i = 0; i < m + l; i++){
@@ -232,9 +234,6 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 		if (Tnn == 1)
 			cout << "here" << endl;
 		for (Sp = 0, Sn = 0, i = 0; i < m + l; i++){
-
-
-
 			if (exCanUse[fss[i].eNum] == false){
 				continue;
 			}
@@ -336,7 +335,7 @@ void chooseTheBestSolider(double *eMin, int *ctmp, Soldier **strong , int *tC){
 		}
 	}
 	soldier[iMin]->setP(*(pThread + iMin));// 已找出當圈最佳小兵  
-	soldier[iMin]->setTh(soldier[iMin]->comput(&ex[*(sThread + iMin)]));
+	soldier[iMin]->setTh(soldier[iMin]->comput(&ex[*(sThread + iMin)]) / zigma[*(sThread + iMin)]); // <<-
 	soldier[iMin]->setE(*(eThread + iMin));
 	soldier[iMin]->getData(str);
 	strong[*tC - 1]->x1 = soldier[iMin]->x1;
@@ -421,6 +420,7 @@ int training(int tC, Soldier **strong){
 			if (!exCanUse[i])
 				continue;
 			aCount++;
+			strong[tC - 1]->setSigma(zigma[i]);
 			cout << "judge :  " << strong[tC - 1]->judge(ex + i) << " , ex isFace : " << (int)(ex[i].isFace) << endl;
 			if ((strong[tC - 1]->judge(ex + i) - (int)(ex[i].isFace)) == 0){
 				
@@ -564,9 +564,9 @@ int main(){
 			while (0){  //test mod
 				for (count = 0, fdc = 0, correctCount = 0; count < vCount; count++){
 
-					if (judge(V + count, strong, alpha, th, n[i]) == 1 && V[count].isFace)
+					if (judge(V + count, strong, alpha, th, n[i] , zigma[count]) == 1 && V[count].isFace)
 						correctCount++;
-					if (!V[count].isFace && (judge(V + count, strong, alpha, th, n[i]) == 1))
+					if (!V[count].isFace && (judge(V + count, strong, alpha, th, n[i],zigma[count]) == 1))
 						fdc++;
 				}
 				D[i] = (double)correctCount / vm;
@@ -636,7 +636,7 @@ int main(){
 					for (countk = 0, th = 0; countk < n[i]; countk++)
 						th += alpha[countk] / 2;*/
 					correctflage = 0;
-					if (judge(ex + counte, strong, alpha, cascade_th[i-1], n[i]) - (int)ex[counte].isFace == 0)
+					if (judge(ex + counte, strong, alpha, cascade_th[i-1], n[i],zigma[count]) - (int)ex[counte].isFace == 0)
 						correctflage = 1;
 					else
 						correctflage = 0;
