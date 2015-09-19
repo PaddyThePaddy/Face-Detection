@@ -94,7 +94,8 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 		}
 	
 		
-		
+		if (Tnn == 1)
+			cout << "here" << endl;
 		for (Sp = 0, Sn = 0, i = 0; i < m + l; i++){
 
 			
@@ -140,7 +141,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 			}
 		}
 		if (Sp != Tpp || Sn != Tnn){
-			cout << "here" << endl;
+			//cout << "here" << endl;
 
 		}
 		*(eThread + k) = eeMin;
@@ -231,8 +232,22 @@ for (int i = 0; i < eCount; i++){
 			l--;
 		*(exCanUse + i) = 0;
 	}
-	//cout << i << "  zig: " << zigma[i]<<" ,x: "<<Lx<<" ,m: "<<Lm<<" ,z: "<<Lz << endl;
+	cout << i << "  zig: " << zigma[i]<<" ,x: "<<Lx<<" ,m: "<<Lm<<" ,z: "<<Lz << endl;
 }
+/*double x = 1, y = 0.0000000000000000000000001;
+int ace=0;
+for (int i = 0 ; i < 1000000000; i++){
+	for (int j = 0; j < 1000000000;j++){
+		if (j % 28 == 0){
+			cout << ace << " % ,x : " <<x<< endl;
+			ace++;
+		}
+		for (int k = 0; k < 1000000000; k++){
+			x += y;
+		}
+	}
+}
+cout << "jjef" << endl;*/
 //strong = (Soldier**)malloc(sizeof(Soldier*)*tCount);  //選拔完成的分類器儲存區
 
 
@@ -280,7 +295,7 @@ int training(int tC, Soldier **strong){
 	tCount = tC;
 	fprintf_s(outdata, "%d\n", tCount);
 	
-	tn = 4;
+	tn = 1;
 
 	
 	
@@ -362,16 +377,22 @@ int training(int tC, Soldier **strong){
 		strong[tC - 1]->e = soldier[iMin]->e;
 		strong[tC - 1]->p = soldier[iMin]->p;
 		strong[tC - 1]->type = soldier[iMin]->type;
-
+		for (i = 0; i < tC - 1; i++){
+			if (strong[i]->x1 == strong[tC - 1]->x1&&strong[i]->x2 == strong[tC - 1]->x2&&strong[i]->y1 == strong[tC - 1]->y1&&strong[i]->y2 == strong[tC - 1]->y2)
+				cout << "here" << endl;
+		}
 		double wtmp = 0;
 		int jugT, jugF;
 		for (i = 0, jugT = 0, jugF = 0,aCount=0; i < eCount; i++){        //設定樣本權重
 			if (!exCanUse[i])
 				continue;
 			aCount++;
+			
 			if ((strong[tC - 1]->judge(ex + i) - (int)(ex[i].isFace)) == 0){
 				wtmp = w[i];
 				w[i] = w[i] * eMin / (1 - eMin);
+				if (eMin == 0)
+					w[i] = 0;
 				ctmp++;
 
 				

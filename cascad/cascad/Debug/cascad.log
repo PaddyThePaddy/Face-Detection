@@ -1,27 +1,27 @@
-﻿已經開始建置於 2015/5/18 下午 10:15:06。
-     1>節點 2 (Build 目標) 上的專案 "F:\adaboost_git\Face-Detection\cascad\cascad\cascad.vcxproj"。
+﻿已經開始建置於 2015/9/19 下午 05:51:10。
+     1>節點 2 (Build 目標) 上的專案 "E:\大三程式\adaboost_git_new\Face-Detection\cascad\cascad\cascad.vcxproj"。
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt cascad.cpp
          cascad.cpp
-     1>f:\adaboost_git\face-detection\cascad\cascad\cascad.cpp : warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
-     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(71): warning C4805: '==' : 作業中不安全的混用類型 'int' 和類型 'bool'
-     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(49): warning C4101: 'key' : 未參考的區域變數
-     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(303): warning C4244: '=' : 將 'time_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
-     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(321): warning C4244: '=' : 將 'double' 轉換為 'int'，由於類型不同，可能導致資料遺失
-     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(388): warning C4244: '=' : 將 'time_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
-     1>f:\adaboost_git\face-detection\cascad\cascad\training.h(259): warning C4101: 'k' : 未參考的區域變數
-     1>f:\adaboost_git\face-detection\cascad\cascad\cascad.cpp(25): warning C4018: '<' : signed/unsigned 不相符
-     1>f:\adaboost_git\face-detection\cascad\cascad\cascad.cpp(43): warning C4101: 'h' : 未參考的區域變數
-     1>f:\adaboost_git\face-detection\cascad\cascad\cascad.cpp(42): warning C4101: 'P' : 未參考的區域變數
-     1>f:\adaboost_git\face-detection\cascad\cascad\cascad.cpp(37): warning C4101: 'countk' : 未參考的區域變數
-     1>f:\adaboost_git\face-detection\cascad\cascad\cascad.cpp(42): warning C4101: 'N' : 未參考的區域變數
-     1>f:\adaboost_git\face-detection\cascad\cascad\cascad.cpp(40): warning C4101: 'cascade_alpha' : 未參考的區域變數
-     1>f:\adaboost_git\face-detection\cascad\cascad\soldier.h(77): warning C4715: 'Soldier::comput' : 不是所有控制路徑都傳回值
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp : warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(67): warning C4018: '<' : signed/unsigned 不相符
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(206): warning C4805: '==' : 作業中不安全的混用類型 'int' 和類型 'bool'
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(184): warning C4101: 'key' : 未參考的區域變數
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(388): warning C4244: '=' : 將 'time_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(394): warning C4244: '=' : 將 'double' 轉換為 'int'，由於類型不同，可能導致資料遺失
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(444): warning C4244: '=' : 將 'time_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(356): warning C4101: 'k' : 未參考的區域變數
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(465): warning C4101: 'h' : 未參考的區域變數
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(464): warning C4101: 'P' : 未參考的區域變數
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(459): warning C4101: 'countk' : 未參考的區域變數
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(464): warning C4101: 'N' : 未參考的區域變數
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\cascad.cpp(462): warning C4101: 'cascade_alpha' : 未參考的區域變數
+     1>e:\大三程式\adaboost_git_new\face-detection\cascad\cascad\soldier.h(77): warning C4715: 'Soldier::comput' : 不是所有控制路徑都傳回值
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\adaboost_git\Face-Detection\cascad\Debug\cascad.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\adaboost_git\Face-Detection\cascad\Debug\cascad.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\adaboost_git\Face-Detection\cascad\Debug\cascad.lib" /MACHINE:X86 Debug\cascad.obj
-         cascad.vcxproj -> F:\adaboost_git\Face-Detection\cascad\Debug\cascad.exe
-     1>專案 "F:\adaboost_git\Face-Detection\cascad\cascad\cascad.vcxproj" (Build 目標) 建置完成。
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\大三程式\adaboost_git_new\Face-Detection\cascad\Debug\cascad.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\大三程式\adaboost_git_new\Face-Detection\cascad\Debug\cascad.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\大三程式\adaboost_git_new\Face-Detection\cascad\Debug\cascad.lib" /MACHINE:X86 Debug\cascad.obj
+         cascad.vcxproj -> E:\大三程式\adaboost_git_new\Face-Detection\cascad\Debug\cascad.exe
+     1>專案 "E:\大三程式\adaboost_git_new\Face-Detection\cascad\cascad\cascad.vcxproj" (Build 目標) 建置完成。
 
 建置成功。
 
-經過時間 00:00:01.57
+經過時間 00:00:02.70
