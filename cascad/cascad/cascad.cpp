@@ -20,8 +20,8 @@ int c, tn, m, l;
 int sCount, eCount;
 Soldier *soldier[180000];
 IntImg *ex;
-int *sThread, *pThread;
-double *w, *eThread;
+int *pThread;
+double *w, *eThread, *sThread;
 double Tp, Tn;
 long long int seekDegree, seekDegree_2;
 FILE *example;
@@ -114,7 +114,7 @@ void preset(char  *FileName){
 	mt = (thread**)malloc(sizeof(thread*) * tn);
 	correct = (double*)malloc(sizeof(double)*sCount);
 	eThread = (double*)malloc(sizeof(double) * sCount);
-	sThread = (int*)malloc(sizeof(int) * sCount);
+	sThread = (double*)malloc(sizeof(double) * sCount);
 	pThread = (int*)malloc(sizeof(int) * sCount);
 	exCanUse = (int*)malloc(sizeof(int)*eCount);
 	for (int i = 0; i < eCount; i++){
@@ -180,9 +180,9 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 
 	int i, j, k;
 	int mkey = 0;
-	double Sp, Sn, e, eeMin;
+	double Sp, Sn, e, eeMin, ssTemp;
 	double Tpp, Tnn, Cpp, Cnn;
-	int eflag, ssTemp, eflagTemp, key;
+	int eflag, eflagTemp, key;
 	Fv *fss;
 	FILE *example_2;
 	int *check = new int[eCount];
@@ -207,7 +207,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 			if (exCanUse[j] == true){
 				if (zigma[j] == 0)
 					cout << "1";
-				(fss + i)->fValue = soldier[k]->comput(ex + j) /zigma[j];
+				(fss + i)->fValue = soldier[k]->comput(ex + j) *zigma[j];
 			//	(fss + i)->fValue = soldier[k]->comput(ex + j);
 				//cout << "f " << soldier[k]->comput(ex + j) <<" z "<<zigma[j]<< " fVaule : " << (fss + i)->fValue << endl;
 				(fss + i)->eNum = j;
@@ -260,7 +260,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 			}
 			if (mkey == 0){
 				eeMin = e;
-				ssTemp = fss[i].eNum;
+				ssTemp = fss[i].fValue;
 				eflagTemp = eflag;
 				mkey = 1;
 			}
@@ -270,7 +270,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 
 			if (eeMin > e){
 				eeMin = e;
-				ssTemp = fss[i].eNum;
+				ssTemp = fss[i].fValue;
 				eflagTemp = eflag;
 			}
 		}
@@ -335,7 +335,7 @@ void chooseTheBestSolider(double *eMin, int *ctmp, Soldier **strong , int *tC){
 		}
 	}
 	soldier[iMin]->setP(*(pThread + iMin));// 已找出當圈最佳小兵  
-	soldier[iMin]->setTh(*(eThread + iMin)); // <<-
+	soldier[iMin]->setTh(*(sThread + iMin)); // <<-
 	soldier[iMin]->setE(*(eThread + iMin));
 	soldier[iMin]->getData(str);
 	cout << "eth : " << *(eThread + iMin) << endl;

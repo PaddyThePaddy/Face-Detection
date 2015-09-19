@@ -49,17 +49,17 @@ class Soldier{
 		double getE(){
 			return e;
 		};
-		int getth(){
+		double getth(){
 			return th;
 		};
 
 		int judge(IntImg *intImg){
-			double sum= (double)comput(intImg)/this->sigma;
+			double sum= (double)comput(intImg)*this->sigma;
 			cout << "sum : "<<sum<<" , sigma : "<<this->sigma<<" , th : "<<th<<" , p : "<< p<<endl;
 			if(p==1)
-				return (int)th>=sum;
+				return th>=sum;
 			else
-				return (int)th<=sum;
+				return th<=sum;
 		};
 		
 		int comput(IntImg *intImg){
@@ -83,7 +83,7 @@ class Soldier{
 		};
 		
 		void getData(char *str){
-			sprintf_s(str,200,"%02d %02d %02d %02d %d %2d %8d %E",x1,y1,x2,y2,type,p,th,e);
+			sprintf_s(str,200,"%02d %02d %02d %02d %d %2d %E %E",x1,y1,x2,y2,type,p,th,e);
 			//sprintf_s(str, 200, "%02d %02d %02d %02d %d %2d", x1, y1, x2, y2, type,p);
 		};
 };
