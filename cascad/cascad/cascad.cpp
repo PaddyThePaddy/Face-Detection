@@ -119,11 +119,14 @@ void preset(char  *FileName){
 	exCanUse = (int*)malloc(sizeof(int)*eCount);
 	for (int i = 0; i < eCount; i++){
 		*(exCanUse + i) = 1;
-		Lm = 0, Lx = 0;
+		Lm = 0;
+		Lx = 0;
 		for (int j = 0; j < 24; j++)
 			for (int k = 0; k < 24; k++){
-			Lm += ex[i].data[j][k];
-			Lx += ex[i].data[j][k] * ex[i].data[j][k];
+				Lm += ex[i].data[j][k];
+				Lx += ex[i].data[j][k] * ex[i].data[j][k];
+				printf("%lf, %lf\n", Lm, Lx);
+				system("PAUSE");
 			}
 		Lx /= 576;
 		//cout << "M :" << Lm<<endl;
@@ -134,6 +137,8 @@ void preset(char  *FileName){
 		if (Lz < 0)
 			Lz *= -1;
 		zigma[i] = sqrt(Lz);
+		printf("%lf\n", zigma[i]);
+		system("PAUSE");
 		if (zigma[i] < 1e-15&&zigma[i]> -1e-15){
 			if (ex[i].isFace == true)
 				m--;

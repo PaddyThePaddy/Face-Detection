@@ -115,19 +115,46 @@ void click_judge()
 {
 	int subWindow_x1 = pt[0].x, subWindow_y1 = pt[0].y, subWindow_x2 = pt[1].x, subWindow_y2 = pt[1].y;
 	int area = (subWindow_x2 - subWindow_x1 + 1) * (subWindow_y2 - subWindow_y1 + 1);
-	long double sigma_square = (long double)img_square.data[subWindow_y2 - 1][subWindow_x2 - 1] / area - ((long double)img.data[subWindow_y2 - 1][subWindow_x2 - 1] / area) * ((long double)img.data[subWindow_y2 - 1][subWindow_x2 - 1] / area);
+	long double sigma_square, Lx, Lm;
 	double sigma;
 	bool isFace = FALSE;
 
-
-	click_subWindow = Mat::zeros((subWindow_x2 - subWindow_x1 + 1), (subWindow_x2 - subWindow_x1 + 1), OutImg_click.type());
+	Lx = (long double)(img_square.data[subWindow_y2][subWindow_x2] - img_square.data[subWindow_y2][subWindow_x1-1] - img_square.data[subWindow_y1-1][subWindow_x2] + img_square.data[subWindow_y1-1][subWindow_x1-1]);
+	Lm = (long double)(img.data[subWindow_y2][subWindow_x2] - img.data[subWindow_y2][subWindow_x1-1] - img.data[subWindow_y1-1][subWindow_x2] + img.data[subWindow_y1-1][subWindow_x1-1]);
+	Lm = Lm / area;
+	sigma_square = Lx / area - Lm * Lm;
+	
+	/*ÀË´úsigma¦³µLºâ¿ù
+	long double lx=0, lm=0;
+	int a = 0;
+	unsigned char *p;
+	for (int i = subWindow_y1; i <= subWindow_y2; i++){
+		p = SrcImg_gray.ptr<unsigned char>(i);
+		for (int j = subWindow_x1; j <= subWindow_x2; j++){
+			lm += p[j];
+			lx += p[j] * p[j];
+			a++;
+			//printf("%lf %lf\n", lm, lx);
+			//system("PAUSE");
+		}
+	}
+	lm = lm / area;
+	printf("%lf %lf %d\n%lf %lf %d\n", Lm, Lx, area, lm, lx, a);
+	system("PAUSE");
+	*/
+	
+	
+	
+	click_subWindow = Mat::zeros((subWindow_x2 - subWindow_x1 + 1), (subWindow_y2 - subWindow_y1 + 1), OutImg_click.type());
+	//printf("%d %d\n", subWindow_x1, subWindow_x2);
 	for (int i = 0, io = subWindow_x1; io <= subWindow_x2; i++, io++)
 		for (int j = 0, jo = subWindow_y1; jo <= subWindow_y2; j++, jo++){
-		click_subWindow.at<Vec3b>(i, j)[0] = SrcImg.at<Vec3b>(io, jo)[0];
-		click_subWindow.at<Vec3b>(i, j)[1] = SrcImg.at<Vec3b>(io, jo)[1];
-		click_subWindow.at<Vec3b>(i, j)[2] = SrcImg.at<Vec3b>(io, jo)[2];
+		click_subWindow.at<Vec3b>(j, i)[0] = SrcImg.at<Vec3b>(jo, io)[0];
+		click_subWindow.at<Vec3b>(j, i)[1] = SrcImg.at<Vec3b>(jo, io)[1];
+		click_subWindow.at<Vec3b>(j, i)[2] = SrcImg.at<Vec3b>(jo, io)[2];
 		}
 	imshow("click_subWindow", click_subWindow);
+
 	int cp = 0, cn = 0;
 
 	if (sigma_square < 0)
@@ -278,7 +305,12 @@ void scan()
 		while (subWindow_y2 < SrcImg_gray.rows){
 			while (subWindow_x2 < SrcImg_gray.cols){
 				int area = (subWindow_x2 - subWindow_x1 + 1) * (subWindow_y2 - subWindow_y1 + 1);
-				long double sigma_square = (long double)img_square.data[subWindow_y2 - 1][subWindow_x2 - 1] / area - ((long double)img.data[subWindow_y2 - 1][subWindow_x2 - 1] / area) * ((long double)img.data[subWindow_y2 - 1][subWindow_x2 - 1] / area);
+				long double sigma_square, Lx, Lm;
+
+				Lx = (long double)(img_square.data[subWindow_y2][subWindow_x2] - img_square.data[subWindow_y2][subWindow_x1 - 1] - img_square.data[subWindow_y1 - 1][subWindow_x2] + img_square.data[subWindow_y1 - 1][subWindow_x1 - 1]);
+				Lm = (long double)(img.data[subWindow_y2][subWindow_x2] - img.data[subWindow_y2][subWindow_x1 - 1] - img.data[subWindow_y1 - 1][subWindow_x2] + img.data[subWindow_y1 - 1][subWindow_x1 - 1]);
+				Lm = Lm / area;
+				sigma_square = Lx / area - Lm * Lm;
 
 				if (sigma_square < 0)
 					sigma_square *= -1;
@@ -378,7 +410,9 @@ int main(void)
 		s_total += s_num[i];
 		s[i].resize(s_num[i]);
 		for (int j = 0; j < s_num[i]; j++){
-			fscanf_s(soldier_cascade, "%02d %02d %02d %02d %d %2d %8lf %lf", &x1, &y1, &x2, &y2, &type, &p, &th, &e);
+			fscanf_s(soldier_cascade, "%d %d %d %d %d %d %lf %lf", &x1, &y1, &x2, &y2, &type, &p, &th, &e);
+			//printf("%d %d %d %d %d %d %E %E\n", x1, y1, x2, y2, type, p, th, e);
+			//system("PAUSE");
 			s[i][j] = Soldier(x1, y1, x2, y2, type, p, th, e);
 		}
 		fscanf_s(soldier_cascade, "%lf", &th_stage[i]);
@@ -418,7 +452,10 @@ int main(void)
 		}
 	}
 	
-	sigma = sqrt((long double)img_square.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1] / (SrcImg_gray.rows * SrcImg_gray.cols) - ((long double)img.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1] / (SrcImg_gray.rows * SrcImg_gray.cols)) * ((long double)img.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1] / (SrcImg_gray.rows * SrcImg_gray.cols)));
+	sigma = (long double)img_square.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1] / (SrcImg_gray.rows * SrcImg_gray.cols) - ((long double)img.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1] / (SrcImg_gray.rows * SrcImg_gray.cols)) * ((long double)img.data[SrcImg_gray.rows - 1][SrcImg_gray.cols - 1] / (SrcImg_gray.rows * SrcImg_gray.cols));
+	if (sigma < 0)
+		sigma *= -1;
+	sigma = sqrt(sigma);
 	if (sigma < 1e-15 && sigma > -1e-15){
 		cout << "This image's sigma == 0." << endl;
 		system("PAUSE");

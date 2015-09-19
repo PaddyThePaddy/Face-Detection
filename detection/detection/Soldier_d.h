@@ -128,7 +128,7 @@ class Soldier{
 		};
 
 		int judge(IntImg *intImg){
-			this->sum = comput(intImg) / sigma;
+			this->sum = comput(intImg) * sigma;
 
 			if(p==1)
 				return th>=sum;
