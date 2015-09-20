@@ -59,13 +59,13 @@ class Soldier{
 			double rate = 1;
 			switch (type){
 			case 0:
-				if ((tori_x2 - tori_x1) % 2 != 0){
+				if ((tori_x2 + tori_x1) % 2 != 0){
 					tori_x2--;
 					rate *= (double)(tori_x2 - tori_x1) / (tmpx2 - tmpx1);
 				}
 				break;
 			case 1:
-				if ((tori_y2 - tori_y1) % 2 != 0){
+				if ((tori_y2 + tori_y1) % 2 != 0){
 					tori_y2--;
 					rate *= (double)(tori_y2 - tori_y1) / (tmpy2 - tmpy1);
 				}
@@ -83,11 +83,11 @@ class Soldier{
 				}
 				break;
 			case 4:
-				if ((tori_x2 - tori_x1) % 2 != 0){
+				if ((tori_x2 + tori_x1) % 2 != 0){
 					tori_x2--;
 					rate *= (double)(tori_x2 - tori_x1) / (tmpx2 - tmpx1);
 				}
-				if ((tori_y2 - tori_y1) % 2 != 0){
+				if ((tori_y2 + tori_y1) % 2 != 0){
 					tori_y2--;
 					rate *= (double)(tori_y2 - tori_y1) / (tmpy2 - tmpy1);
 				}

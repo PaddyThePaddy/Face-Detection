@@ -1,0 +1,33 @@
+Scale: 1.000000, FrameSum: 67362, P: 785, N: 66577, PFrate: 0.011653
+Stage 1 => Total: 67353, Pass: 785, noPass: 66568, PassRate: 0.011655
+
+Scale: 1.250000, FrameSum: 64200, P: 535, N: 63665, PFrate: 0.008333
+Stage 1 => Total: 64200, Pass: 535, noPass: 63665, PassRate: 0.008333
+
+Scale: 1.562500, FrameSum: 15229, P: 122, N: 15107, PFrate: 0.008011
+Stage 1 => Total: 15229, Pass: 122, noPass: 15107, PassRate: 0.008011
+
+Scale: 1.953125, FrameSum: 14076, P: 238, N: 13838, PFrate: 0.016908
+Stage 1 => Total: 14076, Pass: 238, noPass: 13838, PassRate: 0.016908
+
+Scale: 2.441406, FrameSum: 5684, P: 96, N: 5588, PFrate: 0.016890
+Stage 1 => Total: 5684, Pass: 96, noPass: 5588, PassRate: 0.016890
+
+Scale: 3.051758, FrameSum: 2800, P: 66, N: 2734, PFrate: 0.023571
+Stage 1 => Total: 2800, Pass: 66, noPass: 2734, PassRate: 0.023571
+
+Scale: 3.814697, FrameSum: 1456, P: 42, N: 1414, PFrate: 0.028846
+Stage 1 => Total: 1456, Pass: 42, noPass: 1414, PassRate: 0.028846
+
+Scale: 4.768372, FrameSum: 578, P: 21, N: 557, PFrate: 0.036332
+Stage 1 => Total: 578, Pass: 21, noPass: 557, PassRate: 0.036332
+
+Scale: 5.960464, FrameSum: 286, P: 10, N: 276, PFrate: 0.034965
+Stage 1 => Total: 286, Pass: 10, noPass: 276, PassRate: 0.034965
+
+Scale: 7.450581, FrameSum: 80, P: 0, N: 80, PFrate: 0.000000
+Stage 1 => Total: 80, Pass: 0, noPass: 80, PassRate: 0.000000
+
+Scale: 9.313226, FrameSum: 10, P: 0, N: 10, PFrate: 0.000000
+Stage 1 => Total: 10, Pass: 0, noPass: 10, PassRate: 0.000000
+

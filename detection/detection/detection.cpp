@@ -114,13 +114,25 @@ Mat drawFeature(Mat click_tmp, Soldier feature){
 void click_judge()
 {
 	int subWindow_x1 = pt[0].x, subWindow_y1 = pt[0].y, subWindow_x2 = pt[1].x, subWindow_y2 = pt[1].y;
-	int area = (subWindow_x2 - subWindow_x1 + 1) * (subWindow_y2 - subWindow_y1 + 1);
+	int area = (subWindow_x2 - subWindow_x1) * (subWindow_y2 - subWindow_y1);
 	long double sigma_square, Lx, Lm;
 	double sigma;
 	bool isFace = FALSE;
 
-	Lx = (long double)(img_square.data[subWindow_y2][subWindow_x2] - img_square.data[subWindow_y2][subWindow_x1-1] - img_square.data[subWindow_y1-1][subWindow_x2] + img_square.data[subWindow_y1-1][subWindow_x1-1]);
-	Lm = (long double)(img.data[subWindow_y2][subWindow_x2] - img.data[subWindow_y2][subWindow_x1-1] - img.data[subWindow_y1-1][subWindow_x2] + img.data[subWindow_y1-1][subWindow_x1-1]);
+	Lx = (long double)img_square.data[subWindow_y2-1][subWindow_x2-1];
+	Lm = (long double)img.data[subWindow_y2-1][subWindow_x2-1];
+	if (subWindow_x1 > 0){
+		Lx -= img_square.data[subWindow_y2-1][subWindow_x1 - 1];
+		Lm -= img.data[subWindow_y2-1][subWindow_x1 - 1];
+	}
+	if (subWindow_y1 > 0){
+		Lx -= img_square.data[subWindow_y1 - 1][subWindow_x2-1];
+		Lm -= img.data[subWindow_y1 - 1][subWindow_x2-1];
+	}
+	if (subWindow_x1 > 0 && subWindow_y1 > 0){
+		Lx += img_square.data[subWindow_y1 - 1][subWindow_x1 - 1];
+		Lm += img.data[subWindow_y1 - 1][subWindow_x1 - 1];
+	}
 	Lm = Lm / area;
 	sigma_square = Lx / area - Lm * Lm;
 	
@@ -128,9 +140,9 @@ void click_judge()
 	long double lx=0, lm=0;
 	int a = 0;
 	unsigned char *p;
-	for (int i = subWindow_y1; i <= subWindow_y2; i++){
+	for (int i = subWindow_y1; i < subWindow_y2; i++){
 		p = SrcImg_gray.ptr<unsigned char>(i);
-		for (int j = subWindow_x1; j <= subWindow_x2; j++){
+		for (int j = subWindow_x1; j < subWindow_x2; j++){
 			lm += p[j];
 			lx += p[j] * p[j];
 			a++;
@@ -145,10 +157,10 @@ void click_judge()
 	
 	
 	
-	click_subWindow = Mat::zeros((subWindow_x2 - subWindow_x1 + 1), (subWindow_y2 - subWindow_y1 + 1), OutImg_click.type());
+	click_subWindow = Mat::zeros((subWindow_x2 - subWindow_x1), (subWindow_y2 - subWindow_y1), OutImg_click.type());
 	//printf("%d %d\n", subWindow_x1, subWindow_x2);
-	for (int i = 0, io = subWindow_x1; io <= subWindow_x2; i++, io++)
-		for (int j = 0, jo = subWindow_y1; jo <= subWindow_y2; j++, jo++){
+	for (int i = 0, io = subWindow_x1; io < subWindow_x2; i++, io++)
+		for (int j = 0, jo = subWindow_y1; jo < subWindow_y2; j++, jo++){
 		click_subWindow.at<Vec3b>(j, i)[0] = SrcImg.at<Vec3b>(jo, io)[0];
 		click_subWindow.at<Vec3b>(j, i)[1] = SrcImg.at<Vec3b>(jo, io)[1];
 		click_subWindow.at<Vec3b>(j, i)[2] = SrcImg.at<Vec3b>(jo, io)[2];
@@ -171,7 +183,7 @@ void click_judge()
 		system("rmdir click_nopass /s /q");
 		system("mkdir click_nopass");
 
-		double scale = (double)(subWindow_x2 - subWindow_x1 + 1) / 24;
+		double scale = (double)(subWindow_x2 - subWindow_x1) / 24;
 		for (int i = 0; i < stageNum; i++)
 			for (int j = 0; j < s_num[i]; j++)
 				s[i][j].setScale(scale);
@@ -185,6 +197,7 @@ void click_judge()
 				s[i][j].setPosition(subWindow_x1, subWindow_y1, sigma);
 				int result = s[i][j].judge(&img);
 				sum += alpha * result;
+				printf("th = %lf  sum = %lf\n", s[i][j].th, s[i][j].sum);
 
 				int x1 = s[i][j].getX1(), x2 = s[i][j].getX2(), y1 = s[i][j].getY1(), y2 = s[i][j].getY2();
 				char imgName[100] = {0};
@@ -217,7 +230,7 @@ void click_judge()
 			}
 		}
 		if (isFace){
-			Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
+			Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1, subWindow_y2 - subWindow_y1);
 			rectangle(OutImg_click, rect, Scalar(255, 0, 0));
 			imshow("Output_Click", OutImg_click);
 			waitKey(1);
@@ -226,7 +239,7 @@ void click_judge()
 
 	fclose(click_pass);
 	fclose(click_nopass);
-	printf("\ncp=%d cn=%d\n", cp, cn);
+	printf("\npass=%d nopass=%d\n", cp, cn);
 	printf("\n(%d, %d) to (%d, %d)\narea = %d * %d = %d\nsigma = %lf\nisFace = %d\n", subWindow_x1, subWindow_y1, subWindow_x2, subWindow_y2, (subWindow_x2 - subWindow_x1 + 1), (subWindow_y2 - subWindow_y1 + 1), (subWindow_x2 - subWindow_x1 + 1) * (subWindow_y2 - subWindow_y1 + 1), sigma, isFace);
 
 	return;
@@ -286,12 +299,21 @@ void scan()
 
 	double scale = 1, move = SHIFT;
 	double sigma;
-	int subWindow_x1 = 0, subWindow_y1 = 0, subWindow_x2 = 23, subWindow_y2 = 23;
+	int subWindow_x1 = 0, subWindow_y1 = 0, ori_subWindow_x2 = 24, ori_subWindow_y2 = 24, subWindow_x2 = 24, subWindow_y2 = 24;
 	bool isFace = FALSE;
 
-	for (int c = 0; c < 10; c++, scale *= FACTOR, move *= FACTOR){
-		subWindow_x2 *= FACTOR;
-		subWindow_y2 *= FACTOR;
+	for (int c = 0;; c++, scale *= FACTOR, move *= FACTOR){
+		subWindow_x2 = ori_subWindow_x2 * scale;
+		subWindow_y2 = ori_subWindow_y2 * scale;
+		/*
+		if (c != 0){
+			subWindow_x2 *= FACTOR;
+			subWindow_y2 *= FACTOR;
+		}
+		*/
+
+		if (subWindow_x2 > SrcImg_gray.cols || subWindow_y2 > SrcImg_gray.rows)
+			break;
 
 		for (int i = 0; i < stageNum; i++)
 			for (int j = 0; j < s_num[i]; j++)
@@ -302,13 +324,25 @@ void scan()
 		vector<int> FrameStage, Ps;
 		FrameStage.resize(stageNum);
 		Ps.resize(stageNum);
-		while (subWindow_y2 < SrcImg_gray.rows){
-			while (subWindow_x2 < SrcImg_gray.cols){
-				int area = (subWindow_x2 - subWindow_x1 + 1) * (subWindow_y2 - subWindow_y1 + 1);
+		while (subWindow_y2 <= SrcImg_gray.rows){
+			while (subWindow_x2 <= SrcImg_gray.cols){
+				int area = (subWindow_x2 - subWindow_x1) * (subWindow_y2 - subWindow_y1);
 				long double sigma_square, Lx, Lm;
 
-				Lx = (long double)(img_square.data[subWindow_y2][subWindow_x2] - img_square.data[subWindow_y2][subWindow_x1 - 1] - img_square.data[subWindow_y1 - 1][subWindow_x2] + img_square.data[subWindow_y1 - 1][subWindow_x1 - 1]);
-				Lm = (long double)(img.data[subWindow_y2][subWindow_x2] - img.data[subWindow_y2][subWindow_x1 - 1] - img.data[subWindow_y1 - 1][subWindow_x2] + img.data[subWindow_y1 - 1][subWindow_x1 - 1]);
+				Lx = (long double)img_square.data[subWindow_y2-1][subWindow_x2-1];
+				Lm = (long double)img.data[subWindow_y2-1][subWindow_x2-1];
+				if (subWindow_x1 > 0){
+					Lx -= img_square.data[subWindow_y2-1][subWindow_x1 - 1];
+					Lm -= img.data[subWindow_y2-1][subWindow_x1 - 1];
+				}
+				if (subWindow_y1 > 0){
+					Lx -= img_square.data[subWindow_y1 - 1][subWindow_x2-1];
+					Lm -= img.data[subWindow_y1 - 1][subWindow_x2-1];
+				}
+				if (subWindow_x1 > 0 && subWindow_y1 > 0){
+					Lx += img_square.data[subWindow_y1 - 1][subWindow_x1 - 1];
+					Lm += img.data[subWindow_y1 - 1][subWindow_x1 - 1];
+				}
 				Lm = Lm / area;
 				sigma_square = Lx / area - Lm * Lm;
 
@@ -316,7 +350,7 @@ void scan()
 					sigma_square *= -1;
 				sigma = sqrt(sigma_square);
 				if (sigma < 1e-15 && sigma > -1e-15){
-					printf("(%d, %d) to (%d, %d)'s sigma == 0.\n", subWindow_x1, subWindow_y1, subWindow_x2, subWindow_y2);
+					//printf("(%d, %d) to (%d, %d)'s sigma == 0.\n", subWindow_x1, subWindow_y1, subWindow_x2, subWindow_y2);
 				}
 				else{
 					for (int i = 0; i < stageNum; i++){
@@ -339,7 +373,7 @@ void scan()
 						}
 					}
 					if (isFace){
-						Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
+						Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1, subWindow_y2 - subWindow_y1);
 						rectangle(OutImg, rect, Scalar(255, 0, 0));
 						isFace = FALSE;
 						P++;
@@ -349,7 +383,7 @@ void scan()
 
 				if (scan_flag){
 					Mat tmp = OutImg.clone();
-					Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1 + 1, subWindow_y2 - subWindow_y1 + 1);
+					Rect rect = Rect(subWindow_x1, subWindow_y1, subWindow_x2 - subWindow_x1, subWindow_y2 - subWindow_y1);
 
 					rectangle(tmp, rect, Scalar(255, 0, 0));
 					imshow("Output_Scan", tmp);
@@ -421,7 +455,7 @@ int main(void)
 
 	unsigned char *p;
 
-	SrcImg = imread("test.jpg");
+	SrcImg = imread("test22.jpg");
 	imshow("SrcImg", SrcImg);
 	waitKey(1);
 	cvtColor(SrcImg, SrcImg_gray, CV_RGB2GRAY);
