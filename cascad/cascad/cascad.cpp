@@ -121,12 +121,20 @@ void preset(char  *FileName){
 		*(exCanUse + i) = 1;
 		Lm = 0;
 		Lx = 0;
+		Lm = ex[i].data[23][23];//因為ex是intimg   ex[i].data[23][23]就是整張圖的像素總和
 		for (int j = 0; j < 24; j++)
 			for (int k = 0; k < 24; k++){
-				Lm += ex[i].data[j][k];
-				Lx += ex[i].data[j][k] * ex[i].data[j][k];
+			//	Lm += ex[i].data[j][k];
+			if (j == 0 && k != 0)
+				Lx += (ex[i].data[j][k] - ex[i].data[j][k - 1])* (ex[i].data[j][k] - ex[i].data[j][k - 1]);
+			else if (j != 0 && k == 0)
+				Lx += (ex[i].data[j][k] - ex[i].data[j - 1][k])*(ex[i].data[j][k] - ex[i].data[j - 1][k]);
+			else if (j != 0 && k != 0)
+				Lx += (ex[i].data[j][k] - ex[i].data[j - 1][k] - ex[i].data[j][k - 1] + ex[i].data[j - 1][k - 1])*(ex[i].data[j][k] - ex[i].data[j - 1][k] - ex[i].data[j][k - 1] + ex[i].data[j - 1][k - 1]);
+			else
+				Lx += ex[i].data[j][k];
 				printf("%lf, %lf\n", Lm, Lx);
-				system("PAUSE");
+				//system("PAUSE");
 			}
 		Lx /= 576;
 		//cout << "M :" << Lm<<endl;
@@ -138,7 +146,7 @@ void preset(char  *FileName){
 			Lz *= -1;
 		zigma[i] = sqrt(Lz);
 		printf("%lf\n", zigma[i]);
-		system("PAUSE");
+		//system("PAUSE");
 		if (zigma[i] < 1e-15&&zigma[i]> -1e-15){
 			if (ex[i].isFace == true)
 				m--;
