@@ -455,7 +455,7 @@ int main(void)
 
 	unsigned char *p;
 
-	SrcImg = imread("test16.jpg");
+	SrcImg = imread("test31.jpg");
 	imshow("SrcImg", SrcImg);
 	waitKey(1);
 	cvtColor(SrcImg, SrcImg_gray, CV_RGB2GRAY);

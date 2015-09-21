@@ -1,4 +1,4 @@
-﻿已經開始建置於 2015/9/21 上午 04:31:41。
+﻿已經開始建置於 2015/9/21 下午 06:00:35。
      1>節點 2 (Build 目標) 上的專案 "D:\Code\GitHub\Face-Detection\detection\detection\detection.vcxproj"。
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt detection.cpp
@@ -24,4 +24,4 @@
 
 建置成功。
 
-經過時間 00:00:02.04
+經過時間 00:00:01.65
