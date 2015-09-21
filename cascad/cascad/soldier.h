@@ -54,8 +54,8 @@ class Soldier{
 		};
 
 		int judge(IntImg *intImg){
-			double sum= (double)comput(intImg)*this->sigma;
-			cout << "sum : "<<sum<<" , sigma : "<<this->sigma<<" , th : "<<th<<" , p : "<< p<<endl;
+			double sum= (double)comput(intImg)/this->sigma;
+			//cout << "sum : "<<sum<<" , sigma : "<<this->sigma<<" , th : "<<th<<" , p : "<< p<<endl;
 			if(p==1)
 				return th>=sum;
 			else

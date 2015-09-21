@@ -220,7 +220,7 @@ void mthread(int start, int end){   //以多執行緒執行的區段
 			if (exCanUse[j] == true){
 				if (zigma[j] == 0)
 					cout << "1";
-				(fss + i)->fValue = soldier[k]->comput(ex + j) *zigma[j];
+				(fss + i)->fValue = soldier[k]->comput(ex + j) /zigma[j];
 			//	(fss + i)->fValue = soldier[k]->comput(ex + j);
 				//cout << "f " << soldier[k]->comput(ex + j) <<" z "<<zigma[j]<< " fVaule : " << (fss + i)->fValue << endl;
 				(fss + i)->eNum = j;
@@ -390,7 +390,7 @@ int training(int tC, Soldier **strong){
 	tCount = tC;
 	fprintf_s(outdata, "%d\n", tCount);
 
-	tn = 1;
+	tn = 8;
 
 	ET = (double*)malloc(sizeof(double)*tCount);
 	correctT = (double*)malloc(sizeof(double)*tCount);
@@ -411,15 +411,15 @@ int training(int tC, Soldier **strong){
 
 		
 		c = sCount / tn + 1;                         //讓每個弱分類器評判每個樣本  將工作切割成數段以多執行緒完成
-		/*for (i = 0, j = 0; i < tn; i++){
+		for (i = 0, j = 0; i < tn; i++){
 			mt[i] = new thread(mthread, j, j + c);
 			j += c;
 		}
 		for (i = 0; i < tn; i++){
 			mt[i]->join();
 			delete mt[i];
-		}*/
-		mthread(0, sCount);
+		}
+	//	mthread(0, sCount);
 		double eMin;
 		int ctmp = 0;
 
