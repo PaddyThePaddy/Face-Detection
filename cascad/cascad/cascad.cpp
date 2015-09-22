@@ -14,9 +14,11 @@ FILE *outdata;
 char str[200];
 thread ** mt;
 int tCount;
+int tn = 8;
+int pauseFlage=0, tnFlage=0,ctrlThreadFlage=0;
 double *E, *correct, *ET, *correctT, cor;
 char curFileName[40];
-int c, tn, m, l;
+int c, m, l;
 int sCount, eCount;
 Soldier *soldier[180000];
 IntImg *ex;
@@ -26,6 +28,8 @@ double Tp, Tn;
 long long int seekDegree, seekDegree_2;
 FILE *example;
 int *exCanUse;
+double *Vmth;
+int VmthCount;
 double Lz, Lm, Lx, Lxtmp, *zigma;// Light Nomoralize 
 int judge(IntImg *ex, Soldier **h, double *alpha, double th, int sCount,double sigma){
 	double hSum = 0;
@@ -35,7 +39,25 @@ int judge(IntImg *ex, Soldier **h, double *alpha, double th, int sCount,double s
 		hSum += alpha[i] * h[i]->judge(ex);
 	}
 	
-	return (int)hSum >= (th);
+	return (int)(hSum >= th);
+}
+int Vjudge(IntImg *ex, Soldier **h, double *alpha, double th, int sCount, double sigma, int count){
+	double hSum = 0;
+	
+	for (int i = 0; i<sCount; i++){
+		h[i]->setSigma(sigma);
+		hSum += alpha[i] * h[i]->judge(ex);
+	}
+	if (ex->isFace){
+
+			
+		*(Vmth + VmthCount) = hSum;
+		VmthCount++;
+
+		//cout << "hsum : " << hSum << " , " << th<<endl;
+	}
+	
+	return (int)(hSum >= th);
 }
 int fileNo=0;
 class Fv{
@@ -55,7 +77,14 @@ int compare(const void * a, const void * b)
 }
 int compares(const void *  a, const void * b)
 {
-	return  (double*)a - (double*)b;
+	double t;
+	t = (double*)b - (double*)a;
+	cout << &b <<" , "<< &a<< endl;
+	if (t < 0)
+		return -1;
+	else if (t == 0)
+		return 0;
+	else return 1;
 
 }
 void getNextFileName(){
@@ -133,7 +162,7 @@ void preset(char  *FileName){
 				Lx += (ex[i].data[j][k] - ex[i].data[j - 1][k] - ex[i].data[j][k - 1] + ex[i].data[j - 1][k - 1])*(ex[i].data[j][k] - ex[i].data[j - 1][k] - ex[i].data[j][k - 1] + ex[i].data[j - 1][k - 1]);
 			else
 				Lx += ex[i].data[j][k];
-				printf("%lf, %lf\n", Lm, Lx);
+				//printf("%lf, %lf\n", Lm, Lx);
 				//system("PAUSE");
 			}
 		Lx /= 576;
@@ -154,7 +183,7 @@ void preset(char  *FileName){
 				l--;
 			*(exCanUse + i) = 0;
 		}
-		cout << i << "  zig: " << zigma[i] << " ,x: " << Lx << " ,m: " << Lm << " ,z: " << Lz << endl;
+		//cout << i << "  zig: " << zigma[i] << " ,x: " << Lx << " ,m: " << Lm << " ,z: " << Lz << endl;
 	}
 	/*double x = 1, y = 0.0000000000000000000000001;
 	int ace=0;
@@ -390,7 +419,7 @@ int training(int tC, Soldier **strong){
 	tCount = tC;
 	fprintf_s(outdata, "%d\n", tCount);
 
-	tn = 8;
+	
 
 	ET = (double*)malloc(sizeof(double)*tCount);
 	correctT = (double*)malloc(sizeof(double)*tCount);
@@ -410,6 +439,13 @@ int training(int tC, Soldier **strong){
 
 
 		
+		if (tnFlage == 1){
+			tnFlage = 0;
+			cout << "input the new tn (process num) : ";
+			cin >> tn;
+			cout << "new tn is : " << tn << endl;
+		}
+		mt = (thread**)malloc(sizeof(thread*) * tn);
 		c = sCount / tn + 1;                         //讓每個弱分類器評判每個樣本  將工作切割成數段以多執行緒完成
 		for (i = 0, j = 0; i < tn; i++){
 			mt[i] = new thread(mthread, j, j + c);
@@ -419,6 +455,7 @@ int training(int tC, Soldier **strong){
 			mt[i]->join();
 			delete mt[i];
 		}
+		free(mt);
 	//	mthread(0, sCount);
 		double eMin;
 		int ctmp = 0;
@@ -435,7 +472,7 @@ int training(int tC, Soldier **strong){
 				continue;
 			aCount++;
 			strong[tC - 1]->setSigma(zigma[i]);
-			cout << "judge :  " << strong[tC - 1]->judge(ex + i) << " , ex isFace : " << (int)(ex[i].isFace) << endl;
+			//cout << "judge :  " << strong[tC - 1]->judge(ex + i) << " , ex isFace : " << (int)(ex[i].isFace) << endl;
 			if ((strong[tC - 1]->judge(ex + i) - (int)(ex[i].isFace)) == 0){
 				
 				wtmp = w[i];
@@ -456,7 +493,7 @@ int training(int tC, Soldier **strong){
 		}
 		cor = (double)ctmp / eCount;
 		t1 = time(NULL);
-		printf("%-4d: %s  ,canUsenum :%d , false isFace: %d , nonface: %d\n", t, str, aCount, jugT, jugF);
+		printf("%-4d: %s  ,canUsenum :%d , false isFace: %d , nonface: %d\n", tC, str, aCount, jugT, jugF);
 		fprintf_s(outdata, "%s %lf\n", str, cor);
 	}
 
@@ -465,6 +502,27 @@ int training(int tC, Soldier **strong){
 	fclose(example);
 	fclose(outdata);
 	return 0;
+}
+void controlThread(){
+	char x;
+	cout << "ctrl Thread activated ." << endl;
+	while (1){
+		if (ctrlThreadFlage == 1){
+			ctrlThreadFlage = 0;
+			return;
+		}
+		x =' ';
+		if (_kbhit())
+			x = _getch();
+		if (x == 'p'){
+			pauseFlage = 1;
+			cout << "pauseFlage is on." << endl;
+		}
+		if (x == 't'){
+			tnFlage = 1;
+			cout << "tnFlage is on." << endl;
+		}
+	}
 }
 int main(){
 	double f; //maximum acceptable fase positive rate  per layer  -- value is selected by user  
@@ -477,14 +535,17 @@ int main(){
 	double conf_dRate[100];
 	IntImg *P, *N,*V;
 	Soldier **h;
+	thread *ctrlThread;
 	char str[256];
+	int *VexCanUse;
 	Soldier **strong =nullptr;
 	Soldier **cascadedStrong = nullptr;
 	FILE *vSet,*out,*conf; // conf : configration file
-	
+	double *Vzigma;
 	fopen_s(&vSet, "vSetIntegralImage", "rb");
 	fopen_s(&conf,"config.txt","r");
 	fscanf_s(conf,"%d",&conf_non_auto_num);
+	
 	cout << "conf non auto num:" << conf_non_auto_num << endl;
 	for (i = 0; i < conf_non_auto_num; i++){
 		fscanf_s(conf, "%d", &conf_sCount[i]);
@@ -497,13 +558,57 @@ int main(){
 	fread(&vm, sizeof(int), 1, vSet);
 	fread(&vl, sizeof(int), 1, vSet);
 	V = (IntImg*)malloc(sizeof(IntImg)*vCount);
+	VexCanUse = (int*)malloc(sizeof(int)*vCount);
+	Vzigma = (double*)malloc(sizeof(double)*vCount);
 	fread(V, sizeof(IntImg), vCount, vSet);
-	cout << "face : " << vm << "\tnonface : " << vl << "\tvCount : "<<vCount<<endl;
+	
+	for (i = 0; i < vCount; i++){
+		*(VexCanUse + i) = 1;
+		Lm = 0;
+		Lx = 0;
+		Lm = V[i].data[23][23];//因為ex是intimg   ex[i].data[23][23]就是整張圖的像素總和
+		for (int j = 0; j < 24; j++)
+			for (int k = 0; k < 24; k++){
+			//	Lm += ex[i].data[j][k];
+			if (j == 0 && k != 0)
+				Lx += (V[i].data[j][k] - V[i].data[j][k - 1])* (V[i].data[j][k] - V[i].data[j][k - 1]);
+			else if (j != 0 && k == 0)
+				Lx += (V[i].data[j][k] - V[i].data[j - 1][k])*(V[i].data[j][k] - V[i].data[j - 1][k]);
+			else if (j != 0 && k != 0)
+				Lx += (V[i].data[j][k] - V[i].data[j - 1][k] - V[i].data[j][k - 1] + V[i].data[j - 1][k - 1])*(V[i].data[j][k] - V[i].data[j - 1][k] - V[i].data[j][k - 1] + V[i].data[j - 1][k - 1]);
+			else
+				Lx += V[i].data[j][k];
+			//printf("%lf, %lf\n", Lm, Lx);
+			//system("PAUSE");
+			}
+		Lx /= 576;
+		//cout << "M :" << Lm<<endl;
+		Lm /= 576;
+		//cout << "m :" << Lm << endl;
+		Lm *= Lm;
+		Lz = Lx - Lm;
+		if (Lz < 0)
+			Lz *= -1;
+		Vzigma[i] = sqrt(Lz);
+		//printf("%lf\n", Vzigma[i]);
+		//system("PAUSE");
+		if (Vzigma[i] < 1e-15&&Vzigma[i]> -1e-15){
+			if (V[i].isFace == true)
+				vm--;
+			else
+				vl--;
+			*(VexCanUse + i) = 0;
+		}
+		//cout << i << "  zig: " << Vzigma[i] << " ,x: " << Lx << " ,m: " << Lm << " ,z: " << Lz << endl;
+	}
+	cout << "face : " << vm << "\tnonface : " << vl << "\tvCount : " << vCount << endl;
+	Vmth = (double*)malloc(sizeof(double) * vm);
 	F[0] = 1.0;
 	D[0] = 1.0;
-	i = 0;
+	i=0;
 	cout << "input f , d , Ftarget : " << endl;
 	cin >> f >> d >> Ftarget;
+
 	getNextFileName();
 	preset(curFileName);
 	
@@ -513,7 +618,7 @@ int main(){
 	//while (F[i] > Ftarget){
 	while (i<38){
 		cout << "-----------------  stage  " << i <<"  -----------------"<<endl;
-		if (i == 1)
+		if (i == 10)
 			return 0;
 //		fprintf_s(out, "%d\n", i);
 		i++;
@@ -548,13 +653,33 @@ int main(){
 
 			if (non_auto_key){
 				for (conf_counter = 1; conf_counter <= conf_sCount[i - 1]; conf_counter++){
+					if (pauseFlage == 1){
+						pauseFlage = 0;
+						cout << "pause now"<<endl;
+						system("PAUSE");
+						cout << "now will continue" << endl;
+					}
 					strong[conf_counter - 1] = (Soldier*)malloc(sizeof(Soldier));
+					ctrlThread = new thread(controlThread);
 					training(conf_counter, strong);
+					ctrlThreadFlage = 1;
+					ctrlThread->join();
+					delete ctrlThread;
 				}
 			}
 			else{
+				if (pauseFlage == 1){
+					pauseFlage = 0;
+					cout << "pause now" << endl;
+					system("PAUSE");
+					cout << "now will continue" << endl;
+				}
 				strong[n[i] - 1] = (Soldier*)malloc(sizeof(Soldier));
+				ctrlThread = new thread(controlThread);
 				training(n[i], strong);
+				ctrlThreadFlage = 1;
+				ctrlThread->join();
+				delete ctrlThread;
 			}
 
 			if (non_auto_key){
@@ -573,24 +698,65 @@ int main(){
 					th += alpha[count] / 2;
 				//th += alpha[n[i] - 1] / 2;
 			}
-			thvalue = th / 100000;
+			thvalue = th / 1000;
 			thCount = 0;
-			while (0){  //test mod
+			int res;
+				VmthCount = 0;
 				for (count = 0, fdc = 0, correctCount = 0; count < vCount; count++){
-
-					if (judge(V + count, strong, alpha, th, n[i] , zigma[count]) == 1 && V[count].isFace)
+					if (*(VexCanUse + count) == 0)
+						continue;
+					res = Vjudge(V + count, strong, alpha, th, n[i], Vzigma[count], count);
+					if (res == 1 && V[count].isFace)
 						correctCount++;
-					if (!V[count].isFace && (judge(V + count, strong, alpha, th, n[i],zigma[count]) == 1))
+					if (!V[count].isFace && res == 1)
+						fdc++;
+				}
+				double dtemp;
+				int dctemp;
+				for (count = 0; count < vm; count++)
+					for (countj = count; countj < vm; countj++){
+						if (*(Vmth + count) < *(Vmth + countj)){
+							dtemp = *(Vmth + count);
+							*(Vmth + count) = *(Vmth + countj);
+							*(Vmth + countj) = dtemp;
+						}
+					}
+				
+			
+				
+				if (non_auto_key){
+					dctemp = (int)(vm*conf_dRate[i - 1]);
+					th = *(Vmth + dctemp);
+				}
+				else{
+					dctemp = (int)(vm*0.9975);
+					th = *(Vmth + dctemp);
+				}
+				
+					while (dctemp > 0&&th==0){
+						dctemp--;
+						th = *(Vmth + dctemp);
+						
+					}
+				//	th *= 0.9;
+				VmthCount = 0;
+				for (count = 0, fdc = 0, correctCount = 0; count < vCount; count++){
+					if (*(VexCanUse + count) == 0)
+						continue;
+					res = Vjudge(V + count, strong, alpha, th, n[i], Vzigma[count], count);
+					if (res == 1 && V[count].isFace)
+						correctCount++;
+					if (!V[count].isFace && res == 1)
 						fdc++;
 				}
 				D[i] = (double)correctCount / vm;
 				F[i] = (double)fdc / vl;
-				if (non_auto_key){
+				/*if (non_auto_key){
 					if (D[i] < conf_dRate[i - 1]){
 						if (th <= 0)break;
 						th -= thvalue;
 						thCount++;
-						if (thCount >= 99999)break;
+						if (thCount >= 999)break;
 						
 					}
 					else
@@ -607,7 +773,9 @@ int main(){
 					else
 						break;
 				}
-			}
+
+				*/
+			
 			cout << "F[i] > f * F[i-1] : " << F[i] << " > " << f << " * " << F[i - 1] << " , " << f*F[i - 1] << endl;
 			cout << "F[i] : " << F[i] << " , D[i] : " << D[i] <<" , th : "<<th<< endl;
 			if (non_auto_key)
