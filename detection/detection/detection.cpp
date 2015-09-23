@@ -439,8 +439,16 @@ int main(void)
 		int x1, y1, x2, y2, type, p;
 		double e;
 		long double th;
+		char tmpstr[100];
+		double tmpdouble;
+
+		/* catch no use char */
+		fgets(tmpstr, 100, soldier_cascade);
+		fgets(tmpstr, 100, soldier_cascade);
+		/* catch no use char */
 
 		fscanf_s(soldier_cascade, "%d", &s_num[i]);
+	
 		s_total += s_num[i];
 		s[i].resize(s_num[i]);
 		for (int j = 0; j < s_num[i]; j++){
@@ -449,6 +457,19 @@ int main(void)
 			//system("PAUSE");
 			s[i][j] = Soldier(x1, y1, x2, y2, type, p, th, e);
 		}
+
+		/* catch no use char */
+		fgets(tmpstr, 100, soldier_cascade);
+		for (int tmpi = 0; tmpi < 4; tmpi++)
+			fscanf_s(soldier_cascade, "%c", &tmpstr[0]);
+		fscanf_s(soldier_cascade, "%lf", &tmpdouble);
+		for (int tmpi = 0; tmpi < 7; tmpi++)
+			fscanf_s(soldier_cascade, "%c", &tmpstr[0]);
+		fscanf_s(soldier_cascade, "%lf", &tmpdouble);
+		for (int tmpi = 0; tmpi < 8; tmpi++)
+			fscanf_s(soldier_cascade, "%c", &tmpstr[0]);
+		/* catch no use char */
+
 		fscanf_s(soldier_cascade, "%lf", &th_stage[i]);
 	}
 	fclose(soldier_cascade);
