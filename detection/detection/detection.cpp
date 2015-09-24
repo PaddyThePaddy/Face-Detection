@@ -460,14 +460,7 @@ int main(void)
 
 		/* catch no use char */
 		fgets(tmpstr, 100, soldier_cascade);
-		for (int tmpi = 0; tmpi < 4; tmpi++)
-			fscanf_s(soldier_cascade, "%c", &tmpstr[0]);
-		fscanf_s(soldier_cascade, "%lf", &tmpdouble);
-		for (int tmpi = 0; tmpi < 7; tmpi++)
-			fscanf_s(soldier_cascade, "%c", &tmpstr[0]);
-		fscanf_s(soldier_cascade, "%lf", &tmpdouble);
-		for (int tmpi = 0; tmpi < 8; tmpi++)
-			fscanf_s(soldier_cascade, "%c", &tmpstr[0]);
+		fscanf_s(soldier_cascade, "%c : %lf , %c : %lf , %c%c : ", &tmpstr[0], 1, &tmpdouble, &tmpstr[0], 1, &tmpdouble, &tmpstr[0], 1, &tmpstr[0], 1);
 		/* catch no use char */
 
 		fscanf_s(soldier_cascade, "%lf", &th_stage[i]);
@@ -475,8 +468,13 @@ int main(void)
 	fclose(soldier_cascade);
 
 	unsigned char *p;
+	char srcName[100] = { 0 };
 
-	SrcImg = imread("test28.jpg");
+	printf("Please input the image file name:\n(不用副檔名, 但限定jpg, 對惹, 沒有防呆>.0)\n");
+	gets_s(srcName);
+	sprintf_s(srcName, "%s.jpg", srcName);
+
+	SrcImg = imread(srcName);
 	imshow("SrcImg", SrcImg);
 	waitKey(1);
 	cvtColor(SrcImg, SrcImg_gray, CV_RGB2GRAY);
