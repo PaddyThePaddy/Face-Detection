@@ -12,8 +12,8 @@
 using namespace cv;
 using namespace std;
 
-#define FACTOR 1.25
-#define SHIFT 1.5
+#define FACTOR 2.5
+#define SHIFT 4.5
 #define FACE_QUANTITY_THRESHOLD 4
 #define FIND_UNION_MOVERANGE 2
 #define FIND_UNION_FACTOR 1.25
@@ -165,7 +165,7 @@ void mode3_quick_scan()
 			checkboard[i][j] = 0;
 	}
 
-	/*int smax;
+	int smax;
 	for (smax = 0; subWindow_x2 <= SrcImg_gray.cols && subWindow_y2 <= SrcImg_gray.rows; smax++){
 		scale *= FACTOR;
 		move *= FACTOR;
@@ -173,10 +173,10 @@ void mode3_quick_scan()
 		subWindow_y2 = ori_subWindow_y2 * scale;
 	}
 	scale /= FACTOR;
-	move /= FACTOR;*/
+	move /= FACTOR;
 
-	//for (int c = 0, si = smax; si > 0; c++, si--, scale /= FACTOR, move /= FACTOR){
-	for (int c = 1; ; c++, scale *= FACTOR, move *= FACTOR){
+	for (int c = 0, si = smax; si > 0; c++, si--, scale /= FACTOR, move /= FACTOR){
+	//for (int c = 1; ; c++, scale *= FACTOR, move *= FACTOR){
 		subWindow_x2 = ori_subWindow_x2 * scale;
 		subWindow_y2 = ori_subWindow_y2 * scale;
 		/*
@@ -200,19 +200,19 @@ void mode3_quick_scan()
 		Ps.resize(stageNum);
 		while (subWindow_y2 <= SrcImg_gray.rows){
 			while (subWindow_x2 <= SrcImg_gray.cols){
-				//int checkweight = checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 + subWindow_x1) / 2] + checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 - subWindow_x1) * 2 / 5 + subWindow_x1] + checkboard[(subWindow_y2 - subWindow_y1) * 2 / 5 + subWindow_y1][(subWindow_x2 + subWindow_x1) / 2] + checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 - subWindow_x1) * 3 / 5 + subWindow_x1] + checkboard[(subWindow_y2 - subWindow_y1) * 3 / 5 + subWindow_y1][(subWindow_x2 + subWindow_x1) / 2];
-				if (checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 + subWindow_x1) / 2] == c){
-				//if (checkweight >= 1){
+				int checkweight = checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 + subWindow_x1) / 2] + checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 - subWindow_x1) * 2 / 5 + subWindow_x1] + checkboard[(subWindow_y2 - subWindow_y1) * 2 / 5 + subWindow_y1][(subWindow_x2 + subWindow_x1) / 2] + checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 - subWindow_x1) * 3 / 5 + subWindow_x1] + checkboard[(subWindow_y2 - subWindow_y1) * 3 / 5 + subWindow_y1][(subWindow_x2 + subWindow_x1) / 2];
+				//if (checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 + subWindow_x1) / 2] == c){
+				if (checkweight >= 1){
 					subWindow_x1 += move;
 					subWindow_x2 += move;
 					continue;
 				}
 				//else if ((checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 + subWindow_x1) / 2] != 0) && (checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 + subWindow_x1) / 2] + si >= -4)){
-				/*else if (checkweight < 0 && checkweight + si * 5 >= -20){
+				else if (checkweight < 0 && checkweight + si * 5 >= -20){
 					subWindow_x1 += move;
 					subWindow_x2 += move;
 					continue;
-				}*/
+				}
 				
 				int area = (subWindow_x2 - subWindow_x1) * (subWindow_y2 - subWindow_y1);
 				long double sigma_square, Lx, Lm;
@@ -272,12 +272,12 @@ void mode3_quick_scan()
 
 						for (int i = subWindow_y1; i < subWindow_y2; i++)
 							for (int j = subWindow_x1; j < subWindow_x2; j++)
-								checkboard[i][j] = c;
+								checkboard[i][j] = 1;
 						
 						isFace = FALSE;
 						P++;
 					}
-					/*else{
+					else{
 						if (checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 + subWindow_x1) / 2] <= 0)
 							checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 + subWindow_x1) / 2] = -1 * si;
 						if (checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 - subWindow_x1) * 2 / 5 + subWindow_x1] <= 0)
@@ -288,7 +288,7 @@ void mode3_quick_scan()
 							checkboard[(subWindow_y2 + subWindow_y1) / 2][(subWindow_x2 - subWindow_x1) * 3 / 5 + subWindow_x1] = -1 * si;
 						if (checkboard[(subWindow_y2 - subWindow_y1) * 3 / 5 + subWindow_y1][(subWindow_x2 + subWindow_x1) / 2] <= 0)
 							checkboard[(subWindow_y2 - subWindow_y1) * 3 / 5 + subWindow_y1][(subWindow_x2 + subWindow_x1) / 2] = -1 * si;
-					}*/
+					}
 				}
 				FrameSum++;
 
