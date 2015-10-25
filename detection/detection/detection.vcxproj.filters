@@ -26,5 +26,8 @@
     <ClInclude Include="Soldier_d.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="Face_Window.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

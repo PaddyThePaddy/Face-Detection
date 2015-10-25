@@ -1,0 +1,12 @@
+Scale: 15.625000, FrameSum: 24, P: 0, N: 24, PFrate: 0.000000
+Stage 1 => Total: 24, Pass: 0, noPass: 24, PassRate: 0.000000
+
+Scale: 6.250000, FrameSum: 620, P: 0, N: 620, PFrate: 0.000000
+Stage 1 => Total: 620, Pass: 0, noPass: 620, PassRate: 0.000000
+
+Scale: 2.500000, FrameSum: 5780, P: 0, N: 5780, PFrate: 0.000000
+Stage 1 => Total: 5780, Pass: 0, noPass: 5780, PassRate: 0.000000
+
+Scale: 1.000000, FrameSum: 33730, P: 19, N: 33711, PFrate: 0.000563
+Stage 1 => Total: 33605, Pass: 19, noPass: 33586, PassRate: 0.000565
+

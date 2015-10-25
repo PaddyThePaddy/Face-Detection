@@ -1,0 +1,11 @@
+﻿已經開始建置於 2015/10/25 上午 02:52:48。
+     1>節點 2 (Build 目標) 上的專案 "D:\Code\GitHub\Face-Detection\detection\detection\detection.vcxproj"。
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W1 /WX- /O2 /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Debug\\" /Fd"x64\Debug\vc120.pdb" /Gd /TP /errorReport:prompt detection.cpp
+         detection.cpp
+     1>detection.cpp(2): fatal error C1083: 無法開啟包含檔案: 'cv.h': No such file or directory
+     1>專案 "D:\Code\GitHub\Face-Detection\detection\detection\detection.vcxproj" (Build 目標) 建置完成 -- 失敗。
+
+建置失敗。
+
+經過時間 00:00:00.32
